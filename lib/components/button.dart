@@ -17,12 +17,12 @@ class Button extends StatelessWidget {
       onTap: onPressed,
       child: Container(
         height: 50,
-        width: MediaQuery.of(context).size.width - 40,
+        width: MediaQuery.of(context).size.width - 60,
         decoration: const BoxDecoration(
           gradient: LinearGradient(
             colors: [
               ComponentColors.mainYellow,
-              ComponentColors.mainBrown,
+              ComponentColors.sweetBrown,
             ],
             begin: Alignment.centerLeft,
             end: Alignment.centerRight,

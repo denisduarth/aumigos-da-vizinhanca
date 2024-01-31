@@ -3,15 +3,15 @@
 import 'package:flutter/material.dart';
 
 final labelStyle = TextStyle(
-  color: Colors.grey[300],
+  color: Colors.grey[200],
   fontFamily: "Poppins",
   fontSize: 12,
-  fontWeight: FontWeight.w600,
+  fontWeight: FontWeight.w500,
 );
 
 const textFieldStyle = TextStyle(
   fontFamily: 'Poppins',
-  fontWeight: FontWeight.w600,
+  fontWeight: FontWeight.w500,
   fontSize: 12,
 );
 
@@ -34,16 +34,17 @@ class TextForm extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: MediaQuery.of(context).size.width - 40,
+      width: MediaQuery.of(context).size.width - 60,
       decoration: const BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.all(Radius.circular(7)),
         boxShadow: [
           BoxShadow(
-              color: Colors.black12,
-              offset: Offset(0, 5),
-              blurRadius: 10,
-              spreadRadius: 5),
+            color: Colors.black12,
+            offset: Offset(0, 5),
+            blurRadius: 10,
+            spreadRadius: 5,
+          ),
         ],
       ),
       child: Column(
@@ -56,7 +57,7 @@ class TextForm extends StatelessWidget {
               labelText: labelText,
               labelStyle: labelStyle,
               prefixIcon: icon,
-              prefixIconColor: Colors.grey[300],
+              prefixIconColor: Colors.grey[200],
               border: InputBorder.none,
             ),
             controller: controller,

@@ -1,7 +1,6 @@
 // ignore_for_file: prefer_const_constructors, file_names, unused_element, use_build_context_synchronously, avoid_print, unused_import, dead_code
 
 import 'package:flutter_animate/flutter_animate.dart';
-
 import '../views/all.dart';
 import '../components/all.dart';
 import 'package:flutter/material.dart';
@@ -50,49 +49,97 @@ class _LoginPageState extends State<LoginPage> {
     }
   }
 
+  Route _createRoute() {
+    return PageRouteBuilder(
+      pageBuilder: (context, animation, secondaryAnimation) =>
+          const RegisterPage(),
+      transitionsBuilder: (context, animation, secondaryAnimation, child) {
+        const begin = Offset(0.0, 1.0);
+        const end = Offset.zero;
+        const curve = Curves.ease;
+
+        var tween =
+            Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+
+        return SlideTransition(
+          position: animation.drive(tween),
+          child: child,
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
           child: SizedBox(
-            height: 500,
-            child: Align(
+            height: MediaQuery.of(context).size.height - 60,
+            child: Container(
+              margin: EdgeInsets.symmetric(vertical: 50),
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Image.asset(
-                    'images/aumigos_da_vizinhanca_logo.png',
-                    height: 100,
-                    width: 100,
-                  ).animate().fadeIn(
-                        duration: Duration(
-                          seconds: 1,
+                  SizedBox(
+                    height: 175,
+                    child: Column(
+                      children: [
+                        Image.asset(
+                          'images/aumigos_da_vizinhanca_logo_sweet_brown.png',
+                          height: 100,
+                          width: 100,
                         ),
-                      ),
-                  GradientText(text: "Login").animate().fadeIn(
-                        duration: Duration(
-                          seconds: 1,
+                        GradientText(
+                          text: "Login",
+                          textSize: 50,
                         ),
+                      ],
+                    ),
+                  ),
+                  SizedBox(
+                    height: 210,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        TextForm(
+                          labelText: "Digite seu email",
+                          controller: emailController,
+                          icon: Icon(Icons.email_rounded),
+                          obscureText: false,
+                          keyboardType: TextInputType.text,
+                        ),
+                        TextForm(
+                          labelText: "Digite sua senha",
+                          controller: passwordController,
+                          icon: Icon(Icons.lock_rounded),
+                          obscureText: true,
+                          keyboardType: TextInputType.text,
+                        ),
+                        Button(
+                          onPressed: _login,
+                          buttonText: "Entrar",
+                        ),
+                      ],
+                    ),
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        "Não tem uma conta? ",
+                        style: TextStyle(
+                            fontFamily: "Poppins",
+                            fontSize: 13,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.black26),
                       ),
-                  TextForm(
-                    labelText: "Digite seu email",
-                    controller: emailController,
-                    icon: Icon(Icons.email_outlined),
-                    obscureText: false,
-                    keyboardType: TextInputType.text,
-                  ),
-                  TextForm(
-                    labelText: "Digite sua senha",
-                    controller: passwordController,
-                    icon: Icon(Icons.password_outlined),
-                    obscureText: true,
-                    keyboardType: TextInputType.text,
-                  ),
-                  Button(
-                    onPressed: _login,
-                    buttonText: "Entrar",
+                      GestureDetector(
+                        onTap: () => Navigator.of(context).push(_createRoute()),
+                        child: GradientText(text: "Crie agora", textSize: 14),
+                      )
+                    ],
                   )
                 ],
               ),

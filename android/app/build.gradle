@@ -24,7 +24,7 @@ if (flutterVersionName == null) {
 
 android {
     namespace "com.example.aumigos_da_vizinhanca"
-    compileSdkVersion 33
+    compileSdkVersion flutter.compileSdkVersion
     ndkVersion flutter.ndkVersion
 
     compileOptions {
@@ -45,8 +45,8 @@ android {
         applicationId "com.example.aumigos_da_vizinhanca"
         // You can update the following values to match your application needs.
         // For more information, see: https://docs.flutter.dev/deployment/android#reviewing-the-gradle-build-configuration.
-        minSdkVersion 21
-        targetSdkVersion 33
+        minSdkVersion flutter.minSdkVersion
+        targetSdkVersion flutter.targetSdkVersion
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
         // multiDexEnabled true
@@ -67,5 +67,5 @@ flutter {
 
 dependencies {
     // implementation 'com.android.support:multidex:1.0.3'
-    implementation 'androidx.multidex:multidex:2.0.1'
+    // implementation 'androidx.multidex:multidex:2.0.1'
 }

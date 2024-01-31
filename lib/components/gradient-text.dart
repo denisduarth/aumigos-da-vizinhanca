@@ -3,26 +3,22 @@
 import 'package:aumigos_da_vizinhanca/components/colors.dart';
 import 'package:flutter/material.dart';
 
-const style = TextStyle(
-  fontSize: 50,
-  fontFamily: "Poppins",
-  fontWeight: FontWeight.w800,
-);
-
 const gradient = LinearGradient(
   colors: [
     ComponentColors.mainYellow,
-    ComponentColors.mainBrown,
+    ComponentColors.sweetBrown,
   ],
 );
 
 class GradientText extends StatelessWidget {
+  final String text;
+  final double? textSize;
+
   const GradientText({
     required this.text,
+    required this.textSize,
     super.key,
   });
-
-  final String text;
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +34,11 @@ class GradientText extends StatelessWidget {
       ),
       child: Text(
         text,
-        style: style,
+        style: TextStyle(
+          fontSize: textSize,
+          fontFamily: "Poppins",
+          fontWeight: FontWeight.w800,
+        ),
       ),
     );
   }
