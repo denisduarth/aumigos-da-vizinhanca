@@ -1,6 +1,7 @@
-export '../views/homepage.dart';
-export '../views/login-page.dart';
-export '../views/register-page.dart';
-export '../main.dart';
-export '../views/profile-page.dart';
-export '../views/update-profile-page.dart';
+export 'homepage.dart';
+export 'login_page.dart';
+export 'register_page.dart';
+export 'profile_page.dart';
+export 'update_profile_page.dart';
+export 'more_info_page.dart';
+export 'navigation_page.dart';

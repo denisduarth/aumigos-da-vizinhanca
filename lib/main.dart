@@ -25,6 +25,8 @@ class AumigosDaVizinhanca extends StatelessWidget {
         '/register': (context) => const RegisterPage(),
         '/profile': (context) => const ProfilePage(),
         '/update-profile': (context) => const UpdateProfilePage(),
+        '/more-info': (context) => const MoreInfoPage(),
+        '/navigation':(context) => const NavigationPage()
       },
       initialRoute: '/login',
       debugShowCheckedModeBanner: false,

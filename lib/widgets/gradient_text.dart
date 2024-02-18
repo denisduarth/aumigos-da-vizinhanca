@@ -1,6 +1,6 @@
 // ignore_for_file: file_names
 
-import 'package:aumigos_da_vizinhanca/components/colors.dart';
+import 'package:aumigos_da_vizinhanca/widgets/colors.dart';
 import 'package:flutter/material.dart';
 
 const gradient = LinearGradient(
@@ -39,6 +39,7 @@ class GradientText extends StatelessWidget {
           fontFamily: "Poppins",
           fontWeight: FontWeight.w800,
         ),
+        textAlign: TextAlign.center,
       ),
     );
   }

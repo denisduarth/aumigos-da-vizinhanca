@@ -1,8 +1,10 @@
-import '../models/enums/dog-races.dart';
+// ignore_for_file: use_super_parameters
+
+import '../enums/dog_races.dart';
 import '../models/animal.dart';
 
 class Dog extends Animal {
-  String ownerName, furColor;
+  final String ownerName, furColor;
   final DogRaces race;
 
   Dog({
