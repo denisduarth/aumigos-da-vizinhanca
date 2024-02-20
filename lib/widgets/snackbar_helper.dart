@@ -9,28 +9,32 @@ class SnackBarHelper {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         showCloseIcon: true,
-        content: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            isError
-                ? const Icon(
-                    Icons.error,
-                    color: Colors.white,
-                  )
-                : const Icon(
-                    Icons.verified_user,
-                    color: Colors.white,
-                  ),
-            Text(
-              " $message",
-            ),
-          ],
+        content: Container(
+          decoration: BoxDecoration(borderRadius: BorderRadius.circular(20)),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              isError
+                  ? const Icon(
+                      Icons.warning,
+                      color: Colors.white,
+                    )
+                  : const Icon(
+                      Icons.verified_user,
+                      color: Colors.white,
+                    ),
+              Text(
+                "$message",
+              ),
+            ],
+          ),
         ),
         duration: const Duration(seconds: 2),
-        margin: const EdgeInsets.all(30),
+        margin: const EdgeInsetsDirectional.all(20),
+        padding: const EdgeInsetsDirectional.all(7),
         behavior: SnackBarBehavior.floating,
         clipBehavior: Clip.antiAlias,
-        backgroundColor: isError ? Colors.redAccent : Colors.green.shade400,
+        backgroundColor: isError ? Colors.red.shade600 : Colors.green.shade400,
       ),
     );
   }

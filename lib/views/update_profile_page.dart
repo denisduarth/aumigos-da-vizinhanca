@@ -4,8 +4,6 @@ import 'package:aumigos_da_vizinhanca/widgets/all.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-import '../styles/text_styles.dart';
-
 class UpdateProfilePage extends StatefulWidget {
   const UpdateProfilePage({super.key});
 
@@ -72,7 +70,7 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
       body: SafeArea(
         child: SingleChildScrollView(
           child: SizedBox(
-            height: MediaQuery.of(context).size.height - 60,
+            height: MediaQuery.of(context).size.height + 150,
             child: Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -124,7 +122,7 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
                     ),
                   ),
                   SizedBox(
-                    height: 400,
+                    height: 450,
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [

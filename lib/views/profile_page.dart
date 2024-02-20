@@ -28,75 +28,77 @@ class _ProfilePageState extends State<ProfilePage> {
       body: SafeArea(
         child: SingleChildScrollView(
           padding: EdgeInsets.symmetric(vertical: 50),
-          child: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Stack(
-                  alignment: AlignmentDirectional.bottomEnd,
-                  children: [
-                    CircleAvatar(
-                      radius: 50,
-                      child: Image.asset('images/user_image.png'),
-                    ),
-                    IconButtonWidget(
-                      icon: Icon(Icons.edit),
-                      onPressed: () =>
-                          Navigator.pushNamed(context, '/update-profile'),
-                      enableBorderSide: true,
-                      color: ComponentColors.sweetBrown,
-                    ),
-                  ],
-                ),
-                Container(
-                  margin: EdgeInsets.symmetric(vertical: 30),
-                  height: 60,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          child: SizedBox(
+            // height: MediaQuery.of(context).size.height,
+            child: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Stack(
+                    alignment: AlignmentDirectional.bottomEnd,
                     children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            "${user!.email}    ",
-                            style: TextStyle(
-                              fontFamily: "Poppins",
-                              fontSize: 20,
-                              fontWeight: FontWeight.w900,
-                            ),
-                          ),
-                          IconButtonWidget(
-                            icon: Icon(Icons.logout_rounded),
-                            onPressed: () async {
-                              await db.auth.signOut();
-                              SnackBarHelper.showSnackBar(
-                                context,
-                                "Saindo de ${user!.email}...",
-                                true,
-                              );
-
-                              await Future.delayed(Duration(seconds: 2));
-                              Navigator.pushNamed(context, '/login');
-                            },
-                            enableBorderSide: false,
-                            color: Colors.redAccent,
-                          ),
-                        ],
+                      CircleAvatar(
+                        radius: 50,
+                        child: Image.asset('images/user_image.png'),
                       ),
-                      Text(
-                        user!.id,
-                        style: TextStyle(
-                          fontFamily: "Poppins",
-                          fontSize: 11,
-                          fontWeight: FontWeight.w700,
-                          color: ComponentColors.mainGray,
-                        ),
+                      IconButtonWidget(
+                        icon: Icon(Icons.edit),
+                        onPressed: () =>
+                            Navigator.pushNamed(context, '/update-profile'),
+                        enableBorderSide: true,
+                        color: ComponentColors.sweetBrown,
                       ),
                     ],
                   ),
-                )
-              ],
+                  Container(
+                    margin: EdgeInsets.symmetric(vertical: 30),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              "${user!.email}    ",
+                              style: TextStyle(
+                                fontFamily: "Poppins",
+                                fontSize: 20,
+                                fontWeight: FontWeight.w900,
+                              ),
+                            ),
+                            IconButtonWidget(
+                              icon: Icon(Icons.logout_rounded),
+                              onPressed: () async {
+                                await db.auth.signOut();
+                                SnackBarHelper.showSnackBar(
+                                  context,
+                                  "Saindo de ${user!.email}...",
+                                  true,
+                                );
+
+                                await Future.delayed(Duration(seconds: 2));
+                                Navigator.pushNamed(context, '/login');
+                              },
+                              enableBorderSide: false,
+                              color: Colors.redAccent,
+                            ),
+                          ],
+                        ),
+                        Text(
+                          user!.id,
+                          style: TextStyle(
+                            fontFamily: "Poppins",
+                            fontSize: 11,
+                            fontWeight: FontWeight.w700,
+                            color: ComponentColors.mainGray,
+                          ),
+                        ),
+                      ],
+                    ),
+                  )
+                ],
+              ),
             ),
           ),
         ),

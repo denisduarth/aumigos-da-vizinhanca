@@ -1,7 +1,5 @@
 // ignore_for_file: prefer_const_constructors, file_names, unused_element, use_build_context_synchronously, avoid_print, dead_code
 
-import 'package:aumigos_da_vizinhanca/styles/text_styles.dart';
-import 'package:aumigos_da_vizinhanca/widgets/snackbar_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -47,6 +45,11 @@ class _LoginPageState extends State<LoginPage> {
         SnackBarHelper.showSnackBar(
             context, "Logado como ${user!.email}", false);
         await Future.delayed(Duration(seconds: 2));
+
+        if (user.userMetadata == {} || user.userMetadata == null) {
+          Navigator.pushNamed(context, '/more-info');
+        }
+
         Navigator.pushNamed(context, '/navigation');
       }
     } on AuthException catch (error) {
@@ -90,14 +93,14 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                     ),
                     SizedBox(
-                      height: 210,
+                      height: 230,
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           TextForm(
                               labelText: "Digite seu e-mail",
                               controller: emailController,
-                              icon: Icon(Icons.email),
+                              icon: Icon(Icons.email_outlined),
                               obscureText: false,
                               keyboardType: TextInputType.text,
                               validator: (text) {
@@ -110,7 +113,7 @@ class _LoginPageState extends State<LoginPage> {
                           TextForm(
                             labelText: "Digite sua senha",
                             controller: passwordController,
-                            icon: Icon(Icons.lock),
+                            icon: Icon(Icons.lock_outline_rounded),
                             obscureText: isPasswordVisible,
                             keyboardType: TextInputType.text,
                             validator: (text) {
@@ -122,8 +125,8 @@ class _LoginPageState extends State<LoginPage> {
                             hintText: "senha123",
                             suffixIcon: IconButton(
                               icon: isPasswordVisible
-                                  ? Icon(Icons.visibility_off)
-                                  : Icon(Icons.visibility),
+                                  ? Icon(Icons.visibility_outlined)
+                                  : Icon(Icons.visibility_off_outlined),
                               onPressed: () => setState(() {
                                 isPasswordVisible = !isPasswordVisible;
                               }),

@@ -2,25 +2,43 @@
 
 import 'package:aumigos_da_vizinhanca/widgets/all.dart';
 import 'package:flutter/material.dart';
-import '../styles/text_styles.dart';
 
 const double textFormPaddingValue = 10;
 
-final mainBorder = OutlineInputBorder(
+final border = OutlineInputBorder(
   borderRadius: BorderRadius.circular(textFormPaddingValue),
   borderSide: const BorderSide(
-    style: BorderStyle.solid,
-    color: ComponentColors.superLightGray,
-    width: 1.7,
+    style: BorderStyle.none,
   ),
+);
+
+const textFieldStyle = TextStyle(
+  fontFamily: 'Poppins',
+  fontWeight: FontWeight.w500,
+  fontSize: 12,
+);
+
+const labelStyle = TextStyle(
+  color: ComponentColors.mainGray,
+  fontFamily: "Poppins",
+  fontSize: 11.5,
+  fontWeight: FontWeight.w500,
+);
+
+const hintStyle = TextStyle(
+  color: ComponentColors.lightGray,
+  fontFamily: "Poppins",
+  fontSize: 11.5,
+  fontWeight: FontWeight.w500,
 );
 
 final focusedBorder = OutlineInputBorder(
   borderRadius: BorderRadius.circular(textFormPaddingValue),
   borderSide: const BorderSide(
+    width: 2.3,
+    strokeAlign: 0.0,
     style: BorderStyle.solid,
-    color: ComponentColors.superLightGray,
-    width: 1.7,
+    color: ComponentColors.sweetBrown,
   ),
 );
 
@@ -48,28 +66,45 @@ class TextForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
+    return Container(
+      decoration: BoxDecoration(
+        boxShadow: const [
+          BoxShadow(
+            color: Color.fromARGB(255, 235, 235, 235),
+            offset: Offset(0, 0),
+            blurRadius: 10,
+            spreadRadius: 5,
+          ),
+        ],
+        borderRadius: BorderRadius.circular(textFormPaddingValue),
+      ),
       width: MediaQuery.of(context).size.width - 60,
       child: TextFormField(
         clipBehavior: Clip.antiAlias,
         keyboardType: keyboardType,
         decoration: InputDecoration(
-          isDense: true,
+          floatingLabelStyle: const TextStyle(
+            fontFamily: "Poppins",
+            fontSize: 12.5,
+            color: ComponentColors.sweetBrown,
+            fontWeight: FontWeight.w600,
+          ),
           alignLabelWithHint: true,
           hintText: hintText,
           hintStyle: hintStyle,
           labelText: labelText,
           labelStyle: labelStyle,
           prefixIcon: icon,
-          prefixIconColor: ComponentColors.mainYellow,
+          prefixIconColor: ComponentColors.sweetBrown,
           suffixIcon: suffixIcon,
           suffixIconColor: ComponentColors.sweetBrown,
-          enabledBorder: mainBorder,
+          enabledBorder: border,
+          focusColor: ComponentColors.sweetBrown,
           focusedBorder: focusedBorder,
-          filled: false,
+          fillColor: Colors.white,
+          filled: true,
           contentPadding: const EdgeInsets.symmetric(
-            horizontal: 25,
-            vertical: 25,
+            vertical: 22,
           ),
         ),
         controller: controller,
