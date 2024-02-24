@@ -3,6 +3,9 @@
 import 'package:aumigos_da_vizinhanca/widgets/all.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import '../enums/text_align_enums.dart';
+import '../main.dart';
+import '../views/all.dart';
 
 class UpdateProfilePage extends StatefulWidget {
   const UpdateProfilePage({super.key});
@@ -66,6 +69,10 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
 
   @override
   Widget build(BuildContext context) {
+    final hasConnection = ConnectionNotifier.of(context).value;
+
+    if (!hasConnection) return const NetworkErrorPage();
+
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
@@ -105,6 +112,7 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
                               GradientText(
                                 text: "Editar dados do usuário",
                                 textSize: 40,
+                                textAlign: TextAlignEnum.center,
                               ),
                             ],
                           ),

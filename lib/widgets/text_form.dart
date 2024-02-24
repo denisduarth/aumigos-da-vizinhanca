@@ -104,7 +104,7 @@ class TextForm extends StatelessWidget {
           fillColor: Colors.white,
           filled: true,
           contentPadding: const EdgeInsets.symmetric(
-            vertical: 22,
+            vertical: 18,
           ),
         ),
         controller: controller,

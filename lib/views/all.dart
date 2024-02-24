@@ -5,3 +5,4 @@ export 'profile_page.dart';
 export 'update_profile_page.dart';
 export 'more_info_page.dart';
 export 'navigation_page.dart';
+export 'network_error_page.dart';

@@ -1,5 +1,7 @@
 // ignore_for_file: prefer_const_constructors, file_names, unused_element, use_build_context_synchronously, avoid_print, dead_code
 
+import 'package:aumigos_da_vizinhanca/enums/text_align_enums.dart';
+import 'package:aumigos_da_vizinhanca/main.dart';
 import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -41,12 +43,13 @@ class _LoginPageState extends State<LoginPage> {
         });
 
         final user = response.user;
+        final userMetadata = user?.userMetadata;
 
         SnackBarHelper.showSnackBar(
             context, "Logado como ${user!.email}", false);
         await Future.delayed(Duration(seconds: 2));
 
-        if (user.userMetadata == {} || user.userMetadata == null) {
+        if (userMetadata?['name'] == null) {
           Navigator.pushNamed(context, '/more-info');
         }
 
@@ -63,6 +66,10 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
+    final hasConnection = ConnectionNotifier.of(context).value;
+
+    if (!hasConnection) return const NetworkErrorPage();
+
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
@@ -88,6 +95,7 @@ class _LoginPageState extends State<LoginPage> {
                           GradientText(
                             text: "Login",
                             textSize: 50,
+                            textAlign: TextAlignEnum.center,
                           ),
                         ],
                       ),
@@ -100,7 +108,7 @@ class _LoginPageState extends State<LoginPage> {
                           TextForm(
                               labelText: "Digite seu e-mail",
                               controller: emailController,
-                              icon: Icon(Icons.email_outlined),
+                              icon: Icon(Icons.email_rounded),
                               obscureText: false,
                               keyboardType: TextInputType.text,
                               validator: (text) {
@@ -113,7 +121,7 @@ class _LoginPageState extends State<LoginPage> {
                           TextForm(
                             labelText: "Digite sua senha",
                             controller: passwordController,
-                            icon: Icon(Icons.lock_outline_rounded),
+                            icon: Icon(Icons.lock_rounded),
                             obscureText: isPasswordVisible,
                             keyboardType: TextInputType.text,
                             validator: (text) {
@@ -125,8 +133,8 @@ class _LoginPageState extends State<LoginPage> {
                             hintText: "senha123",
                             suffixIcon: IconButton(
                               icon: isPasswordVisible
-                                  ? Icon(Icons.visibility_outlined)
-                                  : Icon(Icons.visibility_off_outlined),
+                                  ? Icon(Icons.visibility_rounded)
+                                  : Icon(Icons.visibility_off_rounded),
                               onPressed: () => setState(() {
                                 isPasswordVisible = !isPasswordVisible;
                               }),
@@ -173,6 +181,7 @@ class _LoginPageState extends State<LoginPage> {
                           child: GradientText(
                             text: "Crie agora",
                             textSize: 11.5,
+                            textAlign: TextAlignEnum.center,
                           ),
                         ),
                       ],

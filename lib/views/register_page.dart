@@ -6,6 +6,10 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+import '../enums/text_align_enums.dart';
+import '../main.dart';
+import '../views/all.dart';
+
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
 
@@ -60,7 +64,7 @@ class _RegisterPageState extends State<RegisterPage> {
           false,
         );
         await Future.delayed(Duration(seconds: 3));
-        Navigator.pop(context);
+        Navigator.pushNamed(context, '/more-info', arguments: {});
       }
     } on AuthException catch (error) {
       SnackBarHelper.showSnackBar(context, error.message.toString(), true);
@@ -77,6 +81,10 @@ class _RegisterPageState extends State<RegisterPage> {
 
   @override
   Widget build(BuildContext context) {
+    final hasConnection = ConnectionNotifier.of(context).value;
+
+    if (!hasConnection) return const NetworkErrorPage();
+
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
@@ -108,7 +116,11 @@ class _RegisterPageState extends State<RegisterPage> {
                               ),
                             ],
                           ),
-                          GradientText(text: "Criar conta", textSize: 50),
+                          GradientText(
+                            text: "Criar conta",
+                            textSize: 50,
+                            textAlign: TextAlignEnum.center,
+                          ),
                           Text(
                             "Crie sua conta agora mesmo",
                             style: TextStyle(

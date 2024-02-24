@@ -9,24 +9,37 @@ class SnackBarHelper {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         showCloseIcon: true,
-        content: Container(
-          decoration: BoxDecoration(borderRadius: BorderRadius.circular(20)),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              isError
-                  ? const Icon(
-                      Icons.warning,
-                      color: Colors.white,
-                    )
-                  : const Icon(
-                      Icons.verified_user,
-                      color: Colors.white,
-                    ),
-              Text(
-                "$message",
+        content: ClipRRect(
+          borderRadius: BorderRadius.circular(20),
+          child: Container(
+            decoration: BoxDecoration(borderRadius: BorderRadius.circular(20)),
+            child: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      isError
+                          ? const Icon(
+                              Icons.warning,
+                              color: Colors.white,
+                            )
+                          : const Icon(
+                              Icons.verified_user,
+                              color: Colors.white,
+                            ),
+                    ],
+                  ),
+                  Text(
+                    "$message",
+                    style: const TextStyle(fontWeight: FontWeight.w800),
+                    textAlign: TextAlign.center,
+                    locale: const Locale('pt', 'BR'),
+                  ),
+                ],
               ),
-            ],
+            ),
           ),
         ),
         duration: const Duration(seconds: 2),
@@ -34,7 +47,7 @@ class SnackBarHelper {
         padding: const EdgeInsetsDirectional.all(7),
         behavior: SnackBarBehavior.floating,
         clipBehavior: Clip.antiAlias,
-        backgroundColor: isError ? Colors.red.shade600 : Colors.green.shade400,
+        backgroundColor: isError ? Colors.red : Colors.green,
       ),
     );
   }

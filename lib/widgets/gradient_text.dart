@@ -1,6 +1,7 @@
 // ignore_for_file: file_names
 
-import 'package:aumigos_da_vizinhanca/widgets/colors.dart';
+import '../widgets/colors.dart';
+import '../enums/all.dart';
 import 'package:flutter/material.dart';
 
 const gradient = LinearGradient(
@@ -13,10 +14,12 @@ const gradient = LinearGradient(
 class GradientText extends StatelessWidget {
   final String text;
   final double? textSize;
+  final TextAlignEnum textAlign;
 
   const GradientText({
     required this.text,
     required this.textSize,
+    required this.textAlign,
     super.key,
   });
 
@@ -39,7 +42,11 @@ class GradientText extends StatelessWidget {
           fontFamily: "Poppins",
           fontWeight: FontWeight.w800,
         ),
-        textAlign: TextAlign.center,
+        textAlign: switch (textAlign) {
+          TextAlignEnum.start => TextAlign.start,
+          TextAlignEnum.center => TextAlign.center,
+          TextAlignEnum.end => TextAlign.end,
+        },
       ),
     );
   }
