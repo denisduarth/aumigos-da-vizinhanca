@@ -1,3 +1,4 @@
+import 'package:aumigos_da_vizinhanca/main.dart';
 import 'package:aumigos_da_vizinhanca/views/all.dart';
 import 'package:aumigos_da_vizinhanca/widgets/all.dart';
 import 'package:flutter/material.dart';
@@ -22,25 +23,51 @@ class _NavigationPageState extends State<NavigationPage> {
   @override
   Widget build(BuildContext context) {
     final user = db.auth.currentUser;
+    final hasConnection = ConnectionNotifier.of(context).value;
 
     return Scaffold(
         appBar: AppBar(
-            shadowColor: ComponentColors.sweetBrown,
-            iconTheme: const IconThemeData(color: Colors.white),
-            actionsIconTheme: const IconThemeData(color: Colors.white),
-            elevation: 4.0,
-            backgroundColor: ComponentColors.sweetBrown,
-            centerTitle: true,
-            title: Image.asset(
-              'images/aumigos_da_vizinhanca_logo_white.png',
-              width: 30,
-              height: 30,
-            )),
+          shadowColor: ComponentColors.sweetBrown,
+          iconTheme: const IconThemeData(color: Colors.white),
+          actionsIconTheme: const IconThemeData(color: Colors.white),
+          elevation: 4.0,
+          backgroundColor:
+              !hasConnection ? Colors.red : ComponentColors.sweetBrown,
+          centerTitle: true,
+          title: !hasConnection
+              ? const Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    Text(
+                      "Tentando reconectar",
+                      style: TextStyle(
+                        fontFamily: "Poppins",
+                        fontSize: 14,
+                        color: Colors.white,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                    SizedBox(
+                      width: 20,
+                      height: 20,
+                      child: CircularProgressIndicator(
+                        color: Colors.white,
+                      ),
+                    )
+                  ],
+                )
+              : Image.asset(
+                  'images/aumigos_da_vizinhanca_logo_white.png',
+                  width: 30,
+                  height: 30,
+                ),
+        ),
         bottomNavigationBar: BottomNavigationBar(
-          backgroundColor: ComponentColors.sweetBrown,
+          backgroundColor:
+              !hasConnection ? Colors.red : ComponentColors.sweetBrown,
           currentIndex: _currentIndex,
           showUnselectedLabels: false,
-          elevation: 0.0,
+          elevation: 4.0,
           selectedItemColor: Colors.white,
           unselectedItemColor: Colors.white,
           selectedLabelStyle: const TextStyle(
