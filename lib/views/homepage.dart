@@ -23,7 +23,6 @@ class _HomepageState extends State<Homepage> {
   @override
   void dispose() {
     super.dispose();
-    db.dispose();
     searchControlller.dispose();
   }
 

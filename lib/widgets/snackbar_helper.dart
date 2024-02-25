@@ -1,35 +1,24 @@
 import 'package:flutter/material.dart';
 
 class SnackBarHelper {
-  static void showSnackBar(
-    BuildContext context,
-    String? message,
-    bool isError,
-  ) {
+  static void showSnackBar(BuildContext context, String? message, Color color,
+      IconData icon, bool top) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         showCloseIcon: true,
         content: ClipRRect(
           borderRadius: BorderRadius.circular(20),
           child: Container(
-            decoration: BoxDecoration(borderRadius: BorderRadius.circular(20)),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(20),
+            ),
             child: Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      isError
-                          ? const Icon(
-                              Icons.warning,
-                              color: Colors.white,
-                            )
-                          : const Icon(
-                              Icons.verified_user,
-                              color: Colors.white,
-                            ),
-                    ],
+                  Icon(
+                    icon,
+                    color: Colors.white,
                   ),
                   Text(
                     "$message",
@@ -42,12 +31,11 @@ class SnackBarHelper {
             ),
           ),
         ),
+        dismissDirection: top ? DismissDirection.up : DismissDirection.down,
         duration: const Duration(seconds: 2),
-        margin: const EdgeInsetsDirectional.all(20),
-        padding: const EdgeInsetsDirectional.all(7),
         behavior: SnackBarBehavior.floating,
         clipBehavior: Clip.antiAlias,
-        backgroundColor: isError ? Colors.red : Colors.green,
+        backgroundColor: color,
       ),
     );
   }

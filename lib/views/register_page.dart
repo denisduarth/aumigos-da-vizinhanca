@@ -61,13 +61,21 @@ class _RegisterPageState extends State<RegisterPage> {
         SnackBarHelper.showSnackBar(
           context,
           "Cadastro feito com sucesso",
+          Colors.green,
+          Icons.verified_rounded,
           false,
         );
         await Future.delayed(Duration(seconds: 3));
         Navigator.pushNamed(context, '/more-info', arguments: {});
       }
     } on AuthException catch (error) {
-      SnackBarHelper.showSnackBar(context, error.message.toString(), true);
+      SnackBarHelper.showSnackBar(
+        context,
+        error.message.toString(),
+        Colors.red,
+        Icons.error_outline_rounded,
+        false,
+      );
     }
   }
 

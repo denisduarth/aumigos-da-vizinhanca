@@ -1,3 +1,4 @@
+import 'package:aumigos_da_vizinhanca/widgets/all.dart';
 import 'package:aumigos_da_vizinhanca/widgets/colors.dart';
 import 'package:flutter/material.dart';
 

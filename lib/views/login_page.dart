@@ -46,7 +46,12 @@ class _LoginPageState extends State<LoginPage> {
         final userMetadata = user?.userMetadata;
 
         SnackBarHelper.showSnackBar(
-            context, "Logado como ${user!.email}", false);
+          context,
+          "Logado como ${user!.email}",
+          Colors.green,
+          Icons.verified_user_rounded,
+          false,
+        );
         await Future.delayed(Duration(seconds: 2));
 
         if (userMetadata?['name'] == null) {
@@ -59,7 +64,9 @@ class _LoginPageState extends State<LoginPage> {
       SnackBarHelper.showSnackBar(
         context,
         error.message.toString(),
-        true,
+        Colors.red,
+        Icons.error,
+        false,
       );
     }
   }

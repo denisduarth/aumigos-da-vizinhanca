@@ -57,13 +57,21 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
         SnackBarHelper.showSnackBar(
           context,
           "Dados atualizados com sucesso",
+          Colors.green,
+          Icons.verified_user_rounded,
           false,
         );
         await Future.delayed(Duration(seconds: 2));
         Navigator.pushNamed(context, '/profile');
       }
     } on AuthException catch (error) {
-      SnackBarHelper.showSnackBar(context, error.message.toString(), true);
+      SnackBarHelper.showSnackBar(
+        context,
+        error.message.toString(),
+        Colors.red,
+        Icons.error_rounded,
+        false,
+      );
     }
   }
 
@@ -109,21 +117,28 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
                             alignment: WrapAlignment.end,
                             direction: Axis.horizontal,
                             children: const [
-                              GradientText(
-                                text: "Editar dados do usuário",
-                                textSize: 40,
-                                textAlign: TextAlignEnum.center,
+                              Padding(
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: 30.0, vertical: 10.0),
+                                child: GradientText(
+                                  text: "Editar dados do usuário",
+                                  textSize: 40,
+                                  textAlign: TextAlignEnum.center,
+                                ),
                               ),
                             ],
                           ),
                         ),
-                        Text(
-                          "Edite os dados da sua conta",
-                          style: TextStyle(
-                            fontFamily: "Poppins",
-                            fontWeight: FontWeight.w600,
-                            color: ComponentColors.lightGray,
-                            fontSize: 14,
+                        Padding(
+                          padding: const EdgeInsets.all(10.0),
+                          child: Text(
+                            "Edite os dados da sua conta",
+                            style: TextStyle(
+                              fontFamily: "Poppins",
+                              fontWeight: FontWeight.w600,
+                              color: ComponentColors.lightGray,
+                              fontSize: 14,
+                            ),
                           ),
                         )
                       ],
