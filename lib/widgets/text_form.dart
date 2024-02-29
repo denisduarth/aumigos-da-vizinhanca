@@ -14,22 +14,22 @@ final border = OutlineInputBorder(
 
 const textFieldStyle = TextStyle(
   fontFamily: 'Poppins',
-  fontWeight: FontWeight.w500,
-  fontSize: 12,
+  fontWeight: FontWeight.w400,
+  fontSize: 11,
 );
 
 const labelStyle = TextStyle(
   color: ComponentColors.mainGray,
   fontFamily: "Poppins",
-  fontSize: 11.5,
-  fontWeight: FontWeight.w500,
+  fontSize: 11,
+  fontWeight: FontWeight.w400,
 );
 
 const hintStyle = TextStyle(
   color: ComponentColors.lightGray,
   fontFamily: "Poppins",
-  fontSize: 11.5,
-  fontWeight: FontWeight.w500,
+  fontSize: 11,
+  fontWeight: FontWeight.w400,
 );
 
 final focusedBorder = OutlineInputBorder(
@@ -70,15 +70,15 @@ class TextForm extends StatelessWidget {
       decoration: BoxDecoration(
         boxShadow: const [
           BoxShadow(
-            color: Color.fromARGB(255, 235, 235, 235),
+            color: ComponentColors.superLightGray,
             offset: Offset(0, 0),
             blurRadius: 10,
-            spreadRadius: 5,
+            spreadRadius: 3,
           ),
         ],
         borderRadius: BorderRadius.circular(textFormPaddingValue),
       ),
-      width: MediaQuery.of(context).size.width - 60,
+      width: MediaQuery.of(context).size.width - 70,
       child: TextFormField(
         clipBehavior: Clip.antiAlias,
         keyboardType: keyboardType,
@@ -104,7 +104,7 @@ class TextForm extends StatelessWidget {
           fillColor: Colors.white,
           filled: true,
           contentPadding: const EdgeInsets.symmetric(
-            vertical: 18,
+            vertical: 20,
           ),
         ),
         controller: controller,

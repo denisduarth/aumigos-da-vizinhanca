@@ -1,11 +1,7 @@
 // ignore_for_file: prefer_const_constructors, unused_element, file_names, unused_field, constant_pattern_never_matches_value_type, use_build_context_synchronously, avoid_unnecessary_containers
 
-import 'dart:io';
 import 'package:aumigos_da_vizinhanca/widgets/all.dart';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
-
 import '../enums/text_align_enums.dart';
 import '../main.dart';
 import '../views/all.dart';
@@ -18,14 +14,13 @@ class RegisterPage extends StatefulWidget {
 }
 
 class _RegisterPageState extends State<RegisterPage> {
-  XFile? image;
-  final db = Supabase.instance.client;
   final _formKey = GlobalKey<FormState>();
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
   final confirmPasswordController = TextEditingController();
   final nameController = TextEditingController();
-  bool isPasswordVisible = true, isRegistered = false;
+  bool isPasswordVisible = true;
+  bool isRegistered = false;
 
   @override
   void initState() {
@@ -41,50 +36,38 @@ class _RegisterPageState extends State<RegisterPage> {
     nameController.dispose();
   }
 
-  Future<void> register() async {
+  void saveData() {
     try {
-      await db.storage.from('images').upload(image!.name, File(image!.path));
+      assert(emailController.text.isNotEmpty, "Digite um e-mail");
+      assert(emailController.text.contains("@"), "E-mail inválido");
+      assert(nameController.text.isNotEmpty, "Digite um nome");
+      assert(passwordController.text.isNotEmpty, "Digite uma senha");
+      assert(confirmPasswordController.text.isNotEmpty, "Confirme sua senha");
+      assert(
+          confirmPasswordController.text.length >= 6 &&
+              passwordController.text.length >= 6,
+          "Senhas tem que ter mais de 6 caracteres");
+      assert(passwordController.text == confirmPasswordController.text,
+          "Senhas não coincidem");
 
-      await db.auth.signUp(
-        email: emailController.text,
-        password: passwordController.text,
-        data: {
+      Navigator.pushNamed(
+        context,
+        '/more-info',
+        arguments: {
           'name': nameController.text,
-          'image': image!.name,
+          'email': emailController.text,
+          'password': passwordController.text,
         },
       );
-
-      if (mounted) {
-        setState(() {
-          isRegistered = true;
-        });
-        SnackBarHelper.showSnackBar(
-          context,
-          "Cadastro feito com sucesso",
-          Colors.green,
-          Icons.verified_rounded,
-          false,
-        );
-        await Future.delayed(Duration(seconds: 3));
-        Navigator.pushNamed(context, '/more-info', arguments: {});
-      }
-    } on AuthException catch (error) {
+    } on AssertionError catch (error) {
       SnackBarHelper.showSnackBar(
         context,
         error.message.toString(),
         Colors.red,
-        Icons.error_outline_rounded,
+        Icons.error_rounded,
         false,
       );
     }
-  }
-
-  Future<void> uploadImage() async {
-    image = await ImagePicker().pickImage(source: ImageSource.gallery);
-
-    if (image == null) return;
-
-    setState(() {});
   }
 
   @override
@@ -94,11 +77,11 @@ class _RegisterPageState extends State<RegisterPage> {
     if (!hasConnection) return const NetworkErrorPage();
 
     return Scaffold(
+      backgroundColor: Colors.white,
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: EdgeInsets.symmetric(vertical: 50),
+          padding: EdgeInsets.symmetric(vertical: 30),
           child: SizedBox(
-            height: MediaQuery.of(context).size.height + 150,
             child: Center(
               child: Form(
                 key: _formKey,
@@ -121,50 +104,40 @@ class _RegisterPageState extends State<RegisterPage> {
                               ),
                               Image.asset(
                                 'images/aumigos_da_vizinhanca_logo_sweet_brown.png',
+                                width: 60,
+                                height: 60,
                               ),
                             ],
                           ),
-                          GradientText(
-                            text: "Criar conta",
-                            textSize: 50,
-                            textAlign: TextAlignEnum.center,
+                          Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 20, vertical: 10),
+                            child: GradientText(
+                              text: "Introduzindo os Dados",
+                              textSize: 28,
+                              textAlign: TextAlignEnum.center,
+                            ),
                           ),
-                          Text(
-                            "Crie sua conta agora mesmo",
-                            style: TextStyle(
-                              fontFamily: "Poppins",
-                              fontWeight: FontWeight.w600,
-                              color: ComponentColors.lightGray,
-                              fontSize: 14,
+                          Padding(
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 10.0, horizontal: 50.0),
+                            child: Text(
+                              "Para começar, introduza seus dados primários, como nome, email e senha desejados. Após isso, partiremos para a próxima tela para a finalização do cadastro",
+                              style: TextStyle(
+                                fontFamily: "Poppins",
+                                fontWeight: FontWeight.w500,
+                                color: ComponentColors.mainGray,
+                                fontSize: 12,
+                              ),
+                              textAlign: TextAlign.center,
                             ),
                           )
                         ],
                       ),
                     ),
-                    Stack(
-                      alignment: AlignmentDirectional.bottomEnd,
-                      children: [
-                        CircleAvatar(
-                          backgroundColor: Colors.transparent,
-                          radius: 50,
-                          backgroundImage: image == null
-                              ? AssetImage('images/user_image.png')
-                                  as ImageProvider
-                              : FileImage(File(image!.path)),
-                        ),
-                        IconButtonWidget(
-                          color: ComponentColors.sweetBrown,
-                          enableBorderSide: true,
-                          onPressed: uploadImage,
-                          icon: Icon(
-                            Icons.add_a_photo_rounded,
-                          ),
-                        ),
-                      ],
-                    ),
                     Container(
-                      margin: EdgeInsets.symmetric(vertical: 30),
-                      height: 370,
+                      padding: EdgeInsets.symmetric(vertical: 15),
+                      height: 430,
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -246,7 +219,7 @@ class _RegisterPageState extends State<RegisterPage> {
                             ),
                           ),
                           Button(
-                            onTap: register,
+                            onTap: saveData,
                             buttonWidget: isRegistered
                                 ? SizedBox(
                                     width: 20,
@@ -256,10 +229,10 @@ class _RegisterPageState extends State<RegisterPage> {
                                     ),
                                   )
                                 : Text(
-                                    "Criar conta",
+                                    "Continuar",
                                     style: buttonTextStyle,
                                   ),
-                          )
+                          ),
                         ],
                       ),
                     ),

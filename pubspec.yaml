@@ -22,6 +22,20 @@ dependencies:
   latlong2: ^0.9.0
   url_launcher: ^6.2.5
   internet_connection_checker: ^1.0.0+1
+  flutter_launcher_icons: ^0.13.1
+  flutter_native_splash: ^2.3.10
+
+flutter_native_splash:
+  color: "#FFC828"
+  image: "images/aumigos_da_vizinhanca_logo_splash_screen.png"
+  android: true
+  ios: true
+
+flutter_icons:
+  image_path: "images/aumigos_da_vizinhanca_app_icon.png"
+  ios: true
+  remove_alpha_ios: true
+  android: "launcher_icon"
 
 dev_dependencies:
   flutter_test:

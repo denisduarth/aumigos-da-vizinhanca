@@ -30,8 +30,24 @@ class _LoginPageState extends State<LoginPage> {
     super.dispose();
   }
 
-  Future<dynamic> login() async {
+  void snackBar(String message, Color color) {
+    SnackBarHelper.showSnackBar(
+      context,
+      message,
+      color,
+      Icons.error_outline_rounded,
+      false,
+    );
+  }
+
+  Future login() async {
     try {
+      assert(emailController.text.isNotEmpty, "Digite um e-mail");
+      assert(emailController.text.contains("@"), "E-mail inválido");
+      assert(passwordController.text.isNotEmpty, "Digite uma senha");
+      assert(passwordController.text.length >= 6,
+          "A senha deve conter mais de 6 caracteres");
+
       final response = await db.auth.signInWithPassword(
         email: emailController.text,
         password: passwordController.text,
@@ -43,31 +59,16 @@ class _LoginPageState extends State<LoginPage> {
         });
 
         final user = response.user;
-        final userMetadata = user?.userMetadata;
 
-        SnackBarHelper.showSnackBar(
-          context,
-          "Logado como ${user!.email}",
-          Colors.green,
-          Icons.verified_user_rounded,
-          false,
-        );
+        snackBar("Logado como ${user!.email}", Colors.green);
         await Future.delayed(Duration(seconds: 2));
-
-        if (userMetadata?['name'] == null) {
-          Navigator.pushNamed(context, '/more-info');
-        }
 
         Navigator.pushNamed(context, '/navigation');
       }
+    } on AssertionError catch (error) {
+      snackBar(error.message.toString(), Colors.red);
     } on AuthException catch (error) {
-      SnackBarHelper.showSnackBar(
-        context,
-        error.message.toString(),
-        Colors.red,
-        Icons.error,
-        false,
-      );
+      snackBar(error.message.toString(), Colors.red);
     }
   }
 
@@ -78,6 +79,7 @@ class _LoginPageState extends State<LoginPage> {
     if (!hasConnection) return const NetworkErrorPage();
 
     return Scaffold(
+      backgroundColor: Colors.white,
       body: SafeArea(
         child: SingleChildScrollView(
           child: SizedBox(
