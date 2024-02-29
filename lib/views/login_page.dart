@@ -132,7 +132,7 @@ class _LoginPageState extends State<LoginPage> {
                             controller: passwordController,
                             icon: Icon(Icons.lock_rounded),
                             obscureText: isPasswordVisible,
-                            keyboardType: TextInputType.text,
+                            keyboardType: TextInputType.visiblePassword,
                             validator: (text) {
                               if (text!.isEmpty) {
                                 return "Senha inválida";
@@ -140,14 +140,6 @@ class _LoginPageState extends State<LoginPage> {
                               return null;
                             },
                             hintText: "senha123",
-                            suffixIcon: IconButton(
-                              icon: isPasswordVisible
-                                  ? Icon(Icons.visibility_rounded)
-                                  : Icon(Icons.visibility_off_rounded),
-                              onPressed: () => setState(() {
-                                isPasswordVisible = !isPasswordVisible;
-                              }),
-                            ),
                           ),
                           Button(
                             onTap: login,

@@ -5,9 +5,6 @@ import 'views/all.dart';
 import 'package:flutter/material.dart';
 
 const Locale brazilianPortuguese = Locale('pt', 'BR');
-const String urlProject = "https://igjmggiujesxhnccuqgo.supabase.co";
-const String apiKey =
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imlnam1nZ2l1amVzeGhuY2N1cWdvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MDYzMDE2MTEsImV4cCI6MjAyMTg3NzYxMX0.hawMLmnkaing1GVEk2bIU6creIjdQI7-rVxUprP3h2w";
 
 class ConnectionNotifier extends InheritedNotifier<ValueNotifier<bool>> {
   const ConnectionNotifier({
@@ -30,7 +27,15 @@ final internetConnectionChecker = InternetConnectionChecker.createInstance(
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Supabase.initialize(url: urlProject, anonKey: apiKey);
+  await Supabase.initialize(
+    url: 'https://igjmggiujesxhnccuqgo.supabase.co',
+    anonKey:
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imlnam1nZ2l1amVzeGhuY2N1cWdvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MDYzMDE2MTEsImV4cCI6MjAyMTg3NzYxMX0.hawMLmnkaing1GVEk2bIU6creIjdQI7-rVxUprP3h2w',
+    authOptions: const FlutterAuthClientOptions(
+      authFlowType: AuthFlowType.pkce,
+    ),
+  );
+
   final hasConnection = await internetConnectionChecker.hasConnection;
 
   runApp(

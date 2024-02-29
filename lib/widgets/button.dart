@@ -29,25 +29,25 @@ class Button extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-          width: MediaQuery.of(context).size.width - 60,
-          height: 60,
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              colors: [
-                ComponentColors.mainYellow,
-                ComponentColors.sweetBrown,
-              ],
-              begin: Alignment.centerLeft,
-              end: Alignment.centerRight,
-            ),
-            borderRadius: BorderRadius.all(
-              Radius.circular(paddingValue),
+    return Center(
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(10),
+        child: TextButton(
+          onPressed: onTap,
+          style: TextButton.styleFrom(
+            fixedSize: Size(MediaQuery.of(context).size.width - 60, 60),
+            backgroundColor: ComponentColors.mainYellow,
+            padding: const EdgeInsets.all(15),
+            textStyle: const TextStyle(
+              fontFamily: "Poppins",
+              fontSize: 13,
+              fontWeight: FontWeight.w600,
+              color: Colors.white,
             ),
           ),
-          child: Center(child: buttonWidget)),
+          child: buttonWidget,
+        ),
+      ),
     );
   }
 }

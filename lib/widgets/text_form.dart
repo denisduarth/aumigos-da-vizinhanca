@@ -3,54 +3,63 @@
 import 'package:aumigos_da_vizinhanca/widgets/all.dart';
 import 'package:flutter/material.dart';
 
-const double textFormPaddingValue = 10;
+const sweetBrownLight = Color.fromARGB(255, 255, 217, 200);
 
 final border = OutlineInputBorder(
-  borderRadius: BorderRadius.circular(textFormPaddingValue),
-  borderSide: const BorderSide(
-    style: BorderStyle.none,
-  ),
+  borderRadius: BorderRadius.circular(30),
+  borderSide:
+      const BorderSide(style: BorderStyle.solid, color: sweetBrownLight),
 );
 
 const textFieldStyle = TextStyle(
   fontFamily: 'Poppins',
-  fontWeight: FontWeight.w400,
+  fontWeight: FontWeight.w600,
   fontSize: 11,
 );
 
 const labelStyle = TextStyle(
-  color: ComponentColors.mainGray,
+  color: sweetBrownLight,
   fontFamily: "Poppins",
   fontSize: 11,
-  fontWeight: FontWeight.w400,
+  fontWeight: FontWeight.w600,
 );
 
 const hintStyle = TextStyle(
-  color: ComponentColors.lightGray,
+  color: sweetBrownLight,
   fontFamily: "Poppins",
   fontSize: 11,
-  fontWeight: FontWeight.w400,
+  fontWeight: FontWeight.w600,
 );
 
 final focusedBorder = OutlineInputBorder(
-  borderRadius: BorderRadius.circular(textFormPaddingValue),
+  borderRadius: BorderRadius.circular(30),
   borderSide: const BorderSide(
-    width: 2.3,
+    width: 3,
     strokeAlign: 0.0,
     style: BorderStyle.solid,
     color: ComponentColors.sweetBrown,
   ),
 );
 
-class TextForm extends StatelessWidget {
-  final String? labelText;
-  final String? hintText;
-  final TextEditingController? controller;
-  final Icon? icon;
+final enabledBorder = OutlineInputBorder(
+  borderRadius: BorderRadius.circular(30),
+  borderSide: const BorderSide(
+    width: 1,
+    strokeAlign: 0.0,
+    style: BorderStyle.solid,
+    color: ComponentColors.sweetBrown,
+  ),
+);
+
+class TextForm extends StatefulWidget {
+  String? labelText;
+  String? hintText;
+  TextEditingController? controller;
+  Icon? icon;
   Widget? suffixIcon;
-  final bool obscureText;
-  final TextInputType keyboardType;
-  final String? Function(String?)? validator;
+  bool obscureText;
+  TextInputType keyboardType;
+  String? Function(String?)? validator;
 
   TextForm({
     super.key,
@@ -65,40 +74,43 @@ class TextForm extends StatelessWidget {
   });
 
   @override
+  State<TextForm> createState() => _TextFormState();
+}
+
+class _TextFormState extends State<TextForm> {
+  @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        boxShadow: const [
-          BoxShadow(
-            color: ComponentColors.superLightGray,
-            offset: Offset(0, 0),
-            blurRadius: 10,
-            spreadRadius: 3,
-          ),
-        ],
-        borderRadius: BorderRadius.circular(textFormPaddingValue),
-      ),
-      width: MediaQuery.of(context).size.width - 70,
+    return SizedBox(
+      width: MediaQuery.of(context).size.width - 50,
       child: TextFormField(
-        clipBehavior: Clip.antiAlias,
-        keyboardType: keyboardType,
+        keyboardType: widget.keyboardType,
         decoration: InputDecoration(
-          floatingLabelStyle: const TextStyle(
-            fontFamily: "Poppins",
-            fontSize: 12.5,
-            color: ComponentColors.sweetBrown,
-            fontWeight: FontWeight.w600,
-          ),
           alignLabelWithHint: true,
-          hintText: hintText,
+          hintText: widget.hintText,
           hintStyle: hintStyle,
-          labelText: labelText,
+          labelText: widget.labelText,
           labelStyle: labelStyle,
-          prefixIcon: icon,
+          prefixIcon: widget.icon,
           prefixIconColor: ComponentColors.sweetBrown,
-          suffixIcon: suffixIcon,
-          suffixIconColor: ComponentColors.sweetBrown,
-          enabledBorder: border,
+          prefixIconConstraints: const BoxConstraints(minWidth: 60),
+          suffixIcon: widget.keyboardType == TextInputType.visiblePassword
+              ? IconButton(
+                  onPressed: () {
+                    setState(() {
+                      widget.obscureText = !widget.obscureText;
+                    });
+                  },
+                  icon: Icon(
+                    widget.obscureText
+                        ? Icons.visibility
+                        : Icons.visibility_off,
+                    color: ComponentColors.sweetBrown,
+                  ),
+                )
+              : null,
+          suffixIconConstraints: const BoxConstraints(minWidth: 60),
+          border: focusedBorder,
+          enabledBorder: enabledBorder,
           focusColor: ComponentColors.sweetBrown,
           focusedBorder: focusedBorder,
           fillColor: Colors.white,
@@ -106,11 +118,16 @@ class TextForm extends StatelessWidget {
           contentPadding: const EdgeInsets.symmetric(
             vertical: 20,
           ),
+          floatingLabelStyle: const TextStyle(
+            color: ComponentColors.sweetBrown,
+            fontWeight: FontWeight.w600,
+            fontSize: 13,
+          ),
         ),
-        controller: controller,
-        obscureText: obscureText,
+        controller: widget.controller,
+        obscureText: widget.obscureText,
         style: textFieldStyle,
-        validator: validator,
+        validator: widget.validator,
       ),
     );
   }

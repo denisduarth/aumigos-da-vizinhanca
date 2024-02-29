@@ -173,7 +173,7 @@ class _RegisterPageState extends State<RegisterPage> {
                             controller: passwordController,
                             icon: Icon(Icons.lock_rounded),
                             obscureText: isPasswordVisible,
-                            keyboardType: TextInputType.text,
+                            keyboardType: TextInputType.visiblePassword,
                             validator: (text) {
                               if (text!.isEmpty ||
                                   text != confirmPasswordController.text) {
@@ -182,23 +182,13 @@ class _RegisterPageState extends State<RegisterPage> {
                               return null;
                             },
                             hintText: "senha123",
-                            suffixIcon: IconButton(
-                              icon: isPasswordVisible
-                                  ? Icon(Icons.visibility_off)
-                                  : Icon(Icons.visibility),
-                              onPressed: () => setState(
-                                () {
-                                  isPasswordVisible = !isPasswordVisible;
-                                },
-                              ),
-                            ),
                           ),
                           TextForm(
                             labelText: "Confirme sua senha",
                             controller: confirmPasswordController,
                             icon: Icon(Icons.lock_rounded),
                             obscureText: isPasswordVisible,
-                            keyboardType: TextInputType.text,
+                            keyboardType: TextInputType.visiblePassword,
                             validator: (text) {
                               if (text!.isEmpty ||
                                   text != confirmPasswordController.text) {
@@ -207,16 +197,6 @@ class _RegisterPageState extends State<RegisterPage> {
                               return null;
                             },
                             hintText: "senha123",
-                            suffixIcon: IconButton(
-                              icon: isPasswordVisible
-                                  ? Icon(Icons.visibility_off)
-                                  : Icon(Icons.visibility),
-                              onPressed: () => setState(
-                                () {
-                                  isPasswordVisible = !isPasswordVisible;
-                                },
-                              ),
-                            ),
                           ),
                           Button(
                             onTap: saveData,
