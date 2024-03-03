@@ -7,8 +7,10 @@ const sweetBrownLight = Color.fromARGB(255, 255, 217, 200);
 
 final border = OutlineInputBorder(
   borderRadius: BorderRadius.circular(30),
-  borderSide:
-      const BorderSide(style: BorderStyle.solid, color: sweetBrownLight),
+  borderSide: const BorderSide(
+    style: BorderStyle.solid,
+    color: sweetBrownLight,
+  ),
 );
 
 const textFieldStyle = TextStyle(

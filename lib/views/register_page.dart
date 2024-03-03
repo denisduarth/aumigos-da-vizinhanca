@@ -1,9 +1,9 @@
 // ignore_for_file: prefer_const_constructors, unused_element, file_names, unused_field, constant_pattern_never_matches_value_type, use_build_context_synchronously, avoid_unnecessary_containers
 
+import 'package:aumigos_da_vizinhanca/extensions/build_context_extension.dart';
 import 'package:aumigos_da_vizinhanca/widgets/all.dart';
 import 'package:flutter/material.dart';
 import '../enums/text_align_enums.dart';
-import '../main.dart';
 import '../views/all.dart';
 
 class RegisterPage extends StatefulWidget {
@@ -36,43 +36,41 @@ class _RegisterPageState extends State<RegisterPage> {
     nameController.dispose();
   }
 
-  void saveData() {
-    try {
-      assert(emailController.text.isNotEmpty, "Digite um e-mail");
-      assert(emailController.text.contains("@"), "E-mail inválido");
-      assert(nameController.text.isNotEmpty, "Digite um nome");
-      assert(passwordController.text.isNotEmpty, "Digite uma senha");
-      assert(confirmPasswordController.text.isNotEmpty, "Confirme sua senha");
-      assert(
-          confirmPasswordController.text.length >= 6 &&
-              passwordController.text.length >= 6,
-          "Senhas tem que ter mais de 6 caracteres");
-      assert(passwordController.text == confirmPasswordController.text,
-          "Senhas não coincidem");
+  @override
+  Widget build(BuildContext context) {
+    void saveData() {
+      try {
+        assert(emailController.text.isNotEmpty, "Digite um e-mail");
+        assert(emailController.text.contains("@"), "E-mail inválido");
+        assert(nameController.text.isNotEmpty, "Digite um nome");
+        assert(passwordController.text.isNotEmpty, "Digite uma senha");
+        assert(confirmPasswordController.text.isNotEmpty, "Confirme sua senha");
+        assert(
+            confirmPasswordController.text.length >= 6 &&
+                passwordController.text.length >= 6,
+            "Senhas tem que ter mais de 6 caracteres");
+        assert(passwordController.text == confirmPasswordController.text,
+            "Senhas não coincidem");
 
-      Navigator.pushNamed(
-        context,
-        '/more-info',
-        arguments: {
+        Map<String, dynamic> arguments = {
           'name': nameController.text,
           'email': emailController.text,
           'password': passwordController.text,
-        },
-      );
-    } on AssertionError catch (error) {
-      SnackBarHelper.showSnackBar(
-        context,
-        error.message.toString(),
-        Colors.red,
-        Icons.error_rounded,
-        false,
-      );
-    }
-  }
+        };
 
-  @override
-  Widget build(BuildContext context) {
-    final hasConnection = ConnectionNotifier.of(context).value;
+        context.pushNamedWithArguments('/more-info', arguments);
+      } on AssertionError catch (error) {
+        SnackBarHelper.showSnackBar(
+          context,
+          error.message.toString(),
+          Colors.red,
+          Icons.error_rounded,
+          false,
+        );
+      }
+    }
+
+    final hasConnection = context.hasConnection;
 
     if (!hasConnection) return const NetworkErrorPage();
 

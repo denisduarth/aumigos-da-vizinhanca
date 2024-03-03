@@ -1,3 +1,4 @@
+import 'package:aumigos_da_vizinhanca/extensions/build_context_extension.dart';
 import 'package:aumigos_da_vizinhanca/widgets/all.dart';
 import 'package:aumigos_da_vizinhanca/widgets/colors.dart';
 import 'package:flutter/material.dart';
@@ -27,7 +28,7 @@ class _NetworkErrorPageState extends State<NetworkErrorPage> {
           child: Center(
             child: Container(
               alignment: AlignmentDirectional.center,
-              width: MediaQuery.of(context).size.width,
+              width: context.screenWidth,
               height: 350,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,

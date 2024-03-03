@@ -1,10 +1,10 @@
 // ignore_for_file: prefer_const_constructors, file_names, unused_element, use_build_context_synchronously, avoid_print, dead_code
 
-import 'package:aumigos_da_vizinhanca/enums/text_align_enums.dart';
-import 'package:aumigos_da_vizinhanca/main.dart';
 import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import '../enums/text_align_enums.dart';
+import '../extensions/build_context_extension.dart';
 import '../views/all.dart';
 import '../widgets/all.dart';
 
@@ -74,7 +74,7 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    final hasConnection = ConnectionNotifier.of(context).value;
+    final hasConnection = context.hasConnection;
 
     if (!hasConnection) return const NetworkErrorPage();
 
@@ -83,7 +83,7 @@ class _LoginPageState extends State<LoginPage> {
       body: SafeArea(
         child: SingleChildScrollView(
           child: SizedBox(
-            height: MediaQuery.of(context).size.height - 60,
+            height: context.screenHeight - 60,
             child: Container(
               margin: EdgeInsets.symmetric(vertical: 30),
               child: Form(

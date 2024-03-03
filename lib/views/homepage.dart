@@ -1,11 +1,11 @@
-import '../main.dart';
+import 'package:aumigos_da_vizinhanca/extensions/build_context_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../widgets/text_form.dart';
-import 'all.dart';
+import '../views/all.dart';
 
 class Homepage extends StatefulWidget {
   const Homepage({super.key});
@@ -27,7 +27,7 @@ class _HomepageState extends State<Homepage> {
 
   @override
   Widget build(BuildContext context) {
-    final hasConnection = ConnectionNotifier.of(context).value;
+    final hasConnection = context.hasConnection;
 
     if (!hasConnection) return const NetworkErrorPage();
 
@@ -38,8 +38,8 @@ class _HomepageState extends State<Homepage> {
             alignment: AlignmentDirectional.topCenter,
             children: [
               SizedBox(
-                height: MediaQuery.of(context).size.height,
-                width: MediaQuery.of(context).size.width,
+                height: context.screenHeight,
+                width: context.screenWidth,
                 child: FlutterMap(
                   options: const MapOptions(
                     initialCenter: LatLng(-20.8202, -49.37970),

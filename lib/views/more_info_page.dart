@@ -1,11 +1,11 @@
 // ignore_for_file: file_names, use_build_context_synchronously
 
 import 'dart:io';
+import 'package:aumigos_da_vizinhanca/extensions/build_context_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../enums/text_align_enums.dart';
-import '../main.dart';
 import '../views/all.dart';
 import '../widgets/all.dart';
 
@@ -60,10 +60,10 @@ class _MoreInfoPageState extends State<MoreInfoPage> {
 
   @override
   Widget build(BuildContext context) {
-    final hasConnection = ConnectionNotifier.of(context).value;
+    final hasConnection = context.hasConnection;
 
     // Variável para pegar os dados enviados da tela anterior para finalização do cadastro
-    final args = ModalRoute.of(context)!.settings.arguments as Map;
+    final args = context.getPreviousRouteArguments as Map<String, dynamic>;
 
     // Variáveis de controle da tela anterior para fechar os dados para o cadastro do usuário
     final userName = args['name'];

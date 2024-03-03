@@ -1,10 +1,10 @@
 // ignore_for_file: prefer_const_constructors, file_names, use_build_context_synchronously
 
+import 'package:aumigos_da_vizinhanca/extensions/build_context_extension.dart';
 import 'package:aumigos_da_vizinhanca/widgets/all.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../enums/text_align_enums.dart';
-import '../main.dart';
 import '../views/all.dart';
 
 class UpdateProfilePage extends StatefulWidget {
@@ -38,7 +38,7 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
     super.dispose();
   }
 
-  Future<void> updateUserInfo() async {
+  Future updateUserInfo() async {
     try {
       await db.auth.updateUser(
         UserAttributes(
@@ -77,7 +77,7 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
 
   @override
   Widget build(BuildContext context) {
-    final hasConnection = ConnectionNotifier.of(context).value;
+    final hasConnection = context.hasConnection;
 
     if (!hasConnection) return const NetworkErrorPage();
 
@@ -85,7 +85,7 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
       body: SafeArea(
         child: SingleChildScrollView(
           child: SizedBox(
-            height: MediaQuery.of(context).size.height + 150,
+            height: context.screenHeight + 150,
             child: Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,

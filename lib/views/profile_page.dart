@@ -1,6 +1,6 @@
 // ignore_for_file: prefer_const_literals_to_create_immutables, prefer_const_constructors, file_names, use_build_context_synchronously
 
-import 'package:aumigos_da_vizinhanca/main.dart';
+import 'package:aumigos_da_vizinhanca/extensions/build_context_extension.dart';
 import 'package:aumigos_da_vizinhanca/views/all.dart';
 import '../widgets/all.dart';
 import 'package:flutter/material.dart';
@@ -19,7 +19,7 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   Widget build(BuildContext context) {
     final User? user = db.auth.currentUser;
-    final hasConnection = ConnectionNotifier.of(context).value;
+    final hasConnection = context.hasConnection;
 
     if (!hasConnection) return const NetworkErrorPage();
 

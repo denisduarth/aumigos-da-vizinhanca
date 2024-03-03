@@ -1,4 +1,4 @@
-import 'package:aumigos_da_vizinhanca/main.dart';
+import 'package:aumigos_da_vizinhanca/extensions/build_context_extension.dart';
 import 'package:aumigos_da_vizinhanca/views/all.dart';
 import 'package:aumigos_da_vizinhanca/widgets/all.dart';
 import 'package:flutter/material.dart';
@@ -23,7 +23,7 @@ class _NavigationPageState extends State<NavigationPage> {
   @override
   Widget build(BuildContext context) {
     final user = db.auth.currentUser;
-    final hasConnection = ConnectionNotifier.of(context).value;
+    final hasConnection = context.hasConnection;
 
     return Scaffold(
         appBar: AppBar(
