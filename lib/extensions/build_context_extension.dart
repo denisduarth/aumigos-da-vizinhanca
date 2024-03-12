@@ -1,4 +1,5 @@
 import 'package:aumigos_da_vizinhanca/main.dart';
+import 'package:aumigos_da_vizinhanca/widgets/all.dart';
 import 'package:flutter/material.dart';
 
 extension BuildContextExtension on BuildContext {
@@ -20,5 +21,13 @@ extension BuildContextExtension on BuildContext {
 
   dynamic pushNamedWithArguments(String routeName, Object? arguments) {
     return Navigator.of(this).pushNamed(routeName, arguments: arguments);
+  }
+
+  void showSucessSnackbar(String? message) {
+    SnackBarHelper().showSucessSnackbar(message, this);
+  }
+
+  void showErrorSnackbar(String? message) {
+    SnackBarHelper().showErrorSnackbar(message, this);
   }
 }

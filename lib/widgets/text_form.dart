@@ -3,53 +3,26 @@
 import 'package:aumigos_da_vizinhanca/widgets/all.dart';
 import 'package:flutter/material.dart';
 
-const sweetBrownLight = Color.fromARGB(255, 255, 217, 200);
-
-final border = OutlineInputBorder(
-  borderRadius: BorderRadius.circular(30),
-  borderSide: const BorderSide(
-    style: BorderStyle.solid,
-    color: sweetBrownLight,
-  ),
-);
-
 const textFieldStyle = TextStyle(
   fontFamily: 'Poppins',
   fontWeight: FontWeight.w600,
-  fontSize: 11,
+  fontSize: 11.25,
 );
 
 const labelStyle = TextStyle(
-  color: sweetBrownLight,
+  color: ComponentColors.mainGray,
   fontFamily: "Poppins",
-  fontSize: 11,
-  fontWeight: FontWeight.w600,
+  fontSize: 11.25,
+  fontWeight: FontWeight.w500,
 );
 
-const hintStyle = TextStyle(
-  color: sweetBrownLight,
-  fontFamily: "Poppins",
-  fontSize: 11,
-  fontWeight: FontWeight.w600,
-);
-
-final focusedBorder = OutlineInputBorder(
-  borderRadius: BorderRadius.circular(30),
+final mainBorder = OutlineInputBorder(
+  borderRadius: BorderRadius.circular(10),
   borderSide: const BorderSide(
-    width: 3,
-    strokeAlign: 0.0,
     style: BorderStyle.solid,
-    color: ComponentColors.sweetBrown,
-  ),
-);
-
-final enabledBorder = OutlineInputBorder(
-  borderRadius: BorderRadius.circular(30),
-  borderSide: const BorderSide(
-    width: 1,
-    strokeAlign: 0.0,
-    style: BorderStyle.solid,
-    color: ComponentColors.sweetBrown,
+    color: ComponentColors.superLightGray,
+    strokeAlign: 0,
+    width: 1.5,
   ),
 );
 
@@ -62,16 +35,17 @@ class TextForm extends StatefulWidget {
   bool obscureText;
   TextInputType keyboardType;
   String? Function(String?)? validator;
+  String? topText;
 
   TextForm({
     super.key,
     required this.labelText,
-    required this.hintText,
     required this.controller,
     required this.icon,
     required this.obscureText,
     required this.keyboardType,
     required this.validator,
+    required this.topText,
     this.suffixIcon,
   });
 
@@ -83,54 +57,63 @@ class _TextFormState extends State<TextForm> {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: MediaQuery.of(context).size.width - 50,
-      child: TextFormField(
-        keyboardType: widget.keyboardType,
-        decoration: InputDecoration(
-          alignLabelWithHint: true,
-          hintText: widget.hintText,
-          hintStyle: hintStyle,
-          labelText: widget.labelText,
-          labelStyle: labelStyle,
-          prefixIcon: widget.icon,
-          prefixIconColor: ComponentColors.sweetBrown,
-          prefixIconConstraints: const BoxConstraints(minWidth: 60),
-          suffixIcon: widget.keyboardType == TextInputType.visiblePassword
-              ? IconButton(
-                  onPressed: () {
-                    setState(() {
-                      widget.obscureText = !widget.obscureText;
-                    });
-                  },
-                  icon: Icon(
-                    widget.obscureText
-                        ? Icons.visibility
-                        : Icons.visibility_off,
-                    color: ComponentColors.sweetBrown,
+        width: MediaQuery.of(context).size.width - 50,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 15.0),
+                child: Text(
+                  widget.topText!,
+                  style: const TextStyle(
+                      fontFamily: "Poppins",
+                      fontSize: 11,
+                      fontWeight: FontWeight.w700,
+                      color: Colors.black45),
+                )),
+            const SizedBox(
+              height: 10,
+            ),
+            TextFormField(
+              keyboardType: widget.keyboardType,
+              decoration: InputDecoration(
+                  labelText: widget.labelText,
+                  labelStyle: labelStyle,
+                  prefixIcon: widget.icon,
+                  prefixIconColor: ComponentColors.mainGray,
+                  prefixIconConstraints: const BoxConstraints(minWidth: 60),
+                  suffixIcon:
+                      widget.keyboardType == TextInputType.visiblePassword
+                          ? IconButton(
+                              onPressed: () {
+                                setState(() {
+                                  widget.obscureText = !widget.obscureText;
+                                });
+                              },
+                              icon: Icon(
+                                widget.obscureText
+                                    ? Icons.visibility
+                                    : Icons.visibility_off,
+                                color: ComponentColors.mainGray,
+                              ),
+                            )
+                          : null,
+                  suffixIconConstraints: const BoxConstraints(minWidth: 70),
+                  focusColor: ComponentColors.lightGray,
+                  border: mainBorder,
+                  enabledBorder: mainBorder,
+                  fillColor: Colors.white,
+                  filled: true,
+                  contentPadding: const EdgeInsets.symmetric(
+                    vertical: 20,
                   ),
-                )
-              : null,
-          suffixIconConstraints: const BoxConstraints(minWidth: 60),
-          border: focusedBorder,
-          enabledBorder: enabledBorder,
-          focusColor: ComponentColors.sweetBrown,
-          focusedBorder: focusedBorder,
-          fillColor: Colors.white,
-          filled: true,
-          contentPadding: const EdgeInsets.symmetric(
-            vertical: 20,
-          ),
-          floatingLabelStyle: const TextStyle(
-            color: ComponentColors.sweetBrown,
-            fontWeight: FontWeight.w600,
-            fontSize: 13,
-          ),
-        ),
-        controller: widget.controller,
-        obscureText: widget.obscureText,
-        style: textFieldStyle,
-        validator: widget.validator,
-      ),
-    );
+                  floatingLabelBehavior: FloatingLabelBehavior.never),
+              controller: widget.controller,
+              obscureText: widget.obscureText,
+              style: textFieldStyle,
+              validator: widget.validator,
+            ),
+          ],
+        ));
   }
 }

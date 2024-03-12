@@ -2,6 +2,7 @@
 
 import 'dart:io';
 import 'package:aumigos_da_vizinhanca/extensions/build_context_extension.dart';
+import 'package:aumigos_da_vizinhanca/mixins/validator_mixin.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -16,7 +17,7 @@ class MoreInfoPage extends StatefulWidget {
   State<MoreInfoPage> createState() => _MoreInfoPageState();
 }
 
-class _MoreInfoPageState extends State<MoreInfoPage> {
+class _MoreInfoPageState extends State<MoreInfoPage> with ValidatorMixin{
   final formKey = GlobalKey<FormState>();
   XFile? image;
   final db = Supabase.instance.client;
@@ -63,24 +64,14 @@ class _MoreInfoPageState extends State<MoreInfoPage> {
     final hasConnection = context.hasConnection;
 
     // Variável para pegar os dados enviados da tela anterior para finalização do cadastro
-    final args = context.getPreviousRouteArguments as Map<String, dynamic>;
+    final args = context.getPreviousRouteArguments as Map;
 
     // Variáveis de controle da tela anterior para fechar os dados para o cadastro do usuário
     final userName = args['name'];
     final userEmail = args['email'];
     final userPassword = args['password'];
 
-    void snackBar(String message, Color color) {
-      SnackBarHelper.showSnackBar(
-        context,
-        message,
-        color,
-        Icons.error_outline_rounded,
-        false,
-      );
-    }
-
-    Future register() async {
+    Future<void> register() async {
       try {
         assert(streetController.text.isNotEmpty, "Digite uma rua");
         assert(districtController.text.isNotEmpty, "Digite um bairro");
@@ -88,7 +79,12 @@ class _MoreInfoPageState extends State<MoreInfoPage> {
         assert(stateController.text.isNotEmpty, "Digite um estado");
         assert(countryController.text.isNotEmpty, "Digite um país");
 
-        await db.storage.from('images').upload(image!.name, File(image!.path));
+        await db.storage.from('images').upload(
+              image!.name,
+              File(image!.path),
+              fileOptions: const FileOptions(upsert: true),
+              retryAttempts: 3,
+            );
 
         await db.auth.signUp(
           email: userEmail,
@@ -105,19 +101,23 @@ class _MoreInfoPageState extends State<MoreInfoPage> {
         );
 
         if (mounted) {
-          setState(() {
-            isRegistered = true;
-          });
-
-          snackBar("Cadastro feito com sucesso", Colors.green);
+          context.showSucessSnackbar("Cadastro feito com sucesso");
 
           Future.delayed(const Duration(seconds: 3));
           Navigator.pushNamed(context, '/login');
         }
       } on AssertionError catch (error) {
-        snackBar(error.message.toString(), Colors.red);
+        context.showErrorSnackbar(error.message.toString());
       } on AuthException catch (error) {
-        snackBar(error.message.toString(), Colors.red);
+        context.showErrorSnackbar(error.message.toString());
+      } on StorageException catch (error) {
+        context.showErrorSnackbar(error.message.toString());
+      } finally {
+        if (mounted) {
+          setState(() {
+            isRegistered = true;
+          });
+        }
       }
     }
 
@@ -217,31 +217,22 @@ class _MoreInfoPageState extends State<MoreInfoPage> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         TextForm(
-                            labelText: "Nome da sua rua",
-                            controller: streetController,
-                            icon: const Icon(Icons.location_pin),
-                            obscureText: false,
-                            keyboardType: TextInputType.text,
-                            validator: (text) {
-                              if (text!.isEmpty) {
-                                return "Rua desconhecida";
-                              }
-                              return null;
-                            },
-                            hintText: "Ex: Rua blá blá blá"),
+                          labelText: "Nome da sua rua",
+                          controller: streetController,
+                          icon: const Icon(Icons.location_pin),
+                          obscureText: false,
+                          keyboardType: TextInputType.text,
+                          validator: isEmpty,
+                          topText: "Rua",
+                        ),
                         TextForm(
                           labelText: "Nome do seu bairro",
                           controller: districtController,
                           icon: const Icon(Icons.location_pin),
                           obscureText: false,
                           keyboardType: TextInputType.text,
-                          validator: (text) {
-                            if (text!.isEmpty) {
-                              return "Digite um nome";
-                            }
-                            return null;
-                          },
-                          hintText: "Ex: Patati Patatá",
+                          validator: isEmpty,
+                          topText: "Bairro",
                         ),
                         TextForm(
                           labelText: "Nome da sua cidade",
@@ -249,40 +240,27 @@ class _MoreInfoPageState extends State<MoreInfoPage> {
                           icon: const Icon(Icons.location_pin),
                           obscureText: false,
                           keyboardType: TextInputType.text,
-                          validator: (text) {
-                            if (text!.isEmpty) {
-                              return "Cidade inválida";
-                            }
-                            return null;
-                          },
-                          hintText: "Ex: São José dos Campos",
+                          validator: isEmpty,
+                          topText: "Cidade",
                         ),
                         TextForm(
-                            labelText: "Nome do seu estado",
-                            controller: stateController,
-                            icon: const Icon(Icons.location_pin),
-                            obscureText: false,
-                            keyboardType: TextInputType.text,
-                            validator: (text) {
-                              if (text!.isEmpty) {
-                                return "Estado inválido";
-                              }
-                              return null;
-                            },
-                            hintText: "Ex: Paraná"),
+                          labelText: "Nome do seu estado",
+                          controller: stateController,
+                          icon: const Icon(Icons.location_pin),
+                          obscureText: false,
+                          keyboardType: TextInputType.text,
+                          validator: isEmpty,
+                          topText: "Estado",
+                        ),
                         TextForm(
-                            labelText: "Nome do seu país",
-                            controller: countryController,
-                            icon: const Icon(Icons.location_pin),
-                            obscureText: false,
-                            keyboardType: TextInputType.text,
-                            validator: (text) {
-                              if (text!.isEmpty) {
-                                return "País inválido";
-                              }
-                              return null;
-                            },
-                            hintText: "Ex: Brasil"),
+                          labelText: "Nome do seu país",
+                          controller: countryController,
+                          icon: const Icon(Icons.location_pin),
+                          obscureText: false,
+                          keyboardType: TextInputType.text,
+                          validator: isEmpty,
+                          topText: "País",
+                        ),
                         Button(
                           onTap: register,
                           buttonWidget: isRegistered

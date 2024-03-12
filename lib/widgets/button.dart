@@ -37,7 +37,7 @@ class Button extends StatelessWidget {
           style: TextButton.styleFrom(
             fixedSize: Size(MediaQuery.of(context).size.width - 60, 60),
             backgroundColor: ComponentColors.mainYellow,
-            padding: const EdgeInsets.all(15),
+            padding: const EdgeInsets.all(10),
             textStyle: const TextStyle(
               fontFamily: "Poppins",
               fontSize: 13,

@@ -1,5 +1,6 @@
 // ignore_for_file: prefer_const_constructors, file_names, unused_element, use_build_context_synchronously, avoid_print, dead_code
 
+import 'package:aumigos_da_vizinhanca/mixins/validator_mixin.dart';
 import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -15,13 +16,14 @@ class LoginPage extends StatefulWidget {
   State<LoginPage> createState() => _LoginPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _LoginPageState extends State<LoginPage> with ValidatorMixin {
   final db = Supabase.instance.client;
   final _formKey = GlobalKey<FormState>();
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
   bool isPasswordVisible = true;
   bool isLoggedIn = false;
+  final snackBarHelper = SnackBarHelper();
 
   @override
   void dispose() {
@@ -30,17 +32,7 @@ class _LoginPageState extends State<LoginPage> {
     super.dispose();
   }
 
-  void snackBar(String message, Color color) {
-    SnackBarHelper.showSnackBar(
-      context,
-      message,
-      color,
-      Icons.error_outline_rounded,
-      false,
-    );
-  }
-
-  Future login() async {
+  Future<void> login() async {
     try {
       assert(emailController.text.isNotEmpty, "Digite um e-mail");
       assert(emailController.text.contains("@"), "E-mail inválido");
@@ -53,22 +45,32 @@ class _LoginPageState extends State<LoginPage> {
         password: passwordController.text,
       );
 
-      if (mounted && response.session != null) {
-        setState(() {
-          isLoggedIn = true;
-        });
+      final session = response.session;
 
-        final user = response.user;
-
-        snackBar("Logado como ${user!.email}", Colors.green);
+      if (mounted && session != null) {
         await Future.delayed(Duration(seconds: 2));
 
         Navigator.pushNamed(context, '/navigation');
       }
     } on AssertionError catch (error) {
-      snackBar(error.message.toString(), Colors.red);
+      context.showErrorSnackbar(error.message.toString());
     } on AuthException catch (error) {
-      snackBar(error.message.toString(), Colors.red);
+      context.showErrorSnackbar(error.message.toString());
+    } catch (error) {
+      context.showErrorSnackbar('Erro inesperado aconteceu');
+    } finally {
+      if (mounted) {
+        final user = db.auth.currentUser;
+
+        setState(() {
+          isLoggedIn = true;
+        });
+
+        SnackBarHelper().showSucessSnackbar(
+          "Logado como ${user!.email}",
+          context,
+        );
+      }
     }
   }
 
@@ -83,7 +85,7 @@ class _LoginPageState extends State<LoginPage> {
       body: SafeArea(
         child: SingleChildScrollView(
           child: SizedBox(
-            height: context.screenHeight - 60,
+            height: context.screenHeight - 50,
             child: Container(
               margin: EdgeInsets.symmetric(vertical: 30),
               child: Form(
@@ -92,54 +94,52 @@ class _LoginPageState extends State<LoginPage> {
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    SizedBox(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 50.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
                         children: [
+                          Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 10.0),
+                              child: GradientText(
+                                  text: "Login",
+                                  textSize: 33,
+                                  textAlign: TextAlignEnum.start)),
                           Image.asset(
                             'images/aumigos_da_vizinhanca_logo_sweet_brown.png',
-                            height: 80,
-                            width: 80,
-                          ),
-                          GradientText(
-                            text: "Login",
-                            textSize: 50,
-                            textAlign: TextAlignEnum.center,
+                            height: 60,
+                            width: 60,
                           ),
                         ],
                       ),
                     ),
                     SizedBox(
-                      height: 230,
+                      height: 300,
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           TextForm(
-                              labelText: "Digite seu e-mail",
-                              controller: emailController,
-                              icon: Icon(Icons.email_rounded),
-                              obscureText: false,
-                              keyboardType: TextInputType.text,
-                              validator: (text) {
-                                if (text!.isEmpty || !text.contains("@")) {
-                                  return "E-mail inválido";
-                                }
-                                return null;
-                              },
-                              hintText: "patatipatata123@gmail.com"),
+                            labelText: "Digite seu e-mail",
+                            controller: emailController,
+                            icon: Icon(Icons.email_rounded),
+                            obscureText: false,
+                            keyboardType: TextInputType.text,
+                            validator: (value) => combine([
+                              () => isEmpty(value),
+                              () => emailValidator(value),
+                            ]),
+                            
+                            topText: "Login",
+                          ),
                           TextForm(
                             labelText: "Digite sua senha",
                             controller: passwordController,
                             icon: Icon(Icons.lock_rounded),
                             obscureText: isPasswordVisible,
                             keyboardType: TextInputType.visiblePassword,
-                            validator: (text) {
-                              if (text!.isEmpty) {
-                                return "Senha inválida";
-                              }
-                              return null;
-                            },
-                            hintText: "senha123",
+                            validator: isEmpty,
+                            topText: "Senha",
                           ),
                           Button(
                             onTap: login,

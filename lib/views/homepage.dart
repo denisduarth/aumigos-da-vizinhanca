@@ -1,10 +1,10 @@
 import 'package:aumigos_da_vizinhanca/extensions/build_context_extension.dart';
+import 'package:aumigos_da_vizinhanca/widgets/all.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
-import '../widgets/text_form.dart';
 import '../views/all.dart';
 
 class Homepage extends StatefulWidget {
@@ -32,6 +32,37 @@ class _HomepageState extends State<Homepage> {
     if (!hasConnection) return const NetworkErrorPage();
 
     return Scaffold(
+      floatingActionButton: PopupMenuButton<void>(
+        surfaceTintColor: ComponentColors.sweetBrown,
+        icon: const Icon(Icons.menu_rounded),
+        iconColor: Colors.white,
+        itemBuilder: (context) => [
+          PopupMenuItem<void>(
+            padding: const EdgeInsets.all(8),
+            onTap: () => Navigator.of(context).pushNamed('/add-animal'),
+            child: const Row(
+              children: [
+                Icon(Icons.add_rounded),
+                Text(
+                  "Adicionar animais",
+                ),
+              ],
+            ),
+          ),
+          PopupMenuItem<void>(
+            padding: const EdgeInsets.all(8),
+            onTap: () => Navigator.of(context).pushNamed('/search-animal'),
+            child: const Row(
+              children: [
+                Icon(Icons.search_rounded),
+                Text(
+                  "Pesquisar animais",
+                ),
+              ],
+            ),
+          )
+        ],
+      ),
       body: SafeArea(
         child: SingleChildScrollView(
           child: Stack(
@@ -57,7 +88,6 @@ class _HomepageState extends State<Homepage> {
                           vertical: 20.0, horizontal: 10),
                       child: TextForm(
                         labelText: "Procurar",
-                        hintText: "endereço a procurar",
                         controller: searchControlller,
                         icon: const Icon(Icons.search_rounded),
                         obscureText: false,
@@ -66,6 +96,7 @@ class _HomepageState extends State<Homepage> {
                           if (value!.isEmpty) return "Pesquisa inválida";
                           return null;
                         },
+                        topText: "Endereço",
                       ),
                     ),
                     RichAttributionWidget(

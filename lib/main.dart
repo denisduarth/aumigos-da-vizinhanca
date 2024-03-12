@@ -25,7 +25,7 @@ final internetConnectionChecker = InternetConnectionChecker.createInstance(
   checkTimeout: const Duration(seconds: 1),
 );
 
-void main() async {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Supabase.initialize(
     url: 'https://igjmggiujesxhnccuqgo.supabase.co',
@@ -78,7 +78,8 @@ class _AumigosDaVizinhancaState extends State<AumigosDaVizinhanca> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      routes: <String, WidgetBuilder>{
+      title: "Aumigos da Vizinhança",
+      routes: {
         '/home': (context) => const Homepage(),
         '/login': (context) => const LoginPage(),
         '/register': (context) => const RegisterPage(),

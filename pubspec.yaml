@@ -24,6 +24,7 @@ dependencies:
   internet_connection_checker: ^1.0.0+1
   flutter_launcher_icons: ^0.13.1
   flutter_native_splash: ^2.3.10
+  uuid: ^4.3.3
 
 flutter_native_splash:
   color: "#FFC828"

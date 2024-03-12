@@ -89,12 +89,7 @@ class _ProfilePageState extends State<ProfilePage> {
                           icon: Icon(Icons.logout_rounded),
                           onPressed: () async {
                             await db.auth.signOut();
-                            SnackBarHelper.showSnackBar(
-                                context,
-                                "Saindo de ${user.email}...",
-                                Colors.red,
-                                Icons.logout_outlined,
-                                false);
+                            context.showErrorSnackbar("Saindo de ${user.email}");
 
                             await Future.delayed(Duration(seconds: 2));
                             Navigator.pushNamed(context, '/login');

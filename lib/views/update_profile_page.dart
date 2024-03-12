@@ -1,6 +1,7 @@
 // ignore_for_file: prefer_const_constructors, file_names, use_build_context_synchronously
 
 import 'package:aumigos_da_vizinhanca/extensions/build_context_extension.dart';
+import 'package:aumigos_da_vizinhanca/mixins/validator_mixin.dart';
 import 'package:aumigos_da_vizinhanca/widgets/all.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -14,7 +15,8 @@ class UpdateProfilePage extends StatefulWidget {
   State<UpdateProfilePage> createState() => _UpdateProfilePageState();
 }
 
-class _UpdateProfilePageState extends State<UpdateProfilePage> {
+class _UpdateProfilePageState extends State<UpdateProfilePage>
+    with ValidatorMixin {
   late final SupabaseClient db;
   late final User? user;
   final emailController = TextEditingController();
@@ -54,24 +56,12 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
         setState(() {
           isInfoUpdated = true;
         });
-        SnackBarHelper.showSnackBar(
-          context,
-          "Dados atualizados com sucesso",
-          Colors.green,
-          Icons.verified_user_rounded,
-          false,
-        );
+        context.showSucessSnackbar('Dados atualizados com sucesso');
         await Future.delayed(Duration(seconds: 2));
         Navigator.pushNamed(context, '/profile');
       }
     } on AuthException catch (error) {
-      SnackBarHelper.showSnackBar(
-        context,
-        error.message.toString(),
-        Colors.red,
-        Icons.error_rounded,
-        false,
-      );
+      context.showErrorSnackbar(error.message.toString());
     }
   }
 
@@ -151,45 +141,32 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
                       children: [
                         TextForm(
                           labelText: "Seu novo e-mail",
-                          hintText: "novo_email@gmail.com",
                           controller: emailController,
                           icon: Icon(Icons.email_rounded),
                           obscureText: false,
                           keyboardType: TextInputType.emailAddress,
-                          validator: (value) {
-                            if (value!.isEmpty || !value.contains("@")) {
-                              return "E-mail inválido";
-                            }
-                            return null;
-                          },
+                          validator: (value) => combine([
+                            () => isEmpty(value),
+                            () => emailValidator(value),
+                          ]),
+                          topText: "Novo e-mail",
                         ),
                         TextForm(
                           labelText: "Seu novo nome",
-                          hintText: "Novo nome",
                           controller: nameController,
                           icon: Icon(Icons.data_object_rounded),
                           obscureText: false,
                           keyboardType: TextInputType.text,
-                          validator: (value) {
-                            if (value!.isEmpty) {
-                              return "Nome inválido";
-                            }
-                            return null;
-                          },
+                          validator: isEmpty,
+                          topText: "Novo nome",
                         ),
                         TextForm(
                           labelText: "Seu nova senha",
-                          hintText: "novasenha123",
                           controller: passwordController,
                           icon: Icon(Icons.lock_rounded),
                           obscureText: isPasswordVisible,
                           keyboardType: TextInputType.text,
-                          validator: (value) {
-                            if (value!.isEmpty) {
-                              return "E-mail inválido";
-                            }
-                            return null;
-                          },
+                          validator: isEmpty,
                           suffixIcon: IconButton(
                             icon: isPasswordVisible
                                 ? Icon(Icons.visibility_off)
@@ -200,20 +177,15 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
                               },
                             ),
                           ),
+                          topText: "Nova senha",
                         ),
                         TextForm(
                           labelText: "Repita a nova senha",
-                          hintText: "novasenha123",
                           controller: confirmPasswordController,
                           icon: Icon(Icons.lock_rounded),
                           obscureText: isPasswordVisible,
                           keyboardType: TextInputType.text,
-                          validator: (value) {
-                            if (value!.isEmpty) {
-                              return "E-mail inválido";
-                            }
-                            return null;
-                          },
+                          validator: isEmpty,
                           suffixIcon: IconButton(
                             icon: isPasswordVisible
                                 ? Icon(Icons.visibility_off)
@@ -224,6 +196,7 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
                               },
                             ),
                           ),
+                          topText: "Repitir nova senha",
                         ),
                         Button(
                           onTap: updateUserInfo,

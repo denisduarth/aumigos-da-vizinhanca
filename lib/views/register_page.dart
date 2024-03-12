@@ -1,6 +1,7 @@
 // ignore_for_file: prefer_const_constructors, unused_element, file_names, unused_field, constant_pattern_never_matches_value_type, use_build_context_synchronously, avoid_unnecessary_containers
 
 import 'package:aumigos_da_vizinhanca/extensions/build_context_extension.dart';
+import 'package:aumigos_da_vizinhanca/mixins/validator_mixin.dart';
 import 'package:aumigos_da_vizinhanca/widgets/all.dart';
 import 'package:flutter/material.dart';
 import '../enums/text_align_enums.dart';
@@ -13,7 +14,7 @@ class RegisterPage extends StatefulWidget {
   State<RegisterPage> createState() => _RegisterPageState();
 }
 
-class _RegisterPageState extends State<RegisterPage> {
+class _RegisterPageState extends State<RegisterPage> with ValidatorMixin {
   final _formKey = GlobalKey<FormState>();
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
@@ -60,13 +61,7 @@ class _RegisterPageState extends State<RegisterPage> {
 
         context.pushNamedWithArguments('/more-info', arguments);
       } on AssertionError catch (error) {
-        SnackBarHelper.showSnackBar(
-          context,
-          error.message.toString(),
-          Colors.red,
-          Icons.error_rounded,
-          false,
-        );
+        context.showErrorSnackbar(error.message.toString());
       }
     }
 
@@ -135,36 +130,30 @@ class _RegisterPageState extends State<RegisterPage> {
                     ),
                     Container(
                       padding: EdgeInsets.symmetric(vertical: 15),
-                      height: 430,
+                      height: 550,
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           TextForm(
-                              labelText: "Seu e-mail",
-                              controller: emailController,
-                              icon: Icon(Icons.email_rounded),
-                              obscureText: false,
-                              keyboardType: TextInputType.text,
-                              validator: (text) {
-                                if (text!.isEmpty || !text.contains("@")) {
-                                  return "E-mail inválido";
-                                }
-                                return null;
-                              },
-                              hintText: "patatipatata123@gmail.com"),
+                            labelText: "Seu e-mail",
+                            controller: emailController,
+                            icon: Icon(Icons.email_rounded),
+                            obscureText: false,
+                            keyboardType: TextInputType.text,
+                            validator: (value) => combine([
+                              () => isEmpty(value),
+                              () => emailValidator(value),
+                            ]),
+                            topText: "E-mail",
+                          ),
                           TextForm(
                             labelText: "Seu nome",
                             controller: nameController,
                             icon: Icon(Icons.data_object_rounded),
                             obscureText: false,
                             keyboardType: TextInputType.text,
-                            validator: (text) {
-                              if (text!.isEmpty) {
-                                return "Digite um nome";
-                              }
-                              return null;
-                            },
-                            hintText: "Patati Patatá",
+                            validator: isEmpty,
+                            topText: "Nome",
                           ),
                           TextForm(
                             labelText: "Sua senha",
@@ -172,14 +161,8 @@ class _RegisterPageState extends State<RegisterPage> {
                             icon: Icon(Icons.lock_rounded),
                             obscureText: isPasswordVisible,
                             keyboardType: TextInputType.visiblePassword,
-                            validator: (text) {
-                              if (text!.isEmpty ||
-                                  text != confirmPasswordController.text) {
-                                return "Senha inválida";
-                              }
-                              return null;
-                            },
-                            hintText: "senha123",
+                            validator: isEmpty,
+                            topText: "Senha",
                           ),
                           TextForm(
                             labelText: "Confirme sua senha",
@@ -187,14 +170,8 @@ class _RegisterPageState extends State<RegisterPage> {
                             icon: Icon(Icons.lock_rounded),
                             obscureText: isPasswordVisible,
                             keyboardType: TextInputType.visiblePassword,
-                            validator: (text) {
-                              if (text!.isEmpty ||
-                                  text != confirmPasswordController.text) {
-                                return "Senha inválida";
-                              }
-                              return null;
-                            },
-                            hintText: "senha123",
+                            validator: isEmpty,
+                            topText: "Repitir senha",
                           ),
                           Button(
                             onTap: saveData,
