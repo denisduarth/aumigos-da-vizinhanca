@@ -1,5 +1,4 @@
 import 'package:aumigos_da_vizinhanca/extensions/build_context_extension.dart';
-import 'package:aumigos_da_vizinhanca/widgets/all.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
@@ -32,37 +31,6 @@ class _HomepageState extends State<Homepage> {
     if (!hasConnection) return const NetworkErrorPage();
 
     return Scaffold(
-      floatingActionButton: PopupMenuButton<void>(
-        surfaceTintColor: ComponentColors.sweetBrown,
-        icon: const Icon(Icons.menu_rounded),
-        iconColor: Colors.white,
-        itemBuilder: (context) => [
-          PopupMenuItem<void>(
-            padding: const EdgeInsets.all(8),
-            onTap: () => Navigator.of(context).pushNamed('/add-animal'),
-            child: const Row(
-              children: [
-                Icon(Icons.add_rounded),
-                Text(
-                  "Adicionar animais",
-                ),
-              ],
-            ),
-          ),
-          PopupMenuItem<void>(
-            padding: const EdgeInsets.all(8),
-            onTap: () => Navigator.of(context).pushNamed('/search-animal'),
-            child: const Row(
-              children: [
-                Icon(Icons.search_rounded),
-                Text(
-                  "Pesquisar animais",
-                ),
-              ],
-            ),
-          )
-        ],
-      ),
       body: SafeArea(
         child: SingleChildScrollView(
           child: Stack(
@@ -81,23 +49,6 @@ class _HomepageState extends State<Homepage> {
                       urlTemplate:
                           'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
                       userAgentPackageName: 'com.example.aumigos_da_vizinhanca',
-                    ),
-                    Container(
-                      alignment: AlignmentDirectional.topCenter,
-                      margin: const EdgeInsets.symmetric(
-                          vertical: 20.0, horizontal: 10),
-                      child: TextForm(
-                        labelText: "Procurar",
-                        controller: searchControlller,
-                        icon: const Icon(Icons.search_rounded),
-                        obscureText: false,
-                        keyboardType: TextInputType.text,
-                        validator: (value) {
-                          if (value!.isEmpty) return "Pesquisa inválida";
-                          return null;
-                        },
-                        topText: "Endereço",
-                      ),
                     ),
                     RichAttributionWidget(
                       attributions: [
@@ -121,34 +72,3 @@ class _HomepageState extends State<Homepage> {
     );
   }
 }
-
-// OSMFlutter(
-//   controller: controller,
-//   osmOption: OSMOption(
-//     userTrackingOption: const UserTrackingOption(
-//       enableTracking: true,
-//       unFollowUser: false,
-//     ),
-//     zoomOption: const ZoomOption(
-//       initZoom: 8,
-//       minZoomLevel: 3,
-//       maxZoomLevel: 19,
-//       stepZoom: 1.0,
-//     ),
-//     userLocationMarker: UserLocationMaker(
-//       personMarker: const MarkerIcon(
-//         icon: Icon(
-//           Icons.location_history_rounded,
-//           color: Colors.red,
-//           size: 48,
-//         ),
-//       ),
-//       directionArrowMarker: const MarkerIcon(
-//         icon: Icon(
-//           Icons.double_arrow,
-//           size: 48,
-//         ),
-//       ),
-//     ),
-//   ),
-// ),

@@ -6,3 +6,5 @@ export 'update_profile_page.dart';
 export 'more_info_page.dart';
 export 'navigation_page.dart';
 export 'network_error_page.dart';
+export 'search_animal_page.dart';
+export 'add_animal_page.dart';

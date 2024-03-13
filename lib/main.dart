@@ -86,7 +86,9 @@ class _AumigosDaVizinhancaState extends State<AumigosDaVizinhanca> {
         '/profile': (context) => const ProfilePage(),
         '/update-profile': (context) => const UpdateProfilePage(),
         '/more-info': (context) => const MoreInfoPage(),
-        '/navigation': (context) => const NavigationPage()
+        '/navigation': (context) => const NavigationPage(),
+        '/add-animal':(context) => const AddAnimalPage(),
+        '/search-animal':(context) => const SearchAnimalPage(),
       },
       initialRoute: '/login',
       debugShowCheckedModeBanner: false,

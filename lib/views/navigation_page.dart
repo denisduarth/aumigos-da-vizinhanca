@@ -14,6 +14,7 @@ class NavigationPage extends StatefulWidget {
 class _NavigationPageState extends State<NavigationPage> {
   final List<Widget> _screens = [
     const Homepage(),
+    const SearchAnimalPage(),
     const ProfilePage(),
   ];
 
@@ -66,25 +67,31 @@ class _NavigationPageState extends State<NavigationPage> {
           backgroundColor:
               !hasConnection ? Colors.red : ComponentColors.sweetBrown,
           currentIndex: _currentIndex,
+          showSelectedLabels: false,
           showUnselectedLabels: false,
           elevation: 4.0,
           selectedItemColor: Colors.white,
           unselectedItemColor: Colors.white,
-          selectedLabelStyle: const TextStyle(
-            fontFamily: "Poppins",
-            color: Colors.white,
-            fontSize: 12,
-            fontWeight: FontWeight.w700,
-          ),
           items: [
             const BottomNavigationBarItem(
-                activeIcon: Icon(Icons.home_rounded),
-                icon: Icon(Icons.home_outlined),
-                label: 'Home'),
+              activeIcon: Icon(Icons.home_rounded, size: 40),
+              icon: Icon(Icons.home_outlined, size: 40),
+              label: 'Home',
+            ),
+            const BottomNavigationBarItem(
+              activeIcon: Icon(Icons.search_rounded, size: 40,),
+              icon: Icon(Icons.search_outlined, size: 40),
+              label: 'Pequisar',
+            ),
+            const BottomNavigationBarItem(
+              activeIcon: Icon(Icons.add_rounded, size: 40,),
+              icon: Icon(Icons.add_outlined, size: 40),
+              label: 'Adicionar Animal',
+            ),
             BottomNavigationBarItem(
               icon: SizedBox(
-                width: 30,
-                height: 30,
+                width: 40,
+                height: 40,
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(50),
                   child: user!.userMetadata?['image'] == null
