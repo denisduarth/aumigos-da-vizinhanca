@@ -20,8 +20,10 @@ class AnimalRepository implements IAnimalsRepository {
   }
 
   @override
-  Future<List<Map<String, dynamic>>> getAnimals() async {
-    var response = await db.from('animals').select();
+  Future<List<Animal>> getAnimals() async {
+    final response = (await db.from('animals').select())
+        .map((animalJson) => Animal.fromMap(animalJson))
+        .toList();
     return response;
   }
 

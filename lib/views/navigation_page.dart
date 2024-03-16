@@ -1,6 +1,6 @@
 import 'package:aumigos_da_vizinhanca/extensions/build_context_extension.dart';
-import 'package:aumigos_da_vizinhanca/views/all.dart';
-import 'package:aumigos_da_vizinhanca/widgets/all.dart';
+import '../exports/views.dart';
+import '../exports/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -15,6 +15,7 @@ class _NavigationPageState extends State<NavigationPage> {
   final List<Widget> _screens = [
     const Homepage(),
     const SearchAnimalPage(),
+    const AddAnimalPage(),
     const ProfilePage(),
   ];
 
@@ -28,6 +29,13 @@ class _NavigationPageState extends State<NavigationPage> {
 
     return Scaffold(
         appBar: AppBar(
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.vertical(
+              bottom: Radius.circular(
+                30,
+              ),
+            ),
+          ),
           shadowColor: ComponentColors.sweetBrown,
           iconTheme: const IconThemeData(color: Colors.white),
           actionsIconTheme: const IconThemeData(color: Colors.white),
@@ -57,60 +65,95 @@ class _NavigationPageState extends State<NavigationPage> {
                     )
                   ],
                 )
-              : Image.asset(
-                  'images/aumigos_da_vizinhanca_logo_white.png',
-                  width: 30,
-                  height: 30,
+              : Center(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 10.0,
+                    ),
+                    child: Row(
+                      children: [
+                        const Text(
+                          "Aumigos da Vizinhança",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontFamily: "Poppins",
+                            fontSize: 13,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                        const SizedBox(
+                          width: 15,
+                        ),
+                        Image.asset(
+                          'images/aumigos_da_vizinhanca_logo_white.png',
+                          width: 30,
+                          height: 30,
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
         ),
-        bottomNavigationBar: BottomNavigationBar(
-          backgroundColor:
-              !hasConnection ? Colors.red : ComponentColors.sweetBrown,
-          currentIndex: _currentIndex,
-          showSelectedLabels: false,
-          showUnselectedLabels: false,
-          elevation: 4.0,
-          selectedItemColor: Colors.white,
-          unselectedItemColor: Colors.white,
-          items: [
-            const BottomNavigationBarItem(
-              activeIcon: Icon(Icons.home_rounded, size: 40),
-              icon: Icon(Icons.home_outlined, size: 40),
-              label: 'Home',
-            ),
-            const BottomNavigationBarItem(
-              activeIcon: Icon(Icons.search_rounded, size: 40,),
-              icon: Icon(Icons.search_outlined, size: 40),
-              label: 'Pequisar',
-            ),
-            const BottomNavigationBarItem(
-              activeIcon: Icon(Icons.add_rounded, size: 40,),
-              icon: Icon(Icons.add_outlined, size: 40),
-              label: 'Adicionar Animal',
-            ),
-            BottomNavigationBarItem(
-              icon: SizedBox(
-                width: 40,
-                height: 40,
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(50),
-                  child: user!.userMetadata?['image'] == null
-                      ? Image.asset('images/user_image.png')
-                      : Image.network(
-                          db.storage.from('images').getPublicUrl(
-                                user.userMetadata?['image'],
-                              ),
-                          fit: BoxFit.cover,
-                        ),
+        bottomNavigationBar: Padding(
+          padding: const EdgeInsets.all(25.0),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(20),
+            child: BottomNavigationBar(
+              backgroundColor:
+                  !hasConnection ? Colors.red : ComponentColors.sweetBrown,
+              currentIndex: _currentIndex,
+              showSelectedLabels: false,
+              showUnselectedLabels: false,
+              type: BottomNavigationBarType.fixed,
+              selectedItemColor: Colors.white,
+              unselectedItemColor: Colors.white,
+              items: [
+                const BottomNavigationBarItem(
+                  activeIcon: Icon(Icons.home_rounded, size: 30),
+                  icon: Icon(Icons.home_outlined, size: 30),
+                  label: 'Home',
                 ),
+                const BottomNavigationBarItem(
+                  activeIcon: Icon(
+                    Icons.search_rounded,
+                    size: 30,
+                  ),
+                  icon: Icon(Icons.search_outlined, size: 30),
+                  label: 'Pequisar',
+                ),
+                const BottomNavigationBarItem(
+                  activeIcon: Icon(
+                    Icons.add_rounded,
+                    size: 30,
+                  ),
+                  icon: Icon(Icons.add_outlined, size: 30),
+                  label: 'Adicionar Animal',
+                ),
+                BottomNavigationBarItem(
+                  icon: SizedBox(
+                    width: 30,
+                    height: 30,
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(50),
+                      child: user!.userMetadata?['image'] == null
+                          ? Image.asset('images/user_image.png')
+                          : Image.network(
+                              db.storage.from('images').getPublicUrl(
+                                    user.userMetadata?['image'],
+                                  ),
+                              fit: BoxFit.cover,
+                            ),
+                    ),
+                  ),
+                  label: 'Perfil',
+                ),
+              ],
+              onTap: (index) => setState(
+                () {
+                  _currentIndex = index;
+                },
               ),
-              label: 'Perfil',
             ),
-          ],
-          onTap: (index) => setState(
-            () {
-              _currentIndex = index;
-            },
           ),
         ),
         body: _screens.elementAt(_currentIndex));

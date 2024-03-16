@@ -1,6 +1,7 @@
 import 'package:aumigos_da_vizinhanca/main.dart';
-import 'package:aumigos_da_vizinhanca/widgets/all.dart';
 import 'package:flutter/material.dart';
+import '../exports/widgets.dart';
+
 
 extension BuildContextExtension on BuildContext {
   double get screenWidth {

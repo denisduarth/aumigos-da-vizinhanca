@@ -1,6 +1,6 @@
 // ignore_for_file: must_be_immutable
 
-import 'package:aumigos_da_vizinhanca/widgets/all.dart';
+import '../exports/widgets.dart';
 import 'package:flutter/material.dart';
 
 const textFieldStyle = TextStyle(
@@ -22,7 +22,17 @@ final mainBorder = OutlineInputBorder(
     style: BorderStyle.solid,
     color: ComponentColors.superLightGray,
     strokeAlign: 0,
-    width: 1.5,
+    width: 1.8,
+  ),
+);
+
+final focusedBorder = OutlineInputBorder(
+  borderRadius: BorderRadius.circular(10),
+  borderSide: const BorderSide(
+    style: BorderStyle.solid,
+    color: ComponentColors.mainYellow,
+    strokeAlign: 0,
+    width: 2,
   ),
 );
 
@@ -102,6 +112,7 @@ class _TextFormState extends State<TextForm> {
                   focusColor: ComponentColors.lightGray,
                   border: mainBorder,
                   enabledBorder: mainBorder,
+                  focusedBorder: focusedBorder,
                   fillColor: Colors.white,
                   filled: true,
                   contentPadding: const EdgeInsets.symmetric(

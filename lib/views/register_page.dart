@@ -2,10 +2,10 @@
 
 import 'package:aumigos_da_vizinhanca/extensions/build_context_extension.dart';
 import 'package:aumigos_da_vizinhanca/mixins/validator_mixin.dart';
-import 'package:aumigos_da_vizinhanca/widgets/all.dart';
+import '../exports/widgets.dart';
 import 'package:flutter/material.dart';
 import '../enums/text_align_enums.dart';
-import '../views/all.dart';
+import '../exports/views.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -66,6 +66,26 @@ class _RegisterPageState extends State<RegisterPage> with ValidatorMixin {
     }
 
     final hasConnection = context.hasConnection;
+    final styles = {
+      'localization_alert_text_style': TextStyle(
+        fontFamily: "Poppins",
+        fontSize: 18,
+        fontWeight: FontWeight.w800,
+        color: ComponentColors.mainBlack,
+      ),
+      'register_next_step_style': TextStyle(
+        fontFamily: "Poppins",
+        fontSize: 12,
+        fontWeight: FontWeight.w600,
+        color: ComponentColors.mainGray,
+      ),
+      'turned_on_localization_button_text_style': TextStyle(
+        fontFamily: "Poppins",
+        fontSize: 12,
+        fontWeight: FontWeight.w600,
+        color: ComponentColors.sweetBrown,
+      ),
+    };
 
     if (!hasConnection) return const NetworkErrorPage();
 
@@ -106,7 +126,7 @@ class _RegisterPageState extends State<RegisterPage> with ValidatorMixin {
                             padding: const EdgeInsets.symmetric(
                                 horizontal: 20, vertical: 10),
                             child: GradientText(
-                              text: "Introduzindo os Dados",
+                              text: "Inserindo os Dados",
                               textSize: 28,
                               textAlign: TextAlignEnum.center,
                             ),
@@ -174,7 +194,66 @@ class _RegisterPageState extends State<RegisterPage> with ValidatorMixin {
                             topText: "Repitir senha",
                           ),
                           Button(
-                            onTap: saveData,
+                            onTap: () => showAdaptiveDialog(
+                              context: context,
+                              builder: (context) => AlertDialog.adaptive(
+                                icon: Icon(
+                                  Icons.location_on,
+                                  color: ComponentColors.sweetBrown,
+                                  size: 40,
+                                ),
+                                title: Text(
+                                  "Alerta de Localização",
+                                  style:
+                                      styles['localization_alert_text_style'],
+                                ),
+                                content: SizedBox(
+                                  height: 200,
+                                  child: Column(
+                                    children: [
+                                      Wrap(
+                                        children: [
+                                          Text(
+                                            "Para a próxima parte do cadastro, tenha certeza de que a ferramenta de localização do seu celular esteja ativada",
+                                            style: styles[
+                                                'register_next_step_style'],
+                                            textAlign: TextAlign.center,
+                                          ),
+                                        ],
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                          vertical: 30.0,
+                                        ),
+                                        child: OutlinedButton.icon(
+                                          style: OutlinedButton.styleFrom(
+                                            padding: EdgeInsets.symmetric(
+                                                vertical: 15, horizontal: 24),
+                                            foregroundColor:
+                                                ComponentColors.sweetBrown,
+                                            side: BorderSide(
+                                              color: ComponentColors.sweetBrown,
+                                              width: 1.8,
+                                            ),
+                                          ),
+                                          onPressed: saveData,
+                                          icon: Icon(
+                                            Icons.location_on,
+                                            color: ComponentColors.sweetBrown,
+                                          ),
+                                          label: Text(
+                                            "Localização está ativada",
+                                            textAlign: TextAlign.center,
+                                            style: styles[
+                                                'turned_on_localization_button_text_style'],
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
                             buttonWidget: isRegistered
                                 ? SizedBox(
                                     width: 20,

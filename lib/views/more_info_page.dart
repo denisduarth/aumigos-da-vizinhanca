@@ -7,8 +7,9 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../enums/text_align_enums.dart';
-import '../views/all.dart';
-import '../widgets/all.dart';
+import '../exports/services.dart';
+import '../exports/widgets.dart';
+import '../exports/views.dart';
 
 class MoreInfoPage extends StatefulWidget {
   const MoreInfoPage({super.key});
@@ -17,38 +18,30 @@ class MoreInfoPage extends StatefulWidget {
   State<MoreInfoPage> createState() => _MoreInfoPageState();
 }
 
-class _MoreInfoPageState extends State<MoreInfoPage> with ValidatorMixin{
+class _MoreInfoPageState extends State<MoreInfoPage> with ValidatorMixin {
   final formKey = GlobalKey<FormState>();
   XFile? image;
   final db = Supabase.instance.client;
-
-  /*
-    Informações do usuário relacionado a seu endereço, como rua, estado, cidade, bairro etc.
-    Essa informações serão levadas adiante no cadastro do usuário e serão usadas como referencial
-    para mostrar para o usuário quantos cachorros ou gatos existem em sua rua, bem como os status de
-    alimentação, hidratação e se possuem alguma zoonose ou outra doença.
-  */
-
-  final streetController = TextEditingController();
-  final stateController = TextEditingController();
-  final cityController = TextEditingController();
-  final districtController = TextEditingController();
-  final countryController = TextEditingController();
+  final _locationService = LocationService();
+  final _passwordController = TextEditingController();
   bool isRegistered = false;
 
   @override
   void initState() {
     super.initState();
+    _getCurrentLocation();
+  }
+
+  _getCurrentLocation() async {
+    await _locationService.getCurrentLocation();
+    setState(
+      () {},
+    );
   }
 
   @override
   void dispose() {
     super.dispose();
-    streetController.dispose();
-    cityController.dispose();
-    districtController.dispose();
-    stateController.dispose();
-    countryController.dispose();
   }
 
   Future uploadImage() async {
@@ -62,23 +55,24 @@ class _MoreInfoPageState extends State<MoreInfoPage> with ValidatorMixin{
   @override
   Widget build(BuildContext context) {
     final hasConnection = context.hasConnection;
-
     // Variável para pegar os dados enviados da tela anterior para finalização do cadastro
     final args = context.getPreviousRouteArguments as Map;
-
     // Variáveis de controle da tela anterior para fechar os dados para o cadastro do usuário
     final userName = args['name'];
     final userEmail = args['email'];
     final userPassword = args['password'];
+    final locationInfo = _locationService.currentAddress.split(',');
+    final positionInfo = _locationService.currentPosition;
+    final infoData = {
+      'street': locationInfo[0],
+      'sublocality': locationInfo[1],
+      'sub_administrative_area': locationInfo[2],
+      'postal_code': locationInfo[3],
+      'country': locationInfo[4],
+    };
 
     Future<void> register() async {
       try {
-        assert(streetController.text.isNotEmpty, "Digite uma rua");
-        assert(districtController.text.isNotEmpty, "Digite um bairro");
-        assert(cityController.text.isNotEmpty, "Digite uma cidade");
-        assert(stateController.text.isNotEmpty, "Digite um estado");
-        assert(countryController.text.isNotEmpty, "Digite um país");
-
         await db.storage.from('images').upload(
               image!.name,
               File(image!.path),
@@ -91,12 +85,13 @@ class _MoreInfoPageState extends State<MoreInfoPage> with ValidatorMixin{
           password: userPassword,
           data: {
             'name': userName,
-            'image': image!.name,
-            'street': streetController.text,
-            'district': districtController.text,
-            'city': cityController.text,
-            'state': stateController.text,
-            'country': countryController.text
+            'street': infoData['street'],
+            'sublocality': infoData['sublocality'],
+            'sub_administrative_area': infoData['sub_administrative_area'],
+            'postal_code': infoData['postal_code'],
+            'country': infoData['country'],
+            'latitude': positionInfo.latitude,
+            'longitude': positionInfo.longitude
           },
         );
 
@@ -174,7 +169,7 @@ class _MoreInfoPageState extends State<MoreInfoPage> with ValidatorMixin{
                               padding: EdgeInsets.symmetric(
                                   vertical: 15.0, horizontal: 50),
                               child: Text(
-                                "Finalize seu cadastro colocando os dados faltantes referentes a seu endereço",
+                                "Finalize seu cadastro verificando se os dados de localização estão corretos",
                                 style: TextStyle(
                                   fontFamily: "Poppins",
                                   fontWeight: FontWeight.w500,
@@ -211,79 +206,243 @@ class _MoreInfoPageState extends State<MoreInfoPage> with ValidatorMixin{
                     ],
                   ),
                   Container(
-                    margin: const EdgeInsets.symmetric(vertical: 30),
-                    height: 450,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        TextForm(
-                          labelText: "Nome da sua rua",
-                          controller: streetController,
-                          icon: const Icon(Icons.location_pin),
-                          obscureText: false,
-                          keyboardType: TextInputType.text,
-                          validator: isEmpty,
-                          topText: "Rua",
-                        ),
-                        TextForm(
-                          labelText: "Nome do seu bairro",
-                          controller: districtController,
-                          icon: const Icon(Icons.location_pin),
-                          obscureText: false,
-                          keyboardType: TextInputType.text,
-                          validator: isEmpty,
-                          topText: "Bairro",
-                        ),
-                        TextForm(
-                          labelText: "Nome da sua cidade",
-                          controller: cityController,
-                          icon: const Icon(Icons.location_pin),
-                          obscureText: false,
-                          keyboardType: TextInputType.text,
-                          validator: isEmpty,
-                          topText: "Cidade",
-                        ),
-                        TextForm(
-                          labelText: "Nome do seu estado",
-                          controller: stateController,
-                          icon: const Icon(Icons.location_pin),
-                          obscureText: false,
-                          keyboardType: TextInputType.text,
-                          validator: isEmpty,
-                          topText: "Estado",
-                        ),
-                        TextForm(
-                          labelText: "Nome do seu país",
-                          controller: countryController,
-                          icon: const Icon(Icons.location_pin),
-                          obscureText: false,
-                          keyboardType: TextInputType.text,
-                          validator: isEmpty,
-                          topText: "País",
-                        ),
-                        Button(
-                          onTap: register,
-                          buttonWidget: isRegistered
-                              ? const SizedBox(
-                                  width: 20,
-                                  height: 20,
-                                  child: CircularProgressIndicator(
-                                    color: Colors.white,
-                                  ),
-                                )
-                              : const Text(
-                                  "Criar conta",
-                                  style: buttonTextStyle,
+                    margin: const EdgeInsets.symmetric(
+                        vertical: 30, horizontal: 50),
+                    height: 250,
+                    child: Center(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          const Padding(
+                            padding: EdgeInsets.only(bottom: 20.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  Icons.location_on_rounded,
+                                  color: ComponentColors.sweetBrown,
+                                  size: 30,
                                 ),
-                        )
-                      ],
+                                GradientText(
+                                  text: " Dados de localização",
+                                  textSize: 17,
+                                  textAlign: TextAlignEnum.center,
+                                ),
+                              ],
+                            ),
+                          ),
+                          decoratedText(
+                              'Rua: ${locationInfo[0]}', Icons.location_on),
+                          decoratedText(
+                              'Bairro: ${locationInfo[1]}', Icons.location_on),
+                          decoratedText(
+                              'Cidade: ${locationInfo[2]}', Icons.location_on),
+                          decoratedText(
+                              'CEP: ${locationInfo[3]}', Icons.location_on),
+                          decoratedText(
+                              'País: ${locationInfo[4]}', Icons.location_on),
+                          decoratedText('Latitude: ${positionInfo.latitude}',
+                              Icons.location_on),
+                          decoratedText('Longitude: ${positionInfo.longitude}',
+                              Icons.location_on),
+                        ],
+                      ),
                     ),
                   ),
+                  Container(
+                    margin: const EdgeInsets.symmetric(
+                        vertical: 30, horizontal: 50),
+                    height: 100,
+                    child: Center(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          const Padding(
+                            padding: EdgeInsets.only(bottom: 20.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  Icons.data_object_rounded,
+                                  color: ComponentColors.sweetBrown,
+                                  size: 30,
+                                ),
+                                GradientText(
+                                  text: "  Dados anteriores",
+                                  textSize: 17,
+                                  textAlign: TextAlignEnum.center,
+                                ),
+                              ],
+                            ),
+                          ),
+                          Wrap(direction: Axis.vertical, children: [
+                            decoratedText('E-mail: $userEmail',
+                                Icons.data_object_rounded),
+                          ]),
+                          decoratedText(
+                              'Nome: $userName', Icons.data_object_rounded),
+                        ],
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 20.0),
+                    child: TextForm(
+                      labelText: "Digite novamente a senha",
+                      controller: _passwordController,
+                      icon: const Icon(Icons.lock_rounded),
+                      obscureText: true,
+                      keyboardType: TextInputType.visiblePassword,
+                      validator: isEmpty,
+                      topText: "Senha para confirmação de dados",
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 20.0, bottom: 30.0),
+                    child: Button(
+                      onTap: () {
+                        // print(_locationService.getCurrentAddress.split(','));
+                        // print(_passwordController.text == userPassword);
+                        openLocationPermissionTerm(
+                          context,
+                          register,
+                        );
+                      },
+                      buttonWidget: isRegistered
+                          ? const SizedBox(
+                              width: 20,
+                              height: 20,
+                              child: CircularProgressIndicator(
+                                color: Colors.white,
+                              ),
+                            )
+                          : const Text(
+                              "Dados estão corretos",
+                              style: buttonTextStyle,
+                            ),
+                    ),
+                  )
                 ],
               ),
             ),
           ),
         ),
+      ),
+    );
+  }
+
+  Widget decoratedText(String data, IconData icon) {
+    return Row(
+      children: [
+        Icon(
+          icon,
+          color: ComponentColors.sweetBrown,
+          size: 18,
+        ),
+        Text(
+          '  $data',
+          style: const TextStyle(
+            fontFamily: "Poppins",
+            fontSize: 13,
+            fontWeight: FontWeight.w600,
+            color: ComponentColors.mainBlack,
+          ),
+        ),
+      ],
+    );
+  }
+
+  void openLocationPermissionTerm(
+    BuildContext context,
+    void Function() onPermissionAllowed,
+  ) {
+    TextStyle textStyle(Color color) => TextStyle(
+          fontFamily: "Poppins",
+          fontSize: 13,
+          fontWeight: FontWeight.w700,
+          color: color,
+        );
+
+    BorderSide borderSide(Color color) => BorderSide(
+          color: color,
+          width: 2,
+          strokeAlign: 0,
+        );
+
+    final styles = {
+      'title_style': const TextStyle(
+        fontFamily: "Poppins",
+        fontSize: 18,
+        fontWeight: FontWeight.w800,
+        color: ComponentColors.mainBlack,
+      ),
+      'location_text_style': const TextStyle(
+        fontFamily: "Poppins",
+        fontSize: 12,
+        fontWeight: FontWeight.w600,
+        color: ComponentColors.mainGray,
+      ),
+    };
+
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        icon: const Icon(
+          Icons.location_on_rounded,
+          color: ComponentColors.sweetBrown,
+          size: 25,
+        ),
+        actionsAlignment: MainAxisAlignment.center,
+        actionsOverflowAlignment: OverflowBarAlignment.center,
+        title: Text(
+          'Termo de Permissão de Localização',
+          style: styles['title_style'],
+        ),
+        content: SingleChildScrollView(
+          child: Text(
+            'Ao clicar em "Aceitar", você concorda em permitir o acesso à sua localização para uso no aplicativo.',
+            style: styles['location_text_style'],
+            textAlign: TextAlign.center,
+          ),
+        ),
+        actions: <Widget>[
+          OutlinedButton.icon(
+            style: OutlinedButton.styleFrom(
+              side: borderSide(
+                Colors.green,
+              ),
+            ),
+            label: Text(
+              'Aceitar',
+              style: textStyle(Colors.green),
+            ),
+            icon: const Icon(
+              Icons.location_on_rounded,
+              color: Colors.green,
+              size: 20,
+            ),
+            onPressed: () => onPermissionAllowed,
+          ),
+          OutlinedButton.icon(
+            style: OutlinedButton.styleFrom(
+              side: borderSide(
+                Colors.red,
+              ),
+            ),
+            label: Text(
+              'Recusar',
+              style: textStyle(Colors.red),
+            ),
+            icon: const Icon(
+              Icons.block_rounded,
+              color: Colors.red,
+              size: 20,
+            ),
+            onPressed: () => Navigator.of(context).pop(),
+          ),
+        ],
       ),
     );
   }

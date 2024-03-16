@@ -1,7 +1,7 @@
 // ignore_for_file: file_names
 
 import '../widgets/colors.dart';
-import '../enums/all.dart';
+import '../exports/enums.dart';
 import 'package:flutter/material.dart';
 
 const gradient = LinearGradient(

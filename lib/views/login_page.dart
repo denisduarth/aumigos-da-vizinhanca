@@ -1,13 +1,15 @@
 // ignore_for_file: prefer_const_constructors, file_names, unused_element, use_build_context_synchronously, avoid_print, dead_code
 
+import 'dart:async';
+
 import 'package:aumigos_da_vizinhanca/mixins/validator_mixin.dart';
 import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../enums/text_align_enums.dart';
 import '../extensions/build_context_extension.dart';
-import '../views/all.dart';
-import '../widgets/all.dart';
+import '../exports/views.dart';
+import '../exports/widgets.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -24,6 +26,11 @@ class _LoginPageState extends State<LoginPage> with ValidatorMixin {
   bool isPasswordVisible = true;
   bool isLoggedIn = false;
   final snackBarHelper = SnackBarHelper();
+
+  @override
+  void initState() {
+    super.initState();
+  }
 
   @override
   void dispose() {
@@ -48,18 +55,6 @@ class _LoginPageState extends State<LoginPage> with ValidatorMixin {
       final session = response.session;
 
       if (mounted && session != null) {
-        await Future.delayed(Duration(seconds: 2));
-
-        Navigator.pushNamed(context, '/navigation');
-      }
-    } on AssertionError catch (error) {
-      context.showErrorSnackbar(error.message.toString());
-    } on AuthException catch (error) {
-      context.showErrorSnackbar(error.message.toString());
-    } catch (error) {
-      context.showErrorSnackbar('Erro inesperado aconteceu');
-    } finally {
-      if (mounted) {
         final user = db.auth.currentUser;
 
         setState(() {
@@ -70,7 +65,16 @@ class _LoginPageState extends State<LoginPage> with ValidatorMixin {
           "Logado como ${user!.email}",
           context,
         );
+        await Future.delayed(Duration(seconds: 2));
+
+        Navigator.pushNamed(context, '/navigation');
       }
+    } on AssertionError catch (error) {
+      context.showErrorSnackbar(error.message.toString());
+    } on AuthException catch (error) {
+      context.showErrorSnackbar(error.message.toString());
+    } catch (error) {
+      context.showErrorSnackbar('Erro inesperado aconteceu');
     }
   }
 
@@ -97,7 +101,7 @@ class _LoginPageState extends State<LoginPage> with ValidatorMixin {
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 50.0),
                       child: Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Padding(
                               padding:
@@ -129,7 +133,6 @@ class _LoginPageState extends State<LoginPage> with ValidatorMixin {
                               () => isEmpty(value),
                               () => emailValidator(value),
                             ]),
-                            
                             topText: "Login",
                           ),
                           TextForm(

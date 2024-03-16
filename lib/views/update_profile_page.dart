@@ -2,11 +2,11 @@
 
 import 'package:aumigos_da_vizinhanca/extensions/build_context_extension.dart';
 import 'package:aumigos_da_vizinhanca/mixins/validator_mixin.dart';
-import 'package:aumigos_da_vizinhanca/widgets/all.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../enums/text_align_enums.dart';
-import '../views/all.dart';
+import '../exports/views.dart';
+import '../exports/widgets.dart';
 
 class UpdateProfilePage extends StatefulWidget {
   const UpdateProfilePage({super.key});
@@ -40,7 +40,7 @@ class _UpdateProfilePageState extends State<UpdateProfilePage>
     super.dispose();
   }
 
-  Future updateUserInfo() async {
+  Future<void> updateUserInfo() async {
     try {
       await db.auth.updateUser(
         UserAttributes(
