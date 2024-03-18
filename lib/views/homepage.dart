@@ -3,7 +3,6 @@
 import 'package:aumigos_da_vizinhanca/enums/text_align_enums.dart';
 import 'package:aumigos_da_vizinhanca/exports/widgets.dart';
 import 'package:aumigos_da_vizinhanca/mixins/validator_mixin.dart';
-
 import '../exports/services.dart';
 import '../extensions/build_context_extension.dart';
 import '../exports/views.dart';
