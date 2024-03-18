@@ -1,5 +1,9 @@
 // ignore_for_file: avoid_print, use_build_context_synchronously
 
+import 'package:aumigos_da_vizinhanca/enums/text_align_enums.dart';
+import 'package:aumigos_da_vizinhanca/exports/widgets.dart';
+import 'package:aumigos_da_vizinhanca/mixins/validator_mixin.dart';
+
 import '../exports/services.dart';
 import '../extensions/build_context_extension.dart';
 import '../exports/views.dart';
@@ -10,13 +14,14 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class Homepage extends StatefulWidget {
+  final String title = 'Home';
   const Homepage({super.key});
 
   @override
   State<Homepage> createState() => _HomepageState();
 }
 
-class _HomepageState extends State<Homepage> {
+class _HomepageState extends State<Homepage> with ValidatorMixin {
   late final user = db.auth.currentUser;
   final db = Supabase.instance.client;
   final searchControlller = TextEditingController();
@@ -56,13 +61,17 @@ class _HomepageState extends State<Homepage> {
                 alignment: AlignmentDirectional.topCenter,
                 children: [
                   Center(
-                    child: SizedBox(
-                      height: 350,
+                    child: Container(
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(30)),
+                      height: 250,
                       width: context.screenWidth,
                       child: FlutterMap(
-                        options: const MapOptions(
-                          initialCenter: LatLng(-20.8202, -49.37970),
-                          initialZoom: 9.2,
+                        options: MapOptions(
+                          initialCenter: LatLng(
+                              user!.userMetadata?['location']['latitude'],
+                              user!.userMetadata?['location']['longitude']),
+                          initialZoom: 18,
                         ),
                         children: [
                           TileLayer(
@@ -87,14 +96,47 @@ class _HomepageState extends State<Homepage> {
                       ),
                     ),
                   ),
+                  TextForm(
+                    labelText: "Pesquisar",
+                    controller: searchControlller,
+                    icon: const Icon(Icons.search_rounded),
+                    obscureText: false,
+                    keyboardType: TextInputType.text,
+                    validator: isEmpty,
+                  ),
                 ],
               ),
-              Column(
-                children: [
-                  Text(_locationService.currentPosition.latitude.toString()),
-                  Text(_locationService.currentPosition.longitude.toString()),
-                  Text(_locationService.getCurrentAddress)
-                ],
+              Padding(
+                padding: const EdgeInsets.all(30.0),
+                child: Column(
+                  children: [
+                    Row(
+                      children: [
+                        Row(
+                          children: [
+                            const Text(
+                              "Bem-vindo, ",
+                              style: TextStyle(
+                                  fontFamily: "Poppins",
+                                  fontSize: 28,
+                                  color: ComponentColors.mainBlack,
+                                  fontWeight: FontWeight.w900),
+                            ),
+                            GradientText(
+                                text: "${user!.userMetadata?['name']}",
+                                textSize: 28,
+                                textAlign: TextAlignEnum.start),
+                          ],
+                        ),
+                      ],
+                    ),
+                    const DropdownMenu(
+                      dropdownMenuEntries: [
+                        DropdownMenuEntry(label: 'LLLLLL', value: 'LLLLLLL')
+                      ],
+                    ),
+                  ],
+                ),
               )
             ],
           ),

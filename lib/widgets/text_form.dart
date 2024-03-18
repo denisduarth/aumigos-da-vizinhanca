@@ -26,16 +26,6 @@ final mainBorder = OutlineInputBorder(
   ),
 );
 
-final focusedBorder = OutlineInputBorder(
-  borderRadius: BorderRadius.circular(10),
-  borderSide: const BorderSide(
-    style: BorderStyle.solid,
-    color: ComponentColors.mainYellow,
-    strokeAlign: 0,
-    width: 2,
-  ),
-);
-
 class TextForm extends StatefulWidget {
   String? labelText;
   String? hintText;
@@ -55,7 +45,7 @@ class TextForm extends StatefulWidget {
     required this.obscureText,
     required this.keyboardType,
     required this.validator,
-    required this.topText,
+    this.topText,
     this.suffixIcon,
   });
 
@@ -74,7 +64,7 @@ class _TextFormState extends State<TextForm> {
             Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 15.0),
                 child: Text(
-                  widget.topText!,
+                  widget.topText ?? '',
                   style: const TextStyle(
                       fontFamily: "Poppins",
                       fontSize: 11,
@@ -112,7 +102,6 @@ class _TextFormState extends State<TextForm> {
                   focusColor: ComponentColors.lightGray,
                   border: mainBorder,
                   enabledBorder: mainBorder,
-                  focusedBorder: focusedBorder,
                   fillColor: Colors.white,
                   filled: true,
                   contentPadding: const EdgeInsets.symmetric(

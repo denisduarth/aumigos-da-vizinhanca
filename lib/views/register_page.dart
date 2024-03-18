@@ -207,49 +207,52 @@ class _RegisterPageState extends State<RegisterPage> with ValidatorMixin {
                                   style:
                                       styles['localization_alert_text_style'],
                                 ),
-                                content: SizedBox(
-                                  height: 200,
-                                  child: Column(
-                                    children: [
-                                      Wrap(
-                                        children: [
-                                          Text(
-                                            "Para a próxima parte do cadastro, tenha certeza de que a ferramenta de localização do seu celular esteja ativada",
-                                            style: styles[
-                                                'register_next_step_style'],
-                                            textAlign: TextAlign.center,
-                                          ),
-                                        ],
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                          vertical: 30.0,
+                                content: SingleChildScrollView(
+                                  child: SizedBox(
+                                    height: 200,
+                                    child: Column(
+                                      children: [
+                                        Wrap(
+                                          children: [
+                                            Text(
+                                              "Para a próxima parte do cadastro, tenha certeza de que a ferramenta de localização do seu celular esteja ativada",
+                                              style: styles[
+                                                  'register_next_step_style'],
+                                              textAlign: TextAlign.center,
+                                            ),
+                                          ],
                                         ),
-                                        child: OutlinedButton.icon(
-                                          style: OutlinedButton.styleFrom(
-                                            padding: EdgeInsets.symmetric(
-                                                vertical: 15, horizontal: 24),
-                                            foregroundColor:
-                                                ComponentColors.sweetBrown,
-                                            side: BorderSide(
+                                        Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                            vertical: 30.0,
+                                          ),
+                                          child: OutlinedButton.icon(
+                                            style: OutlinedButton.styleFrom(
+                                              padding: EdgeInsets.symmetric(
+                                                  vertical: 15, horizontal: 24),
+                                              foregroundColor:
+                                                  ComponentColors.sweetBrown,
+                                              side: BorderSide(
+                                                color:
+                                                    ComponentColors.sweetBrown,
+                                                width: 1.8,
+                                              ),
+                                            ),
+                                            onPressed: saveData,
+                                            icon: Icon(
+                                              Icons.location_on,
                                               color: ComponentColors.sweetBrown,
-                                              width: 1.8,
+                                            ),
+                                            label: Text(
+                                              "Localização está ativada",
+                                              textAlign: TextAlign.center,
+                                              style: styles[
+                                                  'turned_on_localization_button_text_style'],
                                             ),
                                           ),
-                                          onPressed: saveData,
-                                          icon: Icon(
-                                            Icons.location_on,
-                                            color: ComponentColors.sweetBrown,
-                                          ),
-                                          label: Text(
-                                            "Localização está ativada",
-                                            textAlign: TextAlign.center,
-                                            style: styles[
-                                                'turned_on_localization_button_text_style'],
-                                          ),
                                         ),
-                                      ),
-                                    ],
+                                      ],
+                                    ),
                                   ),
                                 ),
                               ),

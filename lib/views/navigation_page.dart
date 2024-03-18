@@ -19,6 +19,13 @@ class _NavigationPageState extends State<NavigationPage> {
     const ProfilePage(),
   ];
 
+  final titles = [
+    const Homepage().title,
+    const SearchAnimalPage().title,
+    const AddAnimalPage().title,
+    const ProfilePage().title,
+  ];
+
   int _currentIndex = 0;
   final db = Supabase.instance.client;
 
@@ -28,15 +35,19 @@ class _NavigationPageState extends State<NavigationPage> {
     final hasConnection = context.hasConnection;
 
     return Scaffold(
+        extendBodyBehindAppBar: true,
+        extendBody: true,
         appBar: AppBar(
+          automaticallyImplyLeading: false,
+          leading: null,
           shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.vertical(
               bottom: Radius.circular(
-                30,
+                35,
               ),
             ),
           ),
-          shadowColor: ComponentColors.sweetBrown,
+          shadowColor: Colors.transparent,
           iconTheme: const IconThemeData(color: Colors.white),
           actionsIconTheme: const IconThemeData(color: Colors.white),
           elevation: 4.0,
@@ -65,94 +76,87 @@ class _NavigationPageState extends State<NavigationPage> {
                     )
                   ],
                 )
-              : Center(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 10.0,
+              : Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      '${titles.elementAt(_currentIndex)!}   ',
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontFamily: "Poppins",
+                        fontSize: 14.5,
+                        fontWeight: FontWeight.w700,
+                      ),
                     ),
-                    child: Row(
-                      children: [
-                        const Text(
-                          "Aumigos da Vizinhança",
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontFamily: "Poppins",
-                            fontSize: 13,
-                            fontWeight: FontWeight.w700,
-                          ),
-                        ),
-                        const SizedBox(
-                          width: 15,
-                        ),
-                        Image.asset(
-                          'images/aumigos_da_vizinhanca_logo_white.png',
-                          width: 30,
-                          height: 30,
-                        ),
-                      ],
-                    ),
-                  ),
+                    Image.asset(
+                      'images/aumigos_da_vizinhanca_logo_white.png',
+                      width: 40,
+                      height: 40,
+                    )
+                  ],
                 ),
         ),
-        bottomNavigationBar: Padding(
-          padding: const EdgeInsets.all(25.0),
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(20),
-            child: BottomNavigationBar(
-              backgroundColor:
-                  !hasConnection ? Colors.red : ComponentColors.sweetBrown,
-              currentIndex: _currentIndex,
-              showSelectedLabels: false,
-              showUnselectedLabels: false,
-              type: BottomNavigationBarType.fixed,
-              selectedItemColor: Colors.white,
-              unselectedItemColor: Colors.white,
-              items: [
-                const BottomNavigationBarItem(
-                  activeIcon: Icon(Icons.home_rounded, size: 30),
-                  icon: Icon(Icons.home_outlined, size: 30),
-                  label: 'Home',
-                ),
-                const BottomNavigationBarItem(
-                  activeIcon: Icon(
-                    Icons.search_rounded,
-                    size: 30,
-                  ),
-                  icon: Icon(Icons.search_outlined, size: 30),
-                  label: 'Pequisar',
-                ),
-                const BottomNavigationBarItem(
-                  activeIcon: Icon(
-                    Icons.add_rounded,
-                    size: 30,
-                  ),
-                  icon: Icon(Icons.add_outlined, size: 30),
-                  label: 'Adicionar Animal',
-                ),
-                BottomNavigationBarItem(
-                  icon: SizedBox(
-                    width: 30,
-                    height: 30,
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(50),
-                      child: user!.userMetadata?['image'] == null
-                          ? Image.asset('images/user_image.png')
-                          : Image.network(
-                              db.storage.from('images').getPublicUrl(
-                                    user.userMetadata?['image'],
-                                  ),
-                              fit: BoxFit.cover,
-                            ),
-                    ),
-                  ),
-                  label: 'Perfil',
-                ),
-              ],
-              onTap: (index) => setState(
-                () {
-                  _currentIndex = index;
-                },
+        bottomNavigationBar: Container(
+          margin: const EdgeInsets.all(15),
+          decoration: BoxDecoration(
+            color: !hasConnection ? Colors.red : ComponentColors.sweetBrown,
+            borderRadius: BorderRadius.circular(
+              35,
+            ),
+          ),
+          child: BottomNavigationBar(
+            backgroundColor: Colors.transparent.withOpacity(0.0),
+            elevation: 0,
+            currentIndex: _currentIndex,
+            showSelectedLabels: false,
+            showUnselectedLabels: false,
+            type: BottomNavigationBarType.fixed,
+            selectedItemColor: Colors.white,
+            unselectedItemColor: const Color.fromARGB(255, 255, 174, 136),
+            items: [
+              const BottomNavigationBarItem(
+                activeIcon: Icon(Icons.home_rounded, size: 30),
+                icon: Icon(Icons.home_outlined, size: 30),
+                label: 'Home',
               ),
+              const BottomNavigationBarItem(
+                activeIcon: Icon(
+                  Icons.search_rounded,
+                  size: 30,
+                ),
+                icon: Icon(Icons.search_outlined, size: 30),
+                label: 'Pequisar',
+              ),
+              const BottomNavigationBarItem(
+                activeIcon: Icon(
+                  Icons.add_rounded,
+                  size: 30,
+                ),
+                icon: Icon(Icons.add_outlined, size: 30),
+                label: 'Adicionar Animal',
+              ),
+              BottomNavigationBarItem(
+                icon: SizedBox(
+                  width: 35,
+                  height: 35,
+                  child: ClipOval(
+                    child: user!.userMetadata?['image'] == null
+                        ? Image.asset('images/user_image.png')
+                        : Image.network(
+                            db.storage.from('images').getPublicUrl(
+                                  user.userMetadata?['image'],
+                                ),
+                            fit: BoxFit.cover,
+                          ),
+                  ),
+                ),
+                label: 'Perfil',
+              ),
+            ],
+            onTap: (index) => setState(
+              () {
+                _currentIndex = index;
+              },
             ),
           ),
         ),

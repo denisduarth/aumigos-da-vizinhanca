@@ -30,23 +30,22 @@ class Button extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(10),
-        child: TextButton(
-          onPressed: onTap,
-          style: TextButton.styleFrom(
-            fixedSize: Size(MediaQuery.of(context).size.width - 60, 60),
-            backgroundColor: ComponentColors.mainYellow,
-            padding: const EdgeInsets.all(10),
-            textStyle: const TextStyle(
-              fontFamily: "Poppins",
-              fontSize: 13,
-              fontWeight: FontWeight.w600,
-              color: Colors.white,
-            ),
+      child: TextButton(
+        onPressed: onTap,
+        style: TextButton.styleFrom(
+          shape: ContinuousRectangleBorder(
+              borderRadius: BorderRadius.circular(20)),
+          fixedSize: Size(MediaQuery.of(context).size.width - 60, 60),
+          backgroundColor: ComponentColors.mainYellow,
+          padding: const EdgeInsets.all(10),
+          textStyle: const TextStyle(
+            fontFamily: "Poppins",
+            fontSize: 13,
+            fontWeight: FontWeight.w600,
+            color: Colors.white,
           ),
-          child: buttonWidget,
         ),
+        child: buttonWidget,
       ),
     );
   }

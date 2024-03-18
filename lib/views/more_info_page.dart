@@ -73,29 +73,36 @@ class _MoreInfoPageState extends State<MoreInfoPage> with ValidatorMixin {
 
     Future<void> register() async {
       try {
-        await db.storage.from('images').upload(
-              image!.name,
-              File(image!.path),
-              fileOptions: const FileOptions(upsert: true),
-              retryAttempts: 3,
-            );
+        // await db.storage.from('images').upload(
+        //       image!.name,
+        //       File(image!.path),
+        //       fileOptions: const FileOptions(
+        //         upsert: true,
+        //       ),
+        //     );
 
         await db.auth.signUp(
           email: userEmail,
           password: userPassword,
           data: {
             'name': userName,
-            'street': infoData['street'],
-            'sublocality': infoData['sublocality'],
-            'sub_administrative_area': infoData['sub_administrative_area'],
-            'postal_code': infoData['postal_code'],
-            'country': infoData['country'],
-            'latitude': positionInfo.latitude,
-            'longitude': positionInfo.longitude
+            'location': {
+              'street': infoData['street'],
+              'sublocality': infoData['sublocality'],
+              'sub_administrative_area': infoData['sub_administrative_area'],
+              'postal_code': infoData['postal_code'],
+              'country': infoData['country'],
+              'latitude': positionInfo.latitude,
+              'longitude': positionInfo.longitude
+            },
+            'image': image!.name
           },
         );
 
         if (mounted) {
+          setState(() {
+            isRegistered = true;
+          });
           context.showSucessSnackbar("Cadastro feito com sucesso");
 
           Future.delayed(const Duration(seconds: 3));
@@ -107,12 +114,6 @@ class _MoreInfoPageState extends State<MoreInfoPage> with ValidatorMixin {
         context.showErrorSnackbar(error.message.toString());
       } on StorageException catch (error) {
         context.showErrorSnackbar(error.message.toString());
-      } finally {
-        if (mounted) {
-          setState(() {
-            isRegistered = true;
-          });
-        }
       }
     }
 
@@ -302,14 +303,7 @@ class _MoreInfoPageState extends State<MoreInfoPage> with ValidatorMixin {
                   Padding(
                     padding: const EdgeInsets.only(top: 20.0, bottom: 30.0),
                     child: Button(
-                      onTap: () {
-                        // print(_locationService.getCurrentAddress.split(','));
-                        // print(_passwordController.text == userPassword);
-                        openLocationPermissionTerm(
-                          context,
-                          register,
-                        );
-                      },
+                      onTap: register,
                       buttonWidget: isRegistered
                           ? const SizedBox(
                               width: 20,
@@ -351,99 +345,6 @@ class _MoreInfoPageState extends State<MoreInfoPage> with ValidatorMixin {
           ),
         ),
       ],
-    );
-  }
-
-  void openLocationPermissionTerm(
-    BuildContext context,
-    void Function() onPermissionAllowed,
-  ) {
-    TextStyle textStyle(Color color) => TextStyle(
-          fontFamily: "Poppins",
-          fontSize: 13,
-          fontWeight: FontWeight.w700,
-          color: color,
-        );
-
-    BorderSide borderSide(Color color) => BorderSide(
-          color: color,
-          width: 2,
-          strokeAlign: 0,
-        );
-
-    final styles = {
-      'title_style': const TextStyle(
-        fontFamily: "Poppins",
-        fontSize: 18,
-        fontWeight: FontWeight.w800,
-        color: ComponentColors.mainBlack,
-      ),
-      'location_text_style': const TextStyle(
-        fontFamily: "Poppins",
-        fontSize: 12,
-        fontWeight: FontWeight.w600,
-        color: ComponentColors.mainGray,
-      ),
-    };
-
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        icon: const Icon(
-          Icons.location_on_rounded,
-          color: ComponentColors.sweetBrown,
-          size: 25,
-        ),
-        actionsAlignment: MainAxisAlignment.center,
-        actionsOverflowAlignment: OverflowBarAlignment.center,
-        title: Text(
-          'Termo de Permissão de Localização',
-          style: styles['title_style'],
-        ),
-        content: SingleChildScrollView(
-          child: Text(
-            'Ao clicar em "Aceitar", você concorda em permitir o acesso à sua localização para uso no aplicativo.',
-            style: styles['location_text_style'],
-            textAlign: TextAlign.center,
-          ),
-        ),
-        actions: <Widget>[
-          OutlinedButton.icon(
-            style: OutlinedButton.styleFrom(
-              side: borderSide(
-                Colors.green,
-              ),
-            ),
-            label: Text(
-              'Aceitar',
-              style: textStyle(Colors.green),
-            ),
-            icon: const Icon(
-              Icons.location_on_rounded,
-              color: Colors.green,
-              size: 20,
-            ),
-            onPressed: () => onPermissionAllowed,
-          ),
-          OutlinedButton.icon(
-            style: OutlinedButton.styleFrom(
-              side: borderSide(
-                Colors.red,
-              ),
-            ),
-            label: Text(
-              'Recusar',
-              style: textStyle(Colors.red),
-            ),
-            icon: const Icon(
-              Icons.block_rounded,
-              color: Colors.red,
-              size: 20,
-            ),
-            onPressed: () => Navigator.of(context).pop(),
-          ),
-        ],
-      ),
     );
   }
 }

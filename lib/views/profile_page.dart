@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class ProfilePage extends StatefulWidget {
+  final String? title = 'Perfil';
   const ProfilePage({super.key});
 
   @override
@@ -24,6 +25,7 @@ class _ProfilePageState extends State<ProfilePage> {
     if (!hasConnection) return const NetworkErrorPage();
 
     return Scaffold(
+      backgroundColor: Colors.white,
       body: SafeArea(
         child: SingleChildScrollView(
           padding: EdgeInsets.symmetric(vertical: 20),
@@ -69,12 +71,12 @@ class _ProfilePageState extends State<ProfilePage> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          "${user.email}",
+                          "${user.userMetadata?['name']}",
                           style: TextStyle(
-                            fontFamily: "Poppins",
-                            fontSize: 20,
-                            fontWeight: FontWeight.w900,
-                          ),
+                              fontFamily: "Poppins",
+                              fontSize: 30,
+                              fontWeight: FontWeight.w900,
+                              color: ComponentColors.mainBlack),
                         ),
                         Text(
                           user.id,
@@ -89,7 +91,8 @@ class _ProfilePageState extends State<ProfilePage> {
                           icon: Icon(Icons.logout_rounded),
                           onPressed: () async {
                             await db.auth.signOut();
-                            context.showErrorSnackbar("Saindo de ${user.email}");
+                            context
+                                .showErrorSnackbar("Saindo de ${user.email}");
 
                             await Future.delayed(Duration(seconds: 2));
                             Navigator.pushNamed(context, '/login');
