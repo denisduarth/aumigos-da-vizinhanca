@@ -12,6 +12,9 @@ import 'package:latlong2/latlong.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../repositories/animal_repository.dart';
+import '../widgets/text_styles.dart';
+
 class Homepage extends StatefulWidget {
   final String title = 'Home';
   const Homepage({super.key});
@@ -25,6 +28,8 @@ class _HomepageState extends State<Homepage> with ValidatorMixin {
   final db = Supabase.instance.client;
   final searchControlller = TextEditingController();
   final _locationService = LocationService();
+  final animalRepository = AnimalRepository();
+  late Stream<List<Map<String, dynamic>>> stream;
 
   @override
   void dispose() {
@@ -39,10 +44,20 @@ class _HomepageState extends State<Homepage> with ValidatorMixin {
     );
   }
 
+  getAnimalDataByName(String name) {
+    final animalData = animalRepository.getAnimalsByName(name);
+    setState(
+      () {
+        stream = name.isNotEmpty ? animalData : animalRepository.getAnimals();
+      },
+    );
+  }
+
   @override
   void initState() {
     super.initState();
     _getCurrentLocation();
+    stream = animalRepository.getAnimals();
   }
 
   @override
@@ -102,6 +117,9 @@ class _HomepageState extends State<Homepage> with ValidatorMixin {
                     obscureText: false,
                     keyboardType: TextInputType.text,
                     validator: isEmpty,
+                    onFieldSubmitted: (value) {
+                      getAnimalDataByName(value);
+                    },
                   ),
                 ],
               ),
@@ -113,13 +131,13 @@ class _HomepageState extends State<Homepage> with ValidatorMixin {
                       children: [
                         Row(
                           children: [
-                            const Text(
+                            Text(
                               "Bem-vindo, ",
-                              style: TextStyle(
-                                  fontFamily: "Poppins",
-                                  fontSize: 28,
-                                  color: ComponentColors.mainBlack,
-                                  fontWeight: FontWeight.w900),
+                              style: TextStyles.textStyle(
+                                fontColor: ComponentColors.mainBlack,
+                                fontSize: 28,
+                                fontWeight: FontWeight.w900,
+                              ),
                             ),
                             GradientText(
                                 text: "${user!.userMetadata?['name']}",
@@ -131,7 +149,38 @@ class _HomepageState extends State<Homepage> with ValidatorMixin {
                     ),
                   ],
                 ),
-              )
+              ),
+              StreamBuilder(
+                stream: stream,
+                builder: (context, snapshot) {
+                  if (!snapshot.hasData || snapshot.hasError) {
+                    return const CircularProgressIndicator();
+                  }
+
+                  final data = snapshot.data ?? [];
+
+                  return ListView(
+                    shrinkWrap: true,
+                    children: data
+                        .map(
+                          (animal) => ListTile(
+                            leading: ClipOval(
+                              child: Image.network(
+                                db.storage.from('animals.images').getPublicUrl(
+                                      animal['image'],
+                                    ),
+                                width: 40,
+                                height: 40,
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                            title: Text(animal['name']),
+                          ),
+                        )
+                        .toList(),
+                  );
+                },
+              ),
             ],
           ),
         ),

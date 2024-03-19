@@ -1,7 +1,6 @@
 // ignore_for_file: prefer_const_constructors, file_names, unused_element, use_build_context_synchronously, avoid_print, dead_code
 
 import 'dart:async';
-
 import 'package:aumigos_da_vizinhanca/mixins/validator_mixin.dart';
 import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
@@ -10,6 +9,7 @@ import '../enums/text_align_enums.dart';
 import '../extensions/build_context_extension.dart';
 import '../exports/views.dart';
 import '../exports/widgets.dart';
+import '../widgets/text_styles.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -23,7 +23,6 @@ class _LoginPageState extends State<LoginPage> with ValidatorMixin {
   final _formKey = GlobalKey<FormState>();
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
-  bool isPasswordVisible = true;
   bool isLoggedIn = false;
   final snackBarHelper = SnackBarHelper();
 
@@ -139,7 +138,7 @@ class _LoginPageState extends State<LoginPage> with ValidatorMixin {
                             labelText: "Digite sua senha",
                             controller: passwordController,
                             icon: Icon(Icons.lock_rounded),
-                            obscureText: isPasswordVisible,
+                            obscureText: true,
                             keyboardType: TextInputType.visiblePassword,
                             validator: isEmpty,
                             topText: "Senha",
@@ -167,11 +166,10 @@ class _LoginPageState extends State<LoginPage> with ValidatorMixin {
                       children: [
                         Text(
                           "Não tem uma conta? ",
-                          style: TextStyle(
-                            fontFamily: "Poppins",
+                          style: TextStyles.textStyle(
                             fontSize: 11.5,
                             fontWeight: FontWeight.w600,
-                            color: Colors.black26,
+                            fontColor: Colors.black26,
                           ),
                         ),
                         GestureDetector(

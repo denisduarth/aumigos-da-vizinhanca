@@ -9,7 +9,6 @@ import 'package:aumigos_da_vizinhanca/exports/widgets.dart';
 import 'package:aumigos_da_vizinhanca/mixins/validator_mixin.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-
 import '../../exports/enums.dart';
 
 class AddAnimalPage extends StatefulWidget {
@@ -28,6 +27,7 @@ class _AddAnimalPageState extends State<AddAnimalPage> with ValidatorMixin {
   double animalAge = 5.0;
   String animalSpecies = '';
   bool isAnimalRegistered = false;
+  bool wasFed = false;
 
   final List<String> catRaces = [
     'Sphynx',
@@ -102,6 +102,7 @@ class _AddAnimalPageState extends State<AddAnimalPage> with ValidatorMixin {
           race: animalRaceController.text,
           species: animalSpecies,
           image: image!.name,
+          wasFed: wasFed,
         );
         await db.storage.from('animals.images').upload(
               image!.name,
@@ -132,12 +133,12 @@ class _AddAnimalPageState extends State<AddAnimalPage> with ValidatorMixin {
       body: SafeArea(
         child: SingleChildScrollView(
           child: SizedBox(
-            height: context.screenHeight + 450,
+            height: context.screenHeight + 600,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 Container(
-                  margin: const EdgeInsets.symmetric(vertical: 10),
+                  margin: const EdgeInsets.only(top: 15, bottom: 30),
                   child: Column(
                     children: [
                       Image.asset(
@@ -290,7 +291,7 @@ class _AddAnimalPageState extends State<AddAnimalPage> with ValidatorMixin {
                     controller: animalRaceController,
                     textStyle: radioTextStyle,
                     hintText: animalSpecies == ''
-                        ? 'Selecione uma raça'
+                        ? 'Selecione uma espécie'
                         : animalRaceController.text,
                     dropdownMenuEntries: animalSpecies == ''
                         ? []
@@ -321,6 +322,42 @@ class _AddAnimalPageState extends State<AddAnimalPage> with ValidatorMixin {
                                   ),
                                 )
                                 .toList(),
+                  ),
+                ),
+                CustomWidgetWithText(
+                  topText: "Foi alimentado hoje?",
+                  customWidget: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      RadioListTile<bool>(
+                        activeColor: ComponentColors.mainYellow,
+                        title: const Text(
+                          "Sim",
+                          style: radioTextStyle,
+                        ),
+                        value: true,
+                        groupValue: wasFed,
+                        onChanged: (value) {
+                          setState(() {
+                            wasFed = value!;
+                          });
+                        },
+                      ),
+                      RadioListTile<bool>(
+                        activeColor: ComponentColors.mainYellow,
+                        title: const Text(
+                          "Não",
+                          style: radioTextStyle,
+                        ),
+                        value: false,
+                        groupValue: wasFed,
+                        onChanged: (value) {
+                          setState(() {
+                            wasFed = value!;
+                          });
+                        },
+                      )
+                    ],
                   ),
                 ),
                 Button(

@@ -73,13 +73,13 @@ class _MoreInfoPageState extends State<MoreInfoPage> with ValidatorMixin {
 
     Future<void> register() async {
       try {
-        // await db.storage.from('images').upload(
-        //       image!.name,
-        //       File(image!.path),
-        //       fileOptions: const FileOptions(
-        //         upsert: true,
-        //       ),
-        //     );
+        await db.storage.from('images').upload(
+              image!.name,
+              File(image!.path),
+              fileOptions: const FileOptions(
+                upsert: true,
+              ),
+            );
 
         await db.auth.signUp(
           email: userEmail,

@@ -3,14 +3,16 @@ import 'dart:convert';
 import 'package:uuid/uuid.dart';
 
 class Animal {
-  final String id;
-  final double age;
-  final String name;
-  final String? furColor;
-  final String race;
-  final String userId;
-  final String species;
-  final String image;
+  String id;
+  double age;
+  String name;
+  String? furColor;
+  String race;
+  String userId;
+  String species;
+  String image;
+  bool wasFed;
+  String? feedingDate;
 
   Animal({
     required this.age,
@@ -19,8 +21,10 @@ class Animal {
     required this.race,
     this.furColor,
     required this.species,
-    required this.image
-  }) : id = const Uuid().v4();
+    required this.image,
+    required this.wasFed,
+  })  : id = const Uuid().v4(),
+        feedingDate = wasFed ? DateTime.now().toIso8601String() : '';
 
   Map<String, dynamic> toMap() => {
         'id': id,
@@ -30,7 +34,9 @@ class Animal {
         'race': race,
         'userId': userId,
         'species': species,
-        'image': image
+        'image': image,
+        'wasFed': wasFed,
+        'feedingDate': feedingDate,
       };
 
   factory Animal.fromMap(Map<String, dynamic> map) => Animal(
@@ -40,7 +46,8 @@ class Animal {
         userId: map['userId'] as String,
         species: map['species'] as String,
         race: map['race'] as String,
-        image: map['image'] as String
+        image: map['image'] as String,
+        wasFed: map['wasFed'] as bool,
       );
 
   factory Animal.fromJson(String source) =>

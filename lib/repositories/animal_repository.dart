@@ -5,9 +5,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 class AnimalRepository implements IAnimalsRepository {
   late SupabaseClient db;
 
-  AnimalRepository() {
-    db = Supabase.instance.client;
-  }
+  AnimalRepository() : db = Supabase.instance.client;
 
   @override
   Future<void> addAnimal(Animal animal) async {
@@ -20,11 +18,16 @@ class AnimalRepository implements IAnimalsRepository {
   }
 
   @override
-  Future<List<Animal>> getAnimals() async {
-    final response = (await db.from('animals').select())
-        .map((animalJson) => Animal.fromMap(animalJson))
-        .toList();
-    return response;
+  Stream<List<Map<String, dynamic>>> getAnimals() {
+    return db.from('animals').select().asStream();
+  }
+
+  @override
+  Stream<List<Map<String, dynamic>>> getAnimalsByName(String name) {
+    final animalData =
+        db.from('animals').select().textSearch('name', name).asStream();
+
+    return animalData;
   }
 
   @override

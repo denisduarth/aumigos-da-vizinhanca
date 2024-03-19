@@ -36,6 +36,7 @@ class TextForm extends StatefulWidget {
   TextInputType keyboardType;
   String? Function(String?)? validator;
   String? topText;
+  void Function(String)? onFieldSubmitted;
 
   TextForm({
     super.key,
@@ -47,6 +48,7 @@ class TextForm extends StatefulWidget {
     required this.validator,
     this.topText,
     this.suffixIcon,
+    this.onFieldSubmitted,
   });
 
   @override
@@ -76,6 +78,7 @@ class _TextFormState extends State<TextForm> {
               height: 10,
             ),
             TextFormField(
+              onFieldSubmitted: widget.onFieldSubmitted,
               keyboardType: widget.keyboardType,
               decoration: InputDecoration(
                   labelText: widget.labelText,
