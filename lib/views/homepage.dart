@@ -129,11 +129,6 @@ class _HomepageState extends State<Homepage> with ValidatorMixin {
                         ),
                       ],
                     ),
-                    const DropdownMenu(
-                      dropdownMenuEntries: [
-                        DropdownMenuEntry(label: 'LLLLLL', value: 'LLLLLLL')
-                      ],
-                    ),
                   ],
                 ),
               )

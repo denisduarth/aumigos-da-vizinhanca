@@ -6,3 +6,4 @@ export '../widgets/error_message.dart';
 export '../widgets/snackbar_helper.dart';
 export '../widgets/icon_button.dart';
 export '../widgets/appbar.dart';
+export '../widgets/custom_widget_with_text.dart';

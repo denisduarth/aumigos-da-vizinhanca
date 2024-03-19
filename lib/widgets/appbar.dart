@@ -3,17 +3,8 @@ import 'package:flutter/material.dart';
 
 import '../exports/widgets.dart';
 
-class AppbarWidget extends StatefulWidget {
-  final String title;
-  const AppbarWidget({required this.title, super.key});
-
-  @override
-  State<AppbarWidget> createState() => _AppbarWidgetState();
-}
-
-class _AppbarWidgetState extends State<AppbarWidget> {
-  @override
-  Widget build(BuildContext context) {
+class AppBarWidget {
+  static PreferredSizeWidget showAppBar(BuildContext context, String title) {
     final hasConnection = context.hasConnection;
 
     return AppBar(
@@ -58,7 +49,7 @@ class _AppbarWidgetState extends State<AppbarWidget> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
-                  '${widget.title}    ',
+                  '$title    ',
                   style: const TextStyle(
                     color: Colors.white,
                     fontFamily: "Poppins",

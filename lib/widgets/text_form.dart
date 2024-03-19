@@ -62,15 +62,16 @@ class _TextFormState extends State<TextForm> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 15.0),
-                child: Text(
-                  widget.topText ?? '',
-                  style: const TextStyle(
-                      fontFamily: "Poppins",
-                      fontSize: 11,
-                      fontWeight: FontWeight.w700,
-                      color: Colors.black45),
-                )),
+              padding: const EdgeInsets.symmetric(horizontal: 15.0),
+              child: Text(
+                widget.topText ?? '',
+                style: const TextStyle(
+                    fontFamily: "Poppins",
+                    fontSize: 11,
+                    fontWeight: FontWeight.w700,
+                    color: Colors.black45),
+              ),
+            ),
             const SizedBox(
               height: 10,
             ),

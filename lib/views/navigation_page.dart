@@ -34,23 +34,20 @@ class _NavigationPageState extends State<NavigationPage> {
     final user = db.auth.currentUser;
     final hasConnection = context.hasConnection;
 
-    //
-
     return Scaffold(
         extendBodyBehindAppBar: true,
         extendBody: true,
-        appBar: AppbarWidget(title: titles.elementAt(_currentIndex)!)
-            as PreferredSizeWidget,
-        bottomNavigationBar: Container(
-          margin: const EdgeInsets.all(15),
-          decoration: BoxDecoration(
-            color: !hasConnection ? Colors.red : ComponentColors.sweetBrown,
-            borderRadius: BorderRadius.circular(
+        appBar:
+            AppBarWidget.showAppBar(context, titles.elementAt(_currentIndex)!),
+        bottomNavigationBar: ClipRRect(
+          borderRadius: const BorderRadius.vertical(
+            top: Radius.circular(
               35,
             ),
           ),
           child: BottomNavigationBar(
-            backgroundColor: Colors.transparent.withOpacity(0.0),
+            backgroundColor:
+                !hasConnection ? Colors.red : ComponentColors.sweetBrown,
             elevation: 0,
             currentIndex: _currentIndex,
             showSelectedLabels: false,
