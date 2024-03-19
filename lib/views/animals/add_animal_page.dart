@@ -86,6 +86,14 @@ class _AddAnimalPageState extends State<AddAnimalPage> with ValidatorMixin {
       final db = Supabase.instance.client;
       final user = db.auth.currentUser;
 
+      assert(nameController.text.isNotEmpty, "Escreva um nome");
+      assert(nameController.text.length <= 20, "Nome muito grande");
+      assert(furColorController.text.length <= 15, "Nome de pelo muito grande");
+      assert(
+        animalRaceController.text.isNotEmpty,
+        "Escolha uma raça para o animal",
+      );
+
       try {
         final Animal animal = Animal(
           age: animalAge,
@@ -108,17 +116,14 @@ class _AddAnimalPageState extends State<AddAnimalPage> with ValidatorMixin {
         if (mounted) {
           setState(() {
             isAnimalRegistered = true;
-            nameController.clear();
-            animalRaceController.clear();
-            furColorController.clear();
-            animalAge = 0.0;
-            animalSpecies = '';
           });
           context.showSucessSnackbar(
             "Animal cadastrado com sucesso",
           );
         }
       } on StorageException catch (error) {
+        context.showErrorSnackbar(error.message.toString());
+      } on AssertionError catch (error) {
         context.showErrorSnackbar(error.message.toString());
       }
     }
@@ -273,10 +278,8 @@ class _AddAnimalPageState extends State<AddAnimalPage> with ValidatorMixin {
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
                         borderSide: const BorderSide(
-                            style: BorderStyle.solid,
-                            color: ComponentColors.lightGray,
-                            width: 1.5,
-                            strokeAlign: 0),
+                          style: BorderStyle.none,
+                        ),
                       ),
                     ),
                     leadingIcon: const Icon(
@@ -286,7 +289,9 @@ class _AddAnimalPageState extends State<AddAnimalPage> with ValidatorMixin {
                     width: context.screenWidth - 60,
                     controller: animalRaceController,
                     textStyle: radioTextStyle,
-                    hintText: animalRaceController.text,
+                    hintText: animalSpecies == ''
+                        ? 'Selecione uma raça'
+                        : animalRaceController.text,
                     dropdownMenuEntries: animalSpecies == ''
                         ? []
                         : animalSpecies == 'dog'
