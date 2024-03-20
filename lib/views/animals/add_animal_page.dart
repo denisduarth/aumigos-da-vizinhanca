@@ -1,6 +1,7 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'dart:io';
+import 'package:aumigos_da_vizinhanca/exports/services.dart';
 import 'package:aumigos_da_vizinhanca/extensions/build_context_extension.dart';
 import 'package:aumigos_da_vizinhanca/models/animal.dart';
 import 'package:aumigos_da_vizinhanca/repositories/animal_repository.dart';
@@ -10,6 +11,7 @@ import 'package:aumigos_da_vizinhanca/mixins/validator_mixin.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../exports/enums.dart';
+import '../../widgets/text_styles.dart';
 
 class AddAnimalPage extends StatefulWidget {
   final String title = 'Adicionar Animais';
@@ -28,6 +30,7 @@ class _AddAnimalPageState extends State<AddAnimalPage> with ValidatorMixin {
   String animalSpecies = '';
   bool isAnimalRegistered = false;
   bool wasFed = false;
+  final _locationService = LocationService();
 
   final List<String> catRaces = [
     'Sphynx',
@@ -73,6 +76,12 @@ class _AddAnimalPageState extends State<AddAnimalPage> with ValidatorMixin {
   }
 
   @override
+  void initState() {
+    _locationService.getCurrentLocation();
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     const radioTextStyle = TextStyle(
       fontFamily: "Poppins",
@@ -85,6 +94,7 @@ class _AddAnimalPageState extends State<AddAnimalPage> with ValidatorMixin {
       final animalRepository = AnimalRepository();
       final db = Supabase.instance.client;
       final user = db.auth.currentUser;
+      final locationInfo = _locationService.currentAddress.split(',');
 
       assert(nameController.text.isNotEmpty, "Escreva um nome");
       assert(nameController.text.length <= 20, "Nome muito grande");
@@ -103,7 +113,9 @@ class _AddAnimalPageState extends State<AddAnimalPage> with ValidatorMixin {
           species: animalSpecies,
           image: image!.name,
           wasFed: wasFed,
+          street: locationInfo[0].toString(),
         );
+
         await db.storage.from('animals.images').upload(
               image!.name,
               File(image!.path),
@@ -121,6 +133,9 @@ class _AddAnimalPageState extends State<AddAnimalPage> with ValidatorMixin {
           context.showSucessSnackbar(
             "Animal cadastrado com sucesso",
           );
+
+          Future.delayed(const Duration(seconds: 3));
+          Navigator.pushNamed(context, '/home');
         }
       } on StorageException catch (error) {
         context.showErrorSnackbar(error.message.toString());
@@ -138,7 +153,7 @@ class _AddAnimalPageState extends State<AddAnimalPage> with ValidatorMixin {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 Container(
-                  margin: const EdgeInsets.only(top: 15, bottom: 30),
+                  margin: const EdgeInsets.only(top: 15, bottom: 50),
                   child: Column(
                     children: [
                       Image.asset(
@@ -361,7 +376,124 @@ class _AddAnimalPageState extends State<AddAnimalPage> with ValidatorMixin {
                   ),
                 ),
                 Button(
-                  onTap: registerAnimal,
+                  onTap: () => showModalBottomSheet(
+                    context: context,
+                    builder: (context) {
+                      return SingleChildScrollView(
+                        child: Center(
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 30.0,
+                            ),
+                            height: (context.screenHeight / 2) + 70,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(
+                                100,
+                              ),
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                vertical: 20.0,
+                              ),
+                              child: Column(
+                                children: [
+                                  Row(
+                                    children: [
+                                      Image.asset(
+                                        'images/aumigos_da_vizinhanca_cat_sweet_brown.png',
+                                        width: 50,
+                                        height: 50,
+                                      ),
+                                      Text(
+                                        "   Confirmação de cadastro",
+                                        style: TextStyles
+                                            .textStyleWithComponentColor(
+                                          stringColor: 'sweet_brown',
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w800,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                      vertical: 20.0,
+                                    ),
+                                    child: Wrap(
+                                      clipBehavior: Clip.hardEdge,
+                                      children: [
+                                        Text(
+                                          "Você deseja fazer o cadastro deste animal levando em consideração a sua localização atual? Fazendo isto, este animal estará vinculado à este endereço (esta rua, em espcífico), e não poderá ser alterado. Deseja prosseguir?",
+                                          style: TextStyles.textStyle(
+                                            fontColor: ComponentColors.mainGray,
+                                            fontSize: 12,
+                                            fontWeight: FontWeight.w600,
+                                          ),
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                      vertical: 20.0,
+                                    ),
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        OutlinedButton.icon(
+                                          style: OutlinedButton.styleFrom(
+                                              side: const BorderSide(
+                                            width: 1.5,
+                                            color: Colors.red,
+                                            strokeAlign: 0,
+                                          )),
+                                          onPressed: () =>
+                                              Navigator.of(context).pop(),
+                                          icon: const Icon(
+                                            Icons.warning_amber_rounded,
+                                            color: Colors.red,
+                                          ),
+                                          label: Text(
+                                            "Não prosseguir",
+                                            style: TextStyles.textStyle(
+                                                fontColor: Colors.red,
+                                                fontSize: 12,
+                                                fontWeight: FontWeight.w700),
+                                          ),
+                                        ),
+                                        OutlinedButton.icon(
+                                          style: OutlinedButton.styleFrom(
+                                              side: const BorderSide(
+                                            width: 1.5,
+                                            color: Colors.green,
+                                            strokeAlign: 0,
+                                          )),
+                                          onPressed: () => registerAnimal(),
+                                          icon: const Icon(
+                                            Icons.verified_outlined,
+                                            color: Colors.green,
+                                          ),
+                                          label: Text(
+                                            "Prosseguir",
+                                            style: TextStyles.textStyle(
+                                              fontColor: Colors.green,
+                                              fontSize: 12,
+                                              fontWeight: FontWeight.w700,
+                                            ),
+                                          ),
+                                        )
+                                      ],
+                                    ),
+                                  )
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  ),
                   buttonWidget: isAnimalRegistered
                       ? const Text(
                           "Animal registrado",

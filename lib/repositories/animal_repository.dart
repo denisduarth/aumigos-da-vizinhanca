@@ -29,6 +29,22 @@ class AnimalRepository implements IAnimalsRepository {
 
     return animalData;
   }
+  
+  @override
+  Stream<List<Map<String, dynamic>>> getAnimalsByUserId(String userId) {
+    final animalDataByUserId =
+        db.from('animals').select().textSearch('userId', userId).asStream();
+
+    return animalDataByUserId;
+  }
+
+  @override
+  Stream<List<Map<String, dynamic>>> getAnimalsByStreet(String street) {
+    final animalDataByUserId =
+        db.from('animals').select().textSearch('street', street).asStream();
+
+    return animalDataByUserId;
+  }
 
   @override
   Future<void> updateAnimal(String id, Animal animal) async {

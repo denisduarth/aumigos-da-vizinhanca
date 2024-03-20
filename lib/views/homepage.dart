@@ -48,7 +48,9 @@ class _HomepageState extends State<Homepage> with ValidatorMixin {
     final animalData = animalRepository.getAnimalsByName(name);
     setState(
       () {
-        stream = name.isNotEmpty ? animalData : animalRepository.getAnimals();
+        stream = name.isNotEmpty
+            ? animalData
+            : animalRepository.getAnimalsByUserId(user!.id);
       },
     );
   }
@@ -57,7 +59,7 @@ class _HomepageState extends State<Homepage> with ValidatorMixin {
   void initState() {
     super.initState();
     _getCurrentLocation();
-    stream = animalRepository.getAnimals();
+    stream = animalRepository.getAnimalsByUserId(user!.id);
   }
 
   @override
@@ -150,36 +152,147 @@ class _HomepageState extends State<Homepage> with ValidatorMixin {
                   ],
                 ),
               ),
-              StreamBuilder(
-                stream: stream,
-                builder: (context, snapshot) {
-                  if (!snapshot.hasData || snapshot.hasError) {
-                    return const CircularProgressIndicator();
-                  }
-
-                  final data = snapshot.data ?? [];
-
-                  return ListView(
-                    shrinkWrap: true,
-                    children: data
-                        .map(
-                          (animal) => ListTile(
-                            leading: ClipOval(
-                              child: Image.network(
-                                db.storage.from('animals.images').getPublicUrl(
-                                      animal['image'],
-                                    ),
-                                width: 40,
-                                height: 40,
-                                fit: BoxFit.cover,
-                              ),
-                            ),
-                            title: Text(animal['name']),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                      padding: const EdgeInsets.only(
+                        bottom: 20.0,
+                        left: 20.0,
+                        right: 20.0,
+                      ),
+                      child: Row(
+                        children: [
+                          Image.asset(
+                            'images/aumigos_da_vizinhanca_cat_sweet_brown.png',
+                            width: 30,
+                            height: 30,
                           ),
-                        )
-                        .toList(),
-                  );
-                },
+                          Text(
+                            "   Seus animais adicionados",
+                            style: TextStyles.textStyle(
+                                fontColor: ComponentColors.sweetBrown,
+                                fontSize: 12.5,
+                                fontWeight: FontWeight.w900),
+                          ),
+                        ],
+                      )),
+                  StreamBuilder(
+                    stream: stream,
+                    builder: (context, snapshot) {
+                      if (!snapshot.hasData || snapshot.hasError) {
+                        return const CircularProgressIndicator();
+                      }
+
+                      final data = snapshot.data ?? [];
+
+                      return SingleChildScrollView(
+                        child: Padding(
+                          padding: const EdgeInsets.only(left: 20.0),
+                          child: SizedBox(
+                            width: context.screenWidth,
+                            height: 300,
+                            child: ListView(
+                              physics: const AlwaysScrollableScrollPhysics(),
+                              scrollDirection: Axis.horizontal,
+                              children: data
+                                  .map(
+                                    (animal) => SizedBox(
+                                      height: 200,
+                                      width: 135,
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          ClipRRect(
+                                            borderRadius:
+                                                BorderRadius.circular(10),
+                                            child: Image.network(
+                                              db.storage
+                                                  .from('animals.images')
+                                                  .getPublicUrl(
+                                                    animal['image'],
+                                                  ),
+                                              height: 130,
+                                              width: 115,
+                                              fit: BoxFit.cover,
+                                            ),
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.symmetric(
+                                              vertical: 8.0,
+                                            ),
+                                            child: SizedBox(
+                                              height: 60,
+                                              child: Column(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceEvenly,
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Wrap(
+                                                    children: [
+                                                      Text(
+                                                        animal['name'],
+                                                        style: TextStyles
+                                                            .textStyle(
+                                                          fontColor:
+                                                              Colors.black,
+                                                          fontSize: 14,
+                                                          fontWeight:
+                                                              FontWeight.w900,
+                                                        ),
+                                                        textAlign:
+                                                            TextAlign.start,
+                                                        overflow: TextOverflow
+                                                            .ellipsis,
+                                                      ),
+                                                    ],
+                                                  ),
+                                                  Text(
+                                                    animal['id'],
+                                                    style: TextStyles.textStyle(
+                                                      fontColor: ComponentColors
+                                                          .mainGray,
+                                                      fontSize: 8,
+                                                      fontWeight:
+                                                          FontWeight.w600,
+                                                    ),
+                                                    textAlign: TextAlign.start,
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
+                                                  ),
+                                                  Text(
+                                                    animal['wasFed']
+                                                        ? "Alimentado"
+                                                        : "Não alimentado",
+                                                    style: TextStyles.textStyle(
+                                                        fontColor:
+                                                            animal['wasFed']
+                                                                ? Colors.green
+                                                                : Colors.red,
+                                                        fontSize: 10,
+                                                        fontWeight:
+                                                            FontWeight.w800),
+                                                    textAlign: TextAlign.start,
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                  )
+                                  .toList(),
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ],
               ),
             ],
           ),

@@ -13,6 +13,7 @@ class Animal {
   String image;
   bool wasFed;
   String? feedingDate;
+  String street;
 
   Animal({
     required this.age,
@@ -23,6 +24,7 @@ class Animal {
     required this.species,
     required this.image,
     required this.wasFed,
+    required this.street,
   })  : id = const Uuid().v4(),
         feedingDate = wasFed ? DateTime.now().toIso8601String() : '';
 
@@ -37,6 +39,7 @@ class Animal {
         'image': image,
         'wasFed': wasFed,
         'feedingDate': feedingDate,
+        'street': street
       };
 
   factory Animal.fromMap(Map<String, dynamic> map) => Animal(
@@ -48,6 +51,7 @@ class Animal {
         race: map['race'] as String,
         image: map['image'] as String,
         wasFed: map['wasFed'] as bool,
+        street: map['street'] as String
       );
 
   factory Animal.fromJson(String source) =>
