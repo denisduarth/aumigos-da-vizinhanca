@@ -8,7 +8,6 @@ import '../exports/views.dart';
 import '../exports/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-
 import '../widgets/text_styles.dart';
 import 'animals/animal_details_page.dart';
 

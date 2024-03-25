@@ -550,7 +550,7 @@ class AnimalSizedBox extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           ClipRRect(
-            borderRadius: BorderRadius.circular(40),
+            borderRadius: BorderRadius.circular(10),
             child: Image.network(
               db.storage.from('animals.images').getPublicUrl(
                     animalImagePath,
