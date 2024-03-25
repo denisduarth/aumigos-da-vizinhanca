@@ -1,14 +1,18 @@
 // ignore_for_file: prefer_const_constructors, file_names, use_build_context_synchronously
 
+import 'dart:io';
+
 import 'package:aumigos_da_vizinhanca/extensions/build_context_extension.dart';
 import 'package:aumigos_da_vizinhanca/mixins/validator_mixin.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../enums/text_align_enums.dart';
 import '../exports/views.dart';
 import '../exports/widgets.dart';
 
 class UpdateProfilePage extends StatefulWidget {
+  final String title = "Editar dados do usuário";
   const UpdateProfilePage({super.key});
 
   @override
@@ -25,6 +29,7 @@ class _UpdateProfilePageState extends State<UpdateProfilePage>
   final nameController = TextEditingController();
   bool isPasswordVisible = true;
   bool isInfoUpdated = false;
+  XFile? image;
 
   @override
   void initState() {
@@ -46,9 +51,7 @@ class _UpdateProfilePageState extends State<UpdateProfilePage>
         UserAttributes(
           email: emailController.text.toString(),
           password: passwordController.text.toString(),
-          data: {
-            'name': nameController.text.toString(),
-          },
+          data: {'name': nameController.text.toString(), 'image': image!.name},
         ),
       );
 
@@ -65,6 +68,14 @@ class _UpdateProfilePageState extends State<UpdateProfilePage>
     }
   }
 
+  Future uploadImage() async {
+    image = await ImagePicker().pickImage(source: ImageSource.gallery);
+
+    if (image == null) return;
+
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     final hasConnection = context.hasConnection;
@@ -72,10 +83,11 @@ class _UpdateProfilePageState extends State<UpdateProfilePage>
     if (!hasConnection) return const NetworkErrorPage();
 
     return Scaffold(
+      appBar: AppBarWidget.showAppBar(context, widget.title),
       body: SafeArea(
         child: SingleChildScrollView(
           child: SizedBox(
-            height: context.screenHeight + 150,
+            height: context.screenHeight + 100,
             child: Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -92,12 +104,47 @@ class _UpdateProfilePageState extends State<UpdateProfilePage>
                               icon: Icon(Icons.arrow_back_ios_new_rounded),
                               onPressed: () => Navigator.of(context).pop(),
                               enableBorderSide: false,
-                              color: ComponentColors.sweetBrown,
+                              color: ComponentColors.mainYellow,
                             ),
-                            Image.asset(
-                              'images/aumigos_da_vizinhanca_logo_main_brown.png',
-                              width: 80,
-                              height: 80,
+                            Stack(
+                              alignment: AlignmentDirectional.bottomEnd,
+                              children: [
+                                ClipRRect(
+                                  borderRadius: BorderRadius.circular(60),
+                                  child: user!.userMetadata?['image'] == null
+                                      ? Image.asset(
+                                          'images/user_image.png',
+                                          width: 110,
+                                          height: 110,
+                                        )
+                                      : image == null
+                                          ? Image.network(
+                                              db.storage
+                                                  .from('images')
+                                                  .getPublicUrl(user!
+                                                      .userMetadata?['image']),
+                                              fit: BoxFit.cover,
+                                              width: 100,
+                                              height: 100,
+                                            )
+                                          : CircleAvatar(
+                                              backgroundColor:
+                                                  Colors.transparent,
+                                              radius: 100,
+                                              backgroundImage: FileImage(
+                                                File(
+                                                  image!.path,
+                                                ),
+                                              ),
+                                            ),
+                                ),
+                                IconButtonWidget(
+                                  icon: Icon(Icons.photo),
+                                  onPressed: uploadImage,
+                                  enableBorderSide: true,
+                                  color: ComponentColors.sweetBrown,
+                                ),
+                              ],
                             ),
                           ],
                         ),
@@ -112,7 +159,7 @@ class _UpdateProfilePageState extends State<UpdateProfilePage>
                                     horizontal: 30.0, vertical: 10.0),
                                 child: GradientText(
                                   text: "Editar dados do usuário",
-                                  textSize: 40,
+                                  textSize: 28,
                                   textAlign: TextAlignEnum.center,
                                 ),
                               ),
@@ -135,7 +182,7 @@ class _UpdateProfilePageState extends State<UpdateProfilePage>
                     ),
                   ),
                   SizedBox(
-                    height: 450,
+                    height: 550,
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [

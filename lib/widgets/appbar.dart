@@ -13,7 +13,7 @@ class AppBarWidget {
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(
           bottom: Radius.circular(
-            35,
+            50,
           ),
         ),
       ),

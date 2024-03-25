@@ -88,8 +88,9 @@ class _LoginPageState extends State<LoginPage> with ValidatorMixin {
       body: SafeArea(
         child: SingleChildScrollView(
           child: SizedBox(
-            height: context.screenHeight - 50,
+            height: context.screenHeight - 150,
             child: Container(
+              alignment: Alignment.center,
               margin: EdgeInsets.symmetric(vertical: 30),
               child: Form(
                 key: _formKey,
@@ -99,20 +100,21 @@ class _LoginPageState extends State<LoginPage> with ValidatorMixin {
                   children: [
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 50.0),
-                      child: Row(
+                      child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 10.0),
-                              child: GradientText(
-                                  text: "Login",
-                                  textSize: 33,
-                                  textAlign: TextAlignEnum.start)),
                           Image.asset(
                             'images/aumigos_da_vizinhanca_logo_sweet_brown.png',
-                            height: 60,
-                            width: 60,
+                            height: 80,
+                            width: 80,
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(top: 20.0),
+                            child: GradientText(
+                              text: "Login",
+                              textSize: 40,
+                              textAlign: TextAlignEnum.start,
+                            ),
                           ),
                         ],
                       ),
@@ -120,7 +122,7 @@ class _LoginPageState extends State<LoginPage> with ValidatorMixin {
                     SizedBox(
                       height: 300,
                       child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
                           TextForm(
                             labelText: "Digite seu e-mail",
@@ -132,7 +134,6 @@ class _LoginPageState extends State<LoginPage> with ValidatorMixin {
                               () => isEmpty(value),
                               () => emailValidator(value),
                             ]),
-                            topText: "Login",
                           ),
                           TextForm(
                             labelText: "Digite sua senha",
@@ -141,7 +142,6 @@ class _LoginPageState extends State<LoginPage> with ValidatorMixin {
                             obscureText: true,
                             keyboardType: TextInputType.visiblePassword,
                             validator: isEmpty,
-                            topText: "Senha",
                           ),
                           Button(
                             onTap: login,

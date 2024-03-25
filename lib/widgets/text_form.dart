@@ -26,6 +26,16 @@ final mainBorder = OutlineInputBorder(
   ),
 );
 
+final focusedBorder = OutlineInputBorder(
+  borderRadius: BorderRadius.circular(10),
+  borderSide: const BorderSide(
+    style: BorderStyle.solid,
+    color: ComponentColors.mainYellow,
+    strokeAlign: 0,
+    width: 2.5,
+  ),
+);
+
 class TextForm extends StatefulWidget {
   String? labelText;
   String? hintText;
@@ -58,26 +68,81 @@ class TextForm extends StatefulWidget {
 class _TextFormState extends State<TextForm> {
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-        width: MediaQuery.of(context).size.width - 50,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 15.0),
-              child: Text(
-                widget.topText ?? '',
-                style: const TextStyle(
-                    fontFamily: "Poppins",
-                    fontSize: 11,
-                    fontWeight: FontWeight.w700,
-                    color: Colors.black45),
-              ),
+    return widget.topText != null
+        ? SizedBox(
+            width: MediaQuery.of(context).size.width - 50,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 15.0),
+                  child: Text(
+                    widget.topText ?? '',
+                    style: const TextStyle(
+                        fontFamily: "Poppins",
+                        fontSize: 11,
+                        fontWeight: FontWeight.w700,
+                        color: Colors.black45),
+                  ),
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                TextFormField(
+                  onFieldSubmitted: widget.onFieldSubmitted,
+                  keyboardType: widget.keyboardType,
+                  decoration: InputDecoration(
+                      labelText: widget.labelText,
+                      labelStyle: labelStyle,
+                      prefixIcon: widget.icon,
+                      prefixIconColor: ComponentColors.mainGray,
+                      prefixIconConstraints: const BoxConstraints(minWidth: 60),
+                      suffixIcon: widget.keyboardType ==
+                              TextInputType.visiblePassword
+                          ? IconButton(
+                              onPressed: () {
+                                setState(() {
+                                  widget.obscureText = !widget.obscureText;
+                                });
+                              },
+                              icon: Icon(
+                                widget.obscureText
+                                    ? Icons.visibility
+                                    : Icons.visibility_off,
+                                color: ComponentColors.mainGray,
+                              ),
+                            )
+                          : widget.controller!.text.isNotEmpty
+                              ? IconButton(
+                                  onPressed: () => widget.controller!.clear(),
+                                  icon: const Icon(
+                                    Icons.clear,
+                                    color: ComponentColors.mainGray,
+                                  ),
+                                )
+                              : null,
+                      suffixIconConstraints: const BoxConstraints(minWidth: 70),
+                      focusColor: ComponentColors.lightGray,
+                      border: mainBorder,
+                      focusedBorder: focusedBorder,
+                      enabledBorder: mainBorder,
+                      fillColor: Colors.white,
+                      filled: true,
+                      contentPadding: const EdgeInsets.symmetric(
+                        vertical: 20,
+                      ),
+                      floatingLabelBehavior: FloatingLabelBehavior.never),
+                  controller: widget.controller,
+                  obscureText: widget.obscureText,
+                  style: textFieldStyle,
+                  validator: widget.validator,
+                ),
+              ],
             ),
-            const SizedBox(
-              height: 10,
-            ),
-            TextFormField(
+          )
+        : SizedBox(
+            width: MediaQuery.of(context).size.width - 50,
+            child: TextFormField(
               onFieldSubmitted: widget.onFieldSubmitted,
               keyboardType: widget.keyboardType,
               decoration: InputDecoration(
@@ -101,10 +166,19 @@ class _TextFormState extends State<TextForm> {
                                 color: ComponentColors.mainGray,
                               ),
                             )
-                          : null,
+                          : widget.controller!.text.isNotEmpty
+                              ? IconButton(
+                                  onPressed: () => widget.controller!.clear(),
+                                  icon: const Icon(
+                                    Icons.clear,
+                                    color: ComponentColors.mainGray,
+                                  ),
+                                )
+                              : null,
                   suffixIconConstraints: const BoxConstraints(minWidth: 70),
                   focusColor: ComponentColors.lightGray,
                   border: mainBorder,
+                  focusedBorder: focusedBorder,
                   enabledBorder: mainBorder,
                   fillColor: Colors.white,
                   filled: true,
@@ -117,7 +191,6 @@ class _TextFormState extends State<TextForm> {
               style: textFieldStyle,
               validator: widget.validator,
             ),
-          ],
-        ));
+          );
   }
 }

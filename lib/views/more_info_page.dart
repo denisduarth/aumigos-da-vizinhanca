@@ -73,13 +73,15 @@ class _MoreInfoPageState extends State<MoreInfoPage> with ValidatorMixin {
 
     Future<void> register() async {
       try {
-        await db.storage.from('images').upload(
-              image!.name,
-              File(image!.path),
-              fileOptions: const FileOptions(
-                upsert: true,
-              ),
-            );
+        if (image != null) {
+          await db.storage.from('images').upload(
+                image!.name,
+                File(image!.path),
+                fileOptions: const FileOptions(
+                  upsert: true,
+                ),
+              );
+        }
 
         await db.auth.signUp(
           email: userEmail,
@@ -92,10 +94,10 @@ class _MoreInfoPageState extends State<MoreInfoPage> with ValidatorMixin {
               'sub_administrative_area': infoData['sub_administrative_area'],
               'postal_code': infoData['postal_code'],
               'country': infoData['country'],
-              'latitude': positionInfo.latitude,
+              'latitude': positionInfo!.latitude,
               'longitude': positionInfo.longitude
             },
-            'image': image!.name
+            'image': image?.name ?? ''
           },
         );
 
@@ -243,7 +245,7 @@ class _MoreInfoPageState extends State<MoreInfoPage> with ValidatorMixin {
                               'CEP: ${locationInfo[3]}', Icons.location_on),
                           decoratedText(
                               'País: ${locationInfo[4]}', Icons.location_on),
-                          decoratedText('Latitude: ${positionInfo.latitude}',
+                          decoratedText('Latitude: ${positionInfo!.latitude}',
                               Icons.location_on),
                           decoratedText('Longitude: ${positionInfo.longitude}',
                               Icons.location_on),

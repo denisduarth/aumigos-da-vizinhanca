@@ -4,7 +4,7 @@ import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 
 class LocationService {
-  late Position currentPosition;
+  Position? currentPosition;
   String currentAddress = '';
 
   Future<bool> _handleLocationPermission() async {
@@ -44,7 +44,7 @@ class LocationService {
   Future<void> _getAddressFromLatLng() async {
     try {
       List<Placemark> placemarks = await placemarkFromCoordinates(
-          currentPosition.latitude, currentPosition.longitude);
+          currentPosition!.latitude, currentPosition!.longitude);
       Placemark place = placemarks[0];
       currentAddress =
           "${place.street}, ${place.subLocality}, ${place.subAdministrativeArea}, ${place.postalCode}, ${place.country}";
@@ -53,7 +53,8 @@ class LocationService {
     }
   }
 
-  Position get getCurrentPosition => currentPosition;
+  Position get getCurrentPosition => currentPosition!;
   String get getCurrentAddress => currentAddress;
-  Future<bool> get isLocationServiceEnabled => Geolocator.isLocationServiceEnabled();
+  Future<bool> get isLocationServiceEnabled =>
+      Geolocator.isLocationServiceEnabled();
 }
