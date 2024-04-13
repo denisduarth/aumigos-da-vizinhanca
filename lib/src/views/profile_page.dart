@@ -1,15 +1,12 @@
 // ignore_for_file: prefer_const_literals_to_create_immutables, prefer_const_constructors, file_names, use_build_context_synchronously
 
-import 'package:aumigos_da_vizinhanca/extensions/build_context_extension.dart';
+import '/src/exports/all.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:url_launcher/url_launcher.dart';
-import '../exports/views.dart';
-import '../exports/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import '../widgets/text_styles.dart';
-import 'animals/animal_details_page.dart';
+
 
 const infoTextStyle = TextStyle(
   fontFamily: "Poppins",
@@ -38,6 +35,19 @@ class _ProfilePageState extends State<ProfilePage> {
 
   @override
   Widget build(BuildContext context) {
+    Future<void> logout() async {
+      try {
+        await db.auth.signOut();
+
+        context.showErrorSnackbar("Saindo de ${user!.email}");
+
+        await Future.delayed(Duration(seconds: 2));
+        Navigator.pushNamed(context, '/login');
+      } on AuthException catch (error) {
+        context.showErrorSnackbar(error.message.toString());
+      }
+    }
+
     user = db.auth.currentUser;
     stream = db.from('animals').select().eq('userId', user!.id).asStream();
     final hasConnection = context.hasConnection;
@@ -45,6 +55,8 @@ class _ProfilePageState extends State<ProfilePage> {
     if (!hasConnection) return const NetworkErrorPage();
 
     return Scaffold(
+      extendBodyBehindAppBar: true,
+      extendBody: true,
       backgroundColor: Colors.white,
       body: SafeArea(
         child: SingleChildScrollView(
@@ -101,43 +113,43 @@ class _ProfilePageState extends State<ProfilePage> {
                                 ),
                         ),
                       ),
-                      Stack(
-                        alignment: AlignmentDirectional.bottomEnd,
-                        children: [
-                          ClipRRect(
-                            borderRadius: BorderRadius.circular(60),
-                            child: user!.userMetadata?['image'] == null
-                                ? Image.asset(
-                                    'images/user_image.png',
-                                    width: 110,
-                                    height: 110,
-                                  )
-                                : Image.network(
-                                    db.storage.from('images').getPublicUrl(
-                                        user!.userMetadata?['image']),
-                                    fit: BoxFit.cover,
-                                    width: 110,
-                                    height: 110,
-                                  ),
-                          ),
-                          IconButtonWidget(
-                            icon: Icon(Icons.edit),
-                            onPressed: () =>
-                                Navigator.pushNamed(context, '/update-profile'),
-                            enableBorderSide: true,
-                            color: ComponentColors.sweetBrown,
-                          ),
-                        ],
-                      ),
                     ],
                   ),
                   Container(
                     padding: const EdgeInsets.symmetric(vertical: 30.0),
-                    height: 300,
+                    height: 400,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
+                        Stack(
+                          alignment: AlignmentDirectional.bottomEnd,
+                          children: [
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(60),
+                              child: user!.userMetadata?['image'] == null
+                                  ? Image.asset(
+                                      'images/user_image.png',
+                                      width: 110,
+                                      height: 110,
+                                    )
+                                  : Image.network(
+                                      db.storage.from('images').getPublicUrl(
+                                          user!.userMetadata?['image']),
+                                      fit: BoxFit.cover,
+                                      width: 110,
+                                      height: 110,
+                                    ),
+                            ),
+                            IconButtonWidget(
+                              icon: Icon(Icons.edit),
+                              onPressed: () => Navigator.pushNamed(
+                                  context, '/update-profile'),
+                              enableBorderSide: true,
+                              color: ComponentColors.sweetBrown,
+                            ),
+                          ],
+                        ),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
@@ -151,31 +163,15 @@ class _ProfilePageState extends State<ProfilePage> {
                             ),
                             IconButtonWidget(
                               icon: Icon(Icons.logout_rounded),
-                              onPressed: () async {
-                                await db.auth.signOut();
-                                context.showErrorSnackbar(
-                                    "Saindo de ${user!.email}");
-
-                                await Future.delayed(Duration(seconds: 2));
-                                Navigator.pushNamed(context, '/login');
-                              },
+                              onPressed: logout,
                               enableBorderSide: false,
                               color: Colors.red,
                             ),
                           ],
                         ),
                         Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(vertical: 10.0),
-                              child: Icon(
-                                Icons.location_on_rounded,
-                                color: ComponentColors.sweetBrown,
-                                size: 35,
-                              ),
-                            ),
                             Text(
                               user!.userMetadata?['location']['street'],
                               style: infoTextStyle,

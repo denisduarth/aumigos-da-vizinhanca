@@ -1,5 +1,5 @@
-import 'package:aumigos_da_vizinhanca/exports/widgets.dart';
 import 'package:flutter/material.dart';
+import '../exports/all.dart';
 
 final class TextStyles {
   static TextStyle textStyle({

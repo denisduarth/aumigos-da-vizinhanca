@@ -1,15 +1,17 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'dart:io';
-import 'package:aumigos_da_vizinhanca/exports/services.dart';
-import 'package:aumigos_da_vizinhanca/extensions/build_context_extension.dart';
-import 'package:aumigos_da_vizinhanca/models/animal.dart';
-import 'package:aumigos_da_vizinhanca/repositories/animal_repository.dart';
+
+import 'package:aumigos_da_vizinhanca/src/exports/extensions.dart';
+import 'package:aumigos_da_vizinhanca/src/exports/services.dart';
+import 'package:aumigos_da_vizinhanca/src/exports/widgets.dart';
+import 'package:aumigos_da_vizinhanca/src/mixins/validator_mixin.dart';
+import 'package:aumigos_da_vizinhanca/src/models/animal.dart';
+import 'package:aumigos_da_vizinhanca/src/repositories/animal_repository.dart';
 import 'package:flutter/material.dart';
-import 'package:aumigos_da_vizinhanca/exports/widgets.dart';
-import 'package:aumigos_da_vizinhanca/mixins/validator_mixin.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import '../../enums/images_enum.dart';
 import '../../exports/enums.dart';
 import '../../widgets/text_styles.dart';
 
@@ -66,6 +68,7 @@ class _AddAnimalPageState extends State<AddAnimalPage> with ValidatorMixin {
     'Terrier',
     'Husky',
     'Dobberman',
+    'Lulu da pomerânia',
   ];
 
   void showUnsavedFormAlert() {
@@ -91,7 +94,7 @@ class _AddAnimalPageState extends State<AddAnimalPage> with ValidatorMixin {
     );
   }
 
-  Future uploadImage() async {
+  Future<void> uploadImage() async {
     image = await ImagePicker().pickImage(source: ImageSource.gallery);
 
     if (image == null) return;
@@ -115,8 +118,8 @@ class _AddAnimalPageState extends State<AddAnimalPage> with ValidatorMixin {
     );
 
     Future<void> registerAnimal() async {
-      final animalRepository = AnimalRepository();
       final db = Supabase.instance.client;
+      final animalRepository = AnimalRepository();
       final user = db.auth.currentUser;
       final locationInfo = _locationService.currentAddress.split(',');
       final positionInfo = _locationService.currentPosition;
@@ -138,24 +141,26 @@ class _AddAnimalPageState extends State<AddAnimalPage> with ValidatorMixin {
 
       try {
         final animal = Animal(
-            age: animalAge,
-            name: nameController.text.toString(),
-            userId: user!.id,
-            race: animalRaceController.text,
-            species: animalSpecies,
-            image: image!.name,
-            wasFed: wasFed,
-            street: infoData['street']!,
-            latitude: positionInfo!.latitude,
-            longitude: positionInfo.longitude);
+          age: animalAge,
+          name: nameController.text.toString(),
+          userId: user!.id,
+          race: animalRaceController.text,
+          species: animalSpecies,
+          image: image!.name,
+          wasFed: wasFed,
+          street: infoData['street']!,
+          latitude: positionInfo!.latitude,
+          longitude: positionInfo.longitude,
+        );
 
-        await db.storage.from('animals.images').upload(
-              image!.name,
-              File(image!.path),
-              fileOptions: const FileOptions(
-                upsert: true,
-              ),
-            );
+        if (image!.name.isEmpty) {
+          await db.storage.from('animals.images').upload(
+                image!.name,
+                File(
+                  image!.path,
+                ),
+              );
+        }
 
         animalRepository.addAnimal(animal);
 
@@ -418,6 +423,11 @@ class _AddAnimalPageState extends State<AddAnimalPage> with ValidatorMixin {
                     ),
                   ),
                   Button(
+                    buttonIcon: Image.asset(
+                      ImagesEnum.logoWhite.imageName,
+                      width: 20,
+                      height: 20,
+                    ),
                     onTap: () => showModalBottomSheet(
                       context: context,
                       builder: (context) {
@@ -512,9 +522,7 @@ class _AddAnimalPageState extends State<AddAnimalPage> with ValidatorMixin {
                                               color: Colors.green,
                                               strokeAlign: 0,
                                             )),
-                                            onPressed: () => isFormSaved
-                                                ? registerAnimal()
-                                                : showUnsavedFormAlert(),
+                                            onPressed: registerAnimal,
                                             icon: const Icon(
                                               Icons.verified_outlined,
                                               color: Colors.green,

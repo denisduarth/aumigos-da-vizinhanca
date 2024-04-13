@@ -30,8 +30,8 @@ final focusedBorder = OutlineInputBorder(
   borderRadius: BorderRadius.circular(10),
   borderSide: const BorderSide(
     style: BorderStyle.solid,
-    color: ComponentColors.mainYellow,
-    strokeAlign: 0,
+    color: ComponentColors.mainBlack,
+    strokeAlign: 2,
     width: 2.5,
   ),
 );

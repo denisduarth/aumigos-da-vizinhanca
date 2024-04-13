@@ -1,8 +1,7 @@
 // ignore_for_file: file_names, use_build_context_synchronously
 
 import 'dart:io';
-import 'package:aumigos_da_vizinhanca/extensions/build_context_extension.dart';
-import 'package:aumigos_da_vizinhanca/mixins/validator_mixin.dart';
+import 'package:aumigos_da_vizinhanca/src/exports/extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -10,6 +9,7 @@ import '../enums/text_align_enums.dart';
 import '../exports/services.dart';
 import '../exports/widgets.dart';
 import '../exports/views.dart';
+import '../mixins/validator_mixin.dart';
 
 class MoreInfoPage extends StatefulWidget {
   const MoreInfoPage({super.key});
@@ -305,6 +305,7 @@ class _MoreInfoPageState extends State<MoreInfoPage> with ValidatorMixin {
                   Padding(
                     padding: const EdgeInsets.only(top: 20.0, bottom: 30.0),
                     child: Button(
+                      buttonIcon: const Icon(Icons.arrow_forward_ios_rounded, color: Colors.white,),
                       onTap: register,
                       buttonWidget: isRegistered
                           ? const SizedBox(

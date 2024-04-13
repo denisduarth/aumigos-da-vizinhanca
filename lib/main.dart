@@ -1,8 +1,8 @@
 import 'dart:async';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'exports/views.dart';
 import 'package:flutter/material.dart';
+import '../../src/exports/all.dart';
 
 const Locale brazilianPortuguese = Locale('pt', 'BR');
 

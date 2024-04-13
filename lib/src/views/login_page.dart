@@ -1,15 +1,14 @@
 // ignore_for_file: prefer_const_constructors, file_names, unused_element, use_build_context_synchronously, avoid_print, dead_code
 
 import 'dart:async';
-import 'package:aumigos_da_vizinhanca/mixins/validator_mixin.dart';
+import 'package:aumigos_da_vizinhanca/src/exports/extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import '../enums/text_align_enums.dart';
-import '../extensions/build_context_extension.dart';
+import '../exports/enums.dart';
 import '../exports/views.dart';
 import '../exports/widgets.dart';
-import '../widgets/text_styles.dart';
+import '../mixins/validator_mixin.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -85,49 +84,72 @@ class _LoginPageState extends State<LoginPage> with ValidatorMixin {
 
     return Scaffold(
       backgroundColor: Colors.white,
-      body: SafeArea(
-        child: SingleChildScrollView(
-          child: SizedBox(
-            height: context.screenHeight - 150,
+      body: RefreshIndicator(
+        onRefresh: () async {
+          await Future.delayed(Duration(seconds: 3));
+          emailController.clear();
+          passwordController.clear();
+        },
+        child: SafeArea(
+          child: SingleChildScrollView(
             child: Container(
-              alignment: Alignment.center,
+              height: context.screenHeight - 150,
+              alignment: AlignmentDirectional.center,
               margin: EdgeInsets.symmetric(vertical: 30),
               child: Form(
+                canPop: false,
                 key: _formKey,
                 child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 50.0),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Image.asset(
-                            'images/aumigos_da_vizinhanca_logo_sweet_brown.png',
-                            height: 80,
-                            width: 80,
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(top: 20.0),
-                            child: GradientText(
-                              text: "Login",
-                              textSize: 40,
-                              textAlign: TextAlignEnum.start,
+                        padding: EdgeInsets.symmetric(
+                          vertical: 8.0,
+                          horizontal: 50.0,
+                        ),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              children: [
+                                Image.asset(
+                                  ImagesEnum.logoMainYellow.imageName,
+                                  width: 40,
+                                  height: 40,
+                                ),
+                                GradientText(
+                                  text: "   Aumigos da Vizinhança",
+                                  textSize: 15,
+                                  textAlign: TextAlignEnum.start,
+                                ),
+                              ],
                             ),
-                          ),
-                        ],
-                      ),
-                    ),
+                            Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(vertical: 20.0),
+                              child: Text(
+                                "Login",
+                                style: TextStyles.textStyle(
+                                  fontColor: ComponentColors.mainBlack,
+                                  fontSize: 30.0,
+                                  fontWeight: FontWeight.w900,
+                                ),
+                              ),
+                            ),
+                          ],
+                        )),
                     SizedBox(
-                      height: 300,
+                      height: 360,
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
                           TextForm(
+                            topText: "E-mail",
                             labelText: "Digite seu e-mail",
                             controller: emailController,
-                            icon: Icon(Icons.email_rounded),
+                            icon: Icon(Icons.email_outlined),
                             obscureText: false,
                             keyboardType: TextInputType.text,
                             validator: (value) => combine([
@@ -136,14 +158,22 @@ class _LoginPageState extends State<LoginPage> with ValidatorMixin {
                             ]),
                           ),
                           TextForm(
+                            topText: "Senha",
                             labelText: "Digite sua senha",
                             controller: passwordController,
-                            icon: Icon(Icons.lock_rounded),
+                            icon: Icon(Icons.lock_outline_rounded),
                             obscureText: true,
                             keyboardType: TextInputType.visiblePassword,
                             validator: isEmpty,
                           ),
                           Button(
+                            buttonIcon: isLoggedIn
+                                ? Container()
+                                : Icon(
+                                    Icons.login_outlined,
+                                    color: Colors.white,
+                                  ),
+                            buttonColor: ComponentColors.sweetBrown,
                             onTap: login,
                             buttonWidget: isLoggedIn
                                 ? SizedBox(
@@ -167,7 +197,7 @@ class _LoginPageState extends State<LoginPage> with ValidatorMixin {
                         Text(
                           "Não tem uma conta? ",
                           style: TextStyles.textStyle(
-                            fontSize: 11.5,
+                            fontSize: 13,
                             fontWeight: FontWeight.w600,
                             fontColor: Colors.black26,
                           ),
@@ -182,7 +212,7 @@ class _LoginPageState extends State<LoginPage> with ValidatorMixin {
                           ),
                           child: GradientText(
                             text: "Crie agora",
-                            textSize: 11.5,
+                            textSize: 13.5,
                             textAlign: TextAlignEnum.center,
                           ),
                         ),

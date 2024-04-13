@@ -1,11 +1,12 @@
-import 'package:aumigos_da_vizinhanca/extensions/build_context_extension.dart';
-import 'package:aumigos_da_vizinhanca/widgets/colors.dart';
+import '../../exports/enums.dart';
+import '../../exports/extensions.dart';
+import '../../exports/services.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
-import '../../exports/services.dart';
+import '../../exports/widgets.dart';
 import '../../widgets/text_styles.dart';
 
 class AnimalDetailsPage extends StatefulWidget {
@@ -53,6 +54,8 @@ class _AnimalDetailsPageState extends State<AnimalDetailsPage> {
                   }
                   final data = snapshot.data as Map<String, dynamic>;
 
+                  const feedingDataFormatted = "";
+
                   return ListView(
                     physics: const AlwaysScrollableScrollPhysics(),
                     children: [
@@ -88,8 +91,9 @@ class _AnimalDetailsPageState extends State<AnimalDetailsPage> {
                                     children: [
                                       Image.asset(
                                         data['species'] == 'cat'
-                                            ? 'images/aumigos_da_vizinhanca_cat_main_yellow.png'
-                                            : 'images/aumigos_da_vizinhanca_logo_sweet_brown.png',
+                                            ? ImagesEnum.catMainYellow.imageName
+                                            : ImagesEnum
+                                                .logoSweetBrown.imageName,
                                         width: 30,
                                         height: 30,
                                       ),
@@ -112,24 +116,28 @@ class _AnimalDetailsPageState extends State<AnimalDetailsPage> {
                                     children: [
                                       Image.asset(
                                         data['wasFed']
-                                            ? 'images/aumigos_da_vizinhanca_fed.png'
-                                            : 'images/aumigos_da_vizinhanca_not_fed.png',
+                                            ? ImagesEnum.fed.imageName
+                                            : ImagesEnum.notFed.imageName,
                                         width: 25,
                                         height: 25,
                                       ),
-                                      Text(
-                                        data['wasFed']
-                                            ? "   Alimentado"
-                                            : "   Não alimentado",
-                                        style: TextStyles.textStyle(
-                                            fontColor: data['wasFed']
-                                                ? Colors.green
-                                                : Colors.red,
-                                            fontSize: 15,
-                                            fontWeight: FontWeight.w800),
-                                        textAlign: TextAlign.start,
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
+                                      Wrap(
+                                        direction: Axis.horizontal,
+                                        children: [
+                                          Text(
+                                            data['wasFed']
+                                                ? "   Alimentado em $feedingDataFormatted" //TODO
+                                                : "   Não alimentado",
+                                            style: TextStyles.textStyle(
+                                                fontColor: data['wasFed']
+                                                    ? Colors.green
+                                                    : Colors.red,
+                                                fontSize: 15,
+                                                fontWeight: FontWeight.w800),
+                                            // textAlign: TextAlign.start,
+                                          ),
+                                        ],
+                                      )
                                     ],
                                   ),
                                 ],

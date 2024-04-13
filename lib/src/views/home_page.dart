@@ -1,10 +1,10 @@
 // ignore_for_file: avoid_print, use_build_context_synchronously, must_be_immutable
 
 import 'dart:core';
-import 'package:aumigos_da_vizinhanca/enums/text_align_enums.dart';
-import 'package:aumigos_da_vizinhanca/exports/widgets.dart';
-import 'package:aumigos_da_vizinhanca/mixins/validator_mixin.dart';
-import 'package:aumigos_da_vizinhanca/views/animals/animal_details_page.dart';
+import '../../src/enums/text_align_enums.dart';
+import '../../src/exports/widgets.dart';
+import '../../src/mixins/validator_mixin.dart';
+import '../../src/exports/views.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
@@ -13,7 +13,6 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../exports/services.dart';
 import '../extensions/build_context_extension.dart';
-import '../exports/views.dart';
 import '../widgets/text_styles.dart';
 import '../repositories/animal_repository.dart';
 
@@ -40,7 +39,7 @@ class _HomepageState extends State<Homepage> with ValidatorMixin {
   late Stream<List<Map<String, dynamic>>> stream;
   late Stream<List<Map<String, dynamic>>> streamCurrentStreet;
   late Position? currentPosition;
-
+  final focusNode = FocusNode();
   @override
   void dispose() {
     super.dispose();
@@ -50,9 +49,6 @@ class _HomepageState extends State<Homepage> with ValidatorMixin {
   _getCurrentLocation() async {
     try {
       await _locationService.getCurrentLocation();
-      setState(
-        () {},
-      );
     } on Exception catch (error) {
       context.showErrorSnackbar(error.toString());
     }
@@ -230,131 +226,6 @@ class _HomepageState extends State<Homepage> with ValidatorMixin {
                           ],
                         ),
                       ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(
-                          vertical: 8.0,
-                        ),
-                        child: SizedBox(
-                          width: context.screenWidth,
-                          height: 50,
-                          child: ListView(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 10.0, vertical: 3.0),
-                            physics: const AlwaysScrollableScrollPhysics(),
-                            scrollDirection: Axis.horizontal,
-                            children: [
-                              Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 8.0),
-                                child: outlinedButtonWidget(
-                                  'images/aumigos_da_vizinhanca_cat_main_yellow.png',
-                                  "Gatos",
-                                  ComponentColors.mainYellow,
-                                  () {
-                                    setState(
-                                      () {
-                                        stream = db
-                                            .from('animals')
-                                            .select()
-                                            .eq('species', 'cat')
-                                            .asStream();
-
-                                        streamCurrentStreet = db
-                                            .from('animals')
-                                            .select()
-                                            .eq('street', currentStreet)
-                                            .eq('species', 'cat')
-                                            .asStream();
-                                      },
-                                    );
-                                  },
-                                ),
-                              ),
-                              Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 8.0),
-                                child: outlinedButtonWidget(
-                                  'images/aumigos_da_vizinhanca_logo_sweet_brown.png',
-                                  "Cachorros",
-                                  ComponentColors.sweetBrown,
-                                  () {
-                                    setState(
-                                      () {
-                                        stream = db
-                                            .from('animals')
-                                            .select()
-                                            .eq('species', 'dog')
-                                            .asStream();
-
-                                        streamCurrentStreet = db
-                                            .from('animals')
-                                            .select()
-                                            .eq('street', currentStreet)
-                                            .eq('species', 'dog')
-                                            .asStream();
-                                      },
-                                    );
-                                  },
-                                ),
-                              ),
-                              Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 8.0),
-                                child: outlinedButtonWidget(
-                                  'images/aumigos_da_vizinhanca_not_fed.png',
-                                  "Não alimentados",
-                                  Colors.red,
-                                  () {
-                                    setState(
-                                      () {
-                                        stream = db
-                                            .from('animals')
-                                            .select()
-                                            .eq('wasFed', false)
-                                            .asStream();
-
-                                        streamCurrentStreet = db
-                                            .from('animals')
-                                            .select()
-                                            .eq('street', currentStreet)
-                                            .eq('wasFed', false)
-                                            .asStream();
-                                      },
-                                    );
-                                  },
-                                ),
-                              ),
-                              Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 8.0),
-                                child: outlinedButtonWidget(
-                                  'images/aumigos_da_vizinhanca_fed.png',
-                                  "Alimentados",
-                                  Colors.green,
-                                  () {
-                                    setState(
-                                      () {
-                                        stream = db
-                                            .from('animals')
-                                            .select()
-                                            .eq('wasFed', true)
-                                            .asStream();
-
-                                        streamCurrentStreet = db
-                                            .from('animals')
-                                            .select()
-                                            .eq('street', currentStreet)
-                                            .eq('wasFed', true)
-                                            .asStream();
-                                      },
-                                    );
-                                  },
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
                       Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -376,6 +247,127 @@ class _HomepageState extends State<Homepage> with ValidatorMixin {
                                       fontWeight: FontWeight.w900),
                                 ),
                               ],
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(
+                              vertical: 8.0,
+                            ),
+                            child: SizedBox(
+                              width: context.screenWidth,
+                              height: 50,
+                              child: ListView(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 10.0),
+                                physics: const AlwaysScrollableScrollPhysics(),
+                                scrollDirection: Axis.horizontal,
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 8.0),
+                                    child: textGestureDetector(
+                                      "Gatos",
+                                      focusNode,
+                                      () {
+                                        setState(
+                                          () {
+                                            stream = db
+                                                .from('animals')
+                                                .select()
+                                                .eq('species', 'cat')
+                                                .asStream();
+
+                                            streamCurrentStreet = db
+                                                .from('animals')
+                                                .select()
+                                                .eq('street', currentStreet)
+                                                .eq('species', 'cat')
+                                                .asStream();
+                                          },
+                                        );
+                                      },
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 8.0),
+                                    child: textGestureDetector(
+                                      "Cachorros",
+                                      focusNode,
+                                      () {
+                                        setState(
+                                          () {
+                                            stream = db
+                                                .from('animals')
+                                                .select()
+                                                .eq('species', 'dog')
+                                                .asStream();
+
+                                            streamCurrentStreet = db
+                                                .from('animals')
+                                                .select()
+                                                .eq('street', currentStreet)
+                                                .eq('species', 'dog')
+                                                .asStream();
+                                          },
+                                        );
+                                      },
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 8.0),
+                                    child: textGestureDetector(
+                                      "Não alimentados",
+                                      focusNode,
+                                      () {
+                                        setState(
+                                          () {
+                                            stream = db
+                                                .from('animals')
+                                                .select()
+                                                .eq('wasFed', false)
+                                                .asStream();
+
+                                            streamCurrentStreet = db
+                                                .from('animals')
+                                                .select()
+                                                .eq('street', currentStreet)
+                                                .eq('wasFed', false)
+                                                .asStream();
+                                          },
+                                        );
+                                      },
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 8.0),
+                                    child: textGestureDetector(
+                                      "Alimentados",
+                                      focusNode,
+                                      () {
+                                        setState(
+                                          () {
+                                            stream = db
+                                                .from('animals')
+                                                .select()
+                                                .eq('wasFed', true)
+                                                .asStream();
+
+                                            streamCurrentStreet = db
+                                                .from('animals')
+                                                .select()
+                                                .eq('street', currentStreet)
+                                                .eq('wasFed', true)
+                                                .asStream();
+                                          },
+                                        );
+                                      },
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
                           StreamBuilder(
@@ -550,7 +542,7 @@ class AnimalSizedBox extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           ClipRRect(
-            borderRadius: BorderRadius.circular(10),
+            borderRadius: BorderRadius.circular(20),
             child: Image.network(
               db.storage.from('animals.images').getPublicUrl(
                     animalImagePath,
@@ -588,31 +580,20 @@ class AnimalSizedBox extends StatelessWidget {
                     species == 'cat' ? "Gato" : "Cachorro",
                     style: TextStyles.textStyle(
                       fontColor: ComponentColors.mainGray,
-                      fontSize: 10,
-                      fontWeight: FontWeight.w700,
+                      fontSize: 11,
+                      fontWeight: FontWeight.w600,
                     ),
                     textAlign: TextAlign.start,
                     overflow: TextOverflow.ellipsis,
                   ),
-                  Row(
-                    children: [
-                      Image.asset(
-                        wasFed
-                            ? 'images/aumigos_da_vizinhanca_fed.png'
-                            : 'images/aumigos_da_vizinhanca_not_fed.png',
-                        width: 25,
-                        height: 25,
-                      ),
-                      Text(
-                        wasFed ? "   Alimentado" : "   Não alimentado",
-                        style: TextStyles.textStyle(
-                            fontColor: wasFed ? Colors.green : Colors.red,
-                            fontSize: 10.75,
-                            fontWeight: FontWeight.w800),
-                        textAlign: TextAlign.start,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ],
+                  Text(
+                    wasFed ? "Alimentado" : "Não alimentado",
+                    style: TextStyles.textStyle(
+                        fontColor: wasFed ? Colors.green : Colors.red,
+                        fontSize: 11,
+                        fontWeight: FontWeight.w600),
+                    textAlign: TextAlign.start,
+                    overflow: TextOverflow.ellipsis,
                   )
                 ],
               ),
@@ -624,32 +605,23 @@ class AnimalSizedBox extends StatelessWidget {
   }
 }
 
-OutlinedButton outlinedButtonWidget(
-  String image,
+Widget textGestureDetector(
   String labelText,
-  Color color,
+  FocusNode focusNode,
   void Function()? onPressed,
 ) {
-  return OutlinedButton.icon(
-    icon: Image.asset(
-      image,
-      width: 30,
-      height: 30,
-    ),
-    style: OutlinedButton.styleFrom(
-      side: BorderSide(
-        width: 2,
-        color: color,
-        style: BorderStyle.solid,
-      ),
-    ),
+  return TextButton(
+    focusNode: focusNode,
     onPressed: onPressed,
-    label: Text(
+    style: TextButton.styleFrom(
+        backgroundColor:
+            focusNode.hasFocus ? ComponentColors.sweetBrown : null),
+    child: Text(
       labelText,
       style: TextStyles.textStyle(
-        fontColor: color,
+        fontColor: ComponentColors.mainGray,
         fontSize: 12,
-        fontWeight: FontWeight.w800,
+        fontWeight: FontWeight.w700,
       ),
     ),
   );

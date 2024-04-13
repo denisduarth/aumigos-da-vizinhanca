@@ -1,4 +1,4 @@
-import 'package:aumigos_da_vizinhanca/extensions/build_context_extension.dart';
+import 'package:aumigos_da_vizinhanca/src/exports/extensions.dart';
 import '../exports/views.dart';
 import '../exports/widgets.dart';
 import 'package:flutter/material.dart';
@@ -84,7 +84,7 @@ class _NavigationPageState extends State<NavigationPage> {
                     width: 35,
                     height: 35,
                     child: ClipOval(
-                      child: user!.userMetadata?['image'] == null
+                      child: user == null
                           ? Image.asset('images/user_image.png')
                           : Image.network(
                               db.storage.from('images').getPublicUrl(

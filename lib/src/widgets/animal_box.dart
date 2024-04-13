@@ -1,8 +1,7 @@
 // ignore_for_file: must_be_immutable
 
-import 'package:aumigos_da_vizinhanca/exports/widgets.dart';
-import 'package:aumigos_da_vizinhanca/widgets/text_styles.dart';
 import 'package:flutter/material.dart';
+import '../exports/all.dart';
 
 class AnimalBox extends StatelessWidget {
   String image, animalName, ownerName, street;

@@ -1,11 +1,8 @@
 // ignore_for_file: prefer_const_constructors, unused_element, file_names, unused_field, constant_pattern_never_matches_value_type, use_build_context_synchronously, avoid_unnecessary_containers
 
-import 'package:aumigos_da_vizinhanca/extensions/build_context_extension.dart';
-import 'package:aumigos_da_vizinhanca/mixins/validator_mixin.dart';
-import '../exports/widgets.dart';
+import 'package:aumigos_da_vizinhanca/src/exports/all.dart';
 import 'package:flutter/material.dart';
-import '../enums/text_align_enums.dart';
-import '../exports/views.dart';
+import '../mixins/validator_mixin.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -91,73 +88,75 @@ class _RegisterPageState extends State<RegisterPage> with ValidatorMixin {
 
     return Scaffold(
       backgroundColor: Colors.white,
-      body: SafeArea(
-        child: SingleChildScrollView(
-          padding: EdgeInsets.symmetric(vertical: 30),
-          child: SizedBox(
-            child: Center(
+      body: RefreshIndicator(
+        onRefresh: () async {
+          await Future.delayed(Duration(seconds: 3));
+          emailController.clear();
+          passwordController.clear();
+          confirmPasswordController.clear();
+          nameController.clear();
+        },
+        child: SafeArea(
+          child: SingleChildScrollView(
+            padding: EdgeInsets.symmetric(vertical: 30),
+            child: SizedBox(
               child: Form(
                 key: _formKey,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Container(
                       margin: EdgeInsets.symmetric(vertical: 30),
-                      child: Column(
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: [
-                              IconButtonWidget(
-                                icon: Icon(Icons.arrow_back_ios_new_rounded),
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 50.0,
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(top: 20.0),
+                              child: IconButton.filled(
+                                style: IconButton.styleFrom(
+                                  backgroundColor: ComponentColors.mainYellow,
+                                ),
                                 onPressed: () => Navigator.pop(context),
-                                enableBorderSide: false,
-                                color: ComponentColors.mainYellow,
+                                icon: Icon(
+                                  Icons.arrow_back_ios_rounded,
+                                ),
                               ),
-                              Image.asset(
-                                'images/aumigos_da_vizinhanca_logo_sweet_brown.png',
-                                width: 60,
-                                height: 60,
-                              ),
-                            ],
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 20, vertical: 10),
-                            child: GradientText(
-                              text: "Inserindo os Dados",
-                              textSize: 28,
-                              textAlign: TextAlignEnum.center,
                             ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(
-                                vertical: 10.0, horizontal: 50.0),
-                            child: Text(
-                              "Para começar, introduza seus dados primários, como nome, email e senha desejados. Após isso, partiremos para a próxima tela para a finalização do cadastro",
-                              style: TextStyle(
-                                fontFamily: "Poppins",
-                                fontWeight: FontWeight.w500,
-                                color: ComponentColors.mainGray,
-                                fontSize: 12,
+                            Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 20),
+                              child: Wrap(
+                                children: [
+                                  Text(
+                                    "Criar Conta",
+                                    style: TextStyles.textStyle(
+                                      fontColor: ComponentColors.mainBlack,
+                                      fontSize: 35,
+                                      fontWeight: FontWeight.w900,
+                                    ),
+                                  ),
+                                ],
                               ),
-                              textAlign: TextAlign.center,
                             ),
-                          )
-                        ],
+                          ],
+                        ),
                       ),
                     ),
                     Container(
                       padding: EdgeInsets.symmetric(vertical: 15),
-                      height: 550,
+                      height: 520,
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           TextForm(
                             labelText: "Seu e-mail",
                             controller: emailController,
-                            icon: Icon(Icons.email_rounded),
+                            icon: Icon(Icons.email_outlined),
                             obscureText: false,
                             keyboardType: TextInputType.text,
                             validator: (value) => combine([
@@ -169,7 +168,7 @@ class _RegisterPageState extends State<RegisterPage> with ValidatorMixin {
                           TextForm(
                             labelText: "Seu nome",
                             controller: nameController,
-                            icon: Icon(Icons.data_object_rounded),
+                            icon: Icon(Icons.data_object_outlined),
                             obscureText: false,
                             keyboardType: TextInputType.text,
                             validator: isEmpty,
@@ -178,7 +177,7 @@ class _RegisterPageState extends State<RegisterPage> with ValidatorMixin {
                           TextForm(
                             labelText: "Sua senha",
                             controller: passwordController,
-                            icon: Icon(Icons.lock_rounded),
+                            icon: Icon(Icons.lock_outline_rounded),
                             obscureText: isPasswordVisible,
                             keyboardType: TextInputType.visiblePassword,
                             validator: isEmpty,
@@ -187,13 +186,17 @@ class _RegisterPageState extends State<RegisterPage> with ValidatorMixin {
                           TextForm(
                             labelText: "Confirme sua senha",
                             controller: confirmPasswordController,
-                            icon: Icon(Icons.lock_rounded),
+                            icon: Icon(Icons.lock_outline_rounded),
                             obscureText: isPasswordVisible,
                             keyboardType: TextInputType.visiblePassword,
                             validator: isEmpty,
                             topText: "Repitir senha",
                           ),
                           Button(
+                            buttonIcon: Icon(
+                              Icons.arrow_forward_rounded,
+                              color: Colors.white,
+                            ),
                             onTap: () => showAdaptiveDialog(
                               context: context,
                               builder: (context) => AlertDialog.adaptive(

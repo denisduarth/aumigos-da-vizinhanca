@@ -1,7 +1,5 @@
-import 'package:aumigos_da_vizinhanca/extensions/build_context_extension.dart';
+import '/src/exports/all.dart';
 import 'package:flutter/material.dart';
-
-import '../exports/widgets.dart';
 
 class AppBarWidget {
   static PreferredSizeWidget showAppBar(BuildContext context, String title) {

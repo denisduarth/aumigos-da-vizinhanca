@@ -1,15 +1,11 @@
 // ignore_for_file: prefer_const_constructors, file_names, use_build_context_synchronously
 
 import 'dart:io';
-
-import 'package:aumigos_da_vizinhanca/extensions/build_context_extension.dart';
-import 'package:aumigos_da_vizinhanca/mixins/validator_mixin.dart';
+import '/src/exports/all.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import '../enums/text_align_enums.dart';
-import '../exports/views.dart';
-import '../exports/widgets.dart';
+import '../mixins/validator_mixin.dart';
 
 class UpdateProfilePage extends StatefulWidget {
   final String title = "Editar dados do usuário";
@@ -246,6 +242,10 @@ class _UpdateProfilePageState extends State<UpdateProfilePage>
                           topText: "Repitir nova senha",
                         ),
                         Button(
+                          buttonIcon: Icon(
+                            Icons.upgrade_rounded,
+                            color: Colors.white,
+                          ),
                           onTap: updateUserInfo,
                           buttonWidget: isInfoUpdated
                               ? SizedBox(
