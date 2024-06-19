@@ -1,12 +1,18 @@
 // ignore_for_file: prefer_const_literals_to_create_immutables, prefer_const_constructors, file_names, use_build_context_synchronously
 
-import '/src/exports/all.dart';
-import 'package:flutter_map/flutter_map.dart';
-import 'package:latlong2/latlong.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:aumigos_da_vizinhanca/src/enums/images_enum.dart';
+import 'package:aumigos_da_vizinhanca/src/extensions/build_context_extension.dart';
+import 'package:aumigos_da_vizinhanca/src/extensions/images_enum_extension.dart';
+import 'package:aumigos_da_vizinhanca/src/repositories/user_repository.dart';
+import 'package:aumigos_da_vizinhanca/src/views/animals/animal_details_page.dart';
+import 'package:aumigos_da_vizinhanca/src/views/home_page.dart';
+import 'package:aumigos_da_vizinhanca/src/views/location_error_page.dart';
+import 'package:aumigos_da_vizinhanca/src/views/network_error_page.dart';
+import 'package:aumigos_da_vizinhanca/src/widgets/colors.dart';
+import 'package:aumigos_da_vizinhanca/src/widgets/icon_button.dart';
+import 'package:aumigos_da_vizinhanca/src/widgets/text_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-
 
 const infoTextStyle = TextStyle(
   fontFamily: "Poppins",
@@ -24,35 +30,40 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-  final SupabaseClient db = Supabase.instance.client;
+  final userRepository = UserRepository();
+  final db = Supabase.instance.client;
   late Stream<List<Map<String, dynamic>>> stream;
   late User? user;
 
   @override
   void initState() {
     super.initState();
+    user = userRepository.getCurrentUser;
   }
 
   @override
   Widget build(BuildContext context) {
     Future<void> logout() async {
       try {
-        await db.auth.signOut();
+        await userRepository.logout();
 
         context.showErrorSnackbar("Saindo de ${user!.email}");
-
-        await Future.delayed(Duration(seconds: 2));
-        Navigator.pushNamed(context, '/login');
       } on AuthException catch (error) {
         context.showErrorSnackbar(error.message.toString());
+      } catch (error) {
+        context.showErrorSnackbar("Um erro aconteceu");
+      } finally {
+        await Future.delayed(Duration(seconds: 2));
+        Navigator.pushNamed(context, '/login');
       }
     }
 
-    user = db.auth.currentUser;
     stream = db.from('animals').select().eq('userId', user!.id).asStream();
-    final hasConnection = context.hasConnection;
 
+    final hasConnection = context.hasConnection;
+    final isLocationEnabled = context.isLocationEnabled;
     if (!hasConnection) return const NetworkErrorPage();
+    if (!isLocationEnabled) return const LocationErrorPage();
 
     return Scaffold(
       extendBodyBehindAppBar: true,
@@ -60,64 +71,15 @@ class _ProfilePageState extends State<ProfilePage> {
       backgroundColor: Colors.white,
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: EdgeInsets.symmetric(vertical: 20),
           child: SizedBox(
             child: Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Stack(
-                    alignment: AlignmentDirectional.bottomCenter,
-                    children: [
-                      Center(
-                        child: Container(
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(30)),
-                          height: 250,
-                          width: context.screenWidth,
-                          child: user!.userMetadata?['location'] == null
-                              ? const Center(
-                                  child: CircularProgressIndicator(),
-                                )
-                              : FlutterMap(
-                                  options: MapOptions(
-                                    initialCenter: LatLng(
-                                      user!.userMetadata?['location']
-                                          ['latitude'],
-                                      user!.userMetadata?['location']
-                                          ['longitude'],
-                                    ),
-                                    initialZoom: 18,
-                                  ),
-                                  children: [
-                                    TileLayer(
-                                      urlTemplate:
-                                          'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-                                      userAgentPackageName:
-                                          'com.example.aumigos_da_vizinhanca',
-                                    ),
-                                    RichAttributionWidget(
-                                      attributions: [
-                                        TextSourceAttribution(
-                                          'OpenStreetMap contributors',
-                                          onTap: () => launchUrl(
-                                            Uri.parse(
-                                              'https://openstreetmap.org/copyright',
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                        ),
-                      ),
-                    ],
-                  ),
                   Container(
-                    padding: const EdgeInsets.symmetric(vertical: 30.0),
-                    height: 400,
+                    padding: const EdgeInsets.symmetric(vertical: 40.0),
+                    height: 500,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -126,19 +88,19 @@ class _ProfilePageState extends State<ProfilePage> {
                           alignment: AlignmentDirectional.bottomEnd,
                           children: [
                             ClipRRect(
-                              borderRadius: BorderRadius.circular(60),
+                              borderRadius: BorderRadius.circular(100),
                               child: user!.userMetadata?['image'] == null
                                   ? Image.asset(
                                       'images/user_image.png',
-                                      width: 110,
-                                      height: 110,
+                                      width: 170,
+                                      height: 170,
                                     )
                                   : Image.network(
                                       db.storage.from('images').getPublicUrl(
                                           user!.userMetadata?['image']),
                                       fit: BoxFit.cover,
-                                      width: 110,
-                                      height: 110,
+                                      width: 170,
+                                      height: 170,
                                     ),
                             ),
                             IconButtonWidget(
@@ -154,7 +116,7 @@ class _ProfilePageState extends State<ProfilePage> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Text(
-                              "${user!.userMetadata?['name']}",
+                              "${user!.userMetadata?['name']}  ",
                               style: TextStyle(
                                   fontFamily: "Poppins",
                                   fontSize: 40,
@@ -170,7 +132,7 @@ class _ProfilePageState extends State<ProfilePage> {
                           ],
                         ),
                         Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             Text(
                               user!.userMetadata?['location']['street'],
@@ -206,10 +168,11 @@ class _ProfilePageState extends State<ProfilePage> {
                         padding: const EdgeInsets.all(20.0),
                         child: Row(
                           children: [
-                            Image.asset(
-                              'images/aumigos_da_vizinhanca_cat_sweet_brown.png',
-                              width: 30,
-                              height: 30,
+                            IconButtonWidget(
+                              icon: Icon(Icons.add),
+                              onPressed: () {},
+                              enableBorderSide: false,
+                              color: ComponentColors.mainYellow,
                             ),
                             Text(
                               "   Seus animais adicionados",
@@ -282,9 +245,9 @@ class _ProfilePageState extends State<ProfilePage> {
                         child: Row(
                           children: [
                             Image.asset(
-                              'images/aumigos_da_vizinhanca_logo_sweet_brown.png',
-                              width: 30,
-                              height: 30,
+                              ImagesEnum.logoSweetBrown.imageName,
+                              width: 50,
+                              height: 50,
                             ),
                             Wrap(
                               direction: Axis.vertical,

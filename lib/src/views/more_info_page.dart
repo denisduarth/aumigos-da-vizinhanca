@@ -1,14 +1,21 @@
 // ignore_for_file: file_names, use_build_context_synchronously
 
 import 'dart:io';
-import 'package:aumigos_da_vizinhanca/src/exports/extensions.dart';
+
+import 'package:aumigos_da_vizinhanca/src/extensions/build_context_extension.dart';
+import 'package:aumigos_da_vizinhanca/src/services/location_service.dart';
+import 'package:aumigos_da_vizinhanca/src/views/location_error_page.dart';
+import 'package:aumigos_da_vizinhanca/src/views/network_error_page.dart';
+import 'package:aumigos_da_vizinhanca/src/widgets/button.dart';
+import 'package:aumigos_da_vizinhanca/src/widgets/colors.dart';
+import 'package:aumigos_da_vizinhanca/src/widgets/gradient_text.dart';
+import 'package:aumigos_da_vizinhanca/src/widgets/icon_button.dart';
+import 'package:aumigos_da_vizinhanca/src/widgets/text_form.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+
 import '../enums/text_align_enums.dart';
-import '../exports/services.dart';
-import '../exports/widgets.dart';
-import '../exports/views.dart';
 import '../mixins/validator_mixin.dart';
 
 class MoreInfoPage extends StatefulWidget {
@@ -55,6 +62,11 @@ class _MoreInfoPageState extends State<MoreInfoPage> with ValidatorMixin {
   @override
   Widget build(BuildContext context) {
     final hasConnection = context.hasConnection;
+    final isLocationEnabled = context.isLocationEnabled;
+
+    if (!hasConnection) return const NetworkErrorPage();
+    if (!isLocationEnabled) return const LocationErrorPage();
+
     // Variável para pegar os dados enviados da tela anterior para finalização do cadastro
     final args = context.getPreviousRouteArguments as Map;
     // Variáveis de controle da tela anterior para fechar os dados para o cadastro do usuário
@@ -106,9 +118,6 @@ class _MoreInfoPageState extends State<MoreInfoPage> with ValidatorMixin {
             isRegistered = true;
           });
           context.showSucessSnackbar("Cadastro feito com sucesso");
-
-          Future.delayed(const Duration(seconds: 3));
-          Navigator.pushNamed(context, '/login');
         }
       } on AssertionError catch (error) {
         context.showErrorSnackbar(error.message.toString());
@@ -116,10 +125,11 @@ class _MoreInfoPageState extends State<MoreInfoPage> with ValidatorMixin {
         context.showErrorSnackbar(error.message.toString());
       } on StorageException catch (error) {
         context.showErrorSnackbar(error.message.toString());
+      } finally {
+        Future.delayed(const Duration(seconds: 2));
+        Navigator.pushNamed(context, '/login');
       }
     }
-
-    if (!hasConnection) return const NetworkErrorPage();
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -305,7 +315,10 @@ class _MoreInfoPageState extends State<MoreInfoPage> with ValidatorMixin {
                   Padding(
                     padding: const EdgeInsets.only(top: 20.0, bottom: 30.0),
                     child: Button(
-                      buttonIcon: const Icon(Icons.arrow_forward_ios_rounded, color: Colors.white,),
+                      buttonIcon: const Icon(
+                        Icons.arrow_forward_ios_rounded,
+                        color: Colors.white,
+                      ),
                       onTap: register,
                       buttonWidget: isRegistered
                           ? const SizedBox(

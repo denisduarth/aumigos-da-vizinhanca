@@ -25,6 +25,13 @@ dependencies:
   uuid: ^4.3.3
   geolocator: ^11.0.0
   geocoding: ^3.0.0
+  flutter_local_notifications: ^17.1.2
+  # timezone: ^0.9.3
+  # flutter_native_timezone: 
+
+  provider: ^6.1.2
+  intl: ^0.19.0
+  # flutter_timezone: ^1.0.8
 
 flutter_native_splash:
   color: "#FFC828"

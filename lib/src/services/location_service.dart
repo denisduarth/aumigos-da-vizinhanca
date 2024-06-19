@@ -1,5 +1,7 @@
 // ignore_for_file: avoid_print
 
+import 'dart:async';
+
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 
@@ -7,7 +9,7 @@ class LocationService {
   Position? currentPosition;
   String currentAddress = '';
 
-  Future<bool> _handleLocationPermission() async {
+  Future<bool> handleLocationPermission() async {
     bool serviceEnabled;
     LocationPermission permission;
 
@@ -28,20 +30,20 @@ class LocationService {
   }
 
   Future<void> getCurrentLocation() async {
-    final handlePermissions = await _handleLocationPermission();
+    final handlePermissions = await handleLocationPermission();
 
     if (!handlePermissions) return;
 
-    currentPosition = await Geolocator.getCurrentPosition(
-      desiredAccuracy: LocationAccuracy.high,
+    currentPosition =    await Geolocator.getCurrentPosition(
+      desiredAccuracy: LocationAccuracy.bestForNavigation,
       timeLimit: const Duration(
-        seconds: 5,
+        seconds: 10,
       ),
     );
-    await _getAddressFromLatLng();
+    await getAddressFromLatLng();
   }
 
-  Future<void> _getAddressFromLatLng() async {
+  Future<void> getAddressFromLatLng() async {
     try {
       List<Placemark> placemarks = await placemarkFromCoordinates(
           currentPosition!.latitude, currentPosition!.longitude);
@@ -55,6 +57,5 @@ class LocationService {
 
   Position get getCurrentPosition => currentPosition!;
   String get getCurrentAddress => currentAddress;
-  Future<bool> get isLocationServiceEnabled =>
-      Geolocator.isLocationServiceEnabled();
+  Future get isLocationServiceEnabled => Geolocator.isLocationServiceEnabled();
 }

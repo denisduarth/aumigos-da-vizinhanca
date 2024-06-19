@@ -1,9 +1,18 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
+
 import 'package:uuid/uuid.dart';
 
 class Animal {
-  String id, name, race, userId, species, image, lastFeedingDate, street;
+  String id,
+      name,
+      race,
+      userId,
+      species,
+      image,
+      lastFeedingDate,
+      street,
+      feederId;
   String? furColor;
   bool wasFed;
   double latitude, longitude, age;
@@ -20,6 +29,7 @@ class Animal {
     required this.street,
     required this.latitude,
     required this.longitude,
+    required this.feederId,
     this.furColor,
   })  : id = const Uuid().v4(),
         lastFeedingDate = DateTime.now().toIso8601String(),
@@ -39,7 +49,8 @@ class Animal {
         'street': street,
         'latitude': latitude,
         'longitude': longitude,
-        'feedingInterval': feedingInterval
+        'feedingInterval': feedingInterval,
+        'feederId': feederId
       };
 
   factory Animal.fromMap(Map<String, dynamic> map) => Animal(
@@ -54,6 +65,7 @@ class Animal {
         street: map['street'] as String,
         latitude: map['latitude'] as double,
         longitude: map['longitude'] as double,
+        feederId: map['feederId'] as String,
       );
 
   factory Animal.fromJson(String source) =>

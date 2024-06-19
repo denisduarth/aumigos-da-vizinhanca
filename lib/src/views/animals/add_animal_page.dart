@@ -2,18 +2,26 @@
 
 import 'dart:io';
 
-import 'package:aumigos_da_vizinhanca/src/exports/extensions.dart';
-import 'package:aumigos_da_vizinhanca/src/exports/services.dart';
-import 'package:aumigos_da_vizinhanca/src/exports/widgets.dart';
+import 'package:aumigos_da_vizinhanca/src/enums/images_enum.dart';
+import 'package:aumigos_da_vizinhanca/src/enums/text_align_enums.dart';
+import 'package:aumigos_da_vizinhanca/src/extensions/build_context_extension.dart';
+import 'package:aumigos_da_vizinhanca/src/extensions/images_enum_extension.dart';
 import 'package:aumigos_da_vizinhanca/src/mixins/validator_mixin.dart';
 import 'package:aumigos_da_vizinhanca/src/models/animal.dart';
 import 'package:aumigos_da_vizinhanca/src/repositories/animal_repository.dart';
+import 'package:aumigos_da_vizinhanca/src/services/location_service.dart';
+import 'package:aumigos_da_vizinhanca/src/views/location_error_page.dart';
+import 'package:aumigos_da_vizinhanca/src/views/network_error_page.dart';
+import 'package:aumigos_da_vizinhanca/src/widgets/button.dart';
+import 'package:aumigos_da_vizinhanca/src/widgets/colors.dart';
+import 'package:aumigos_da_vizinhanca/src/widgets/custom_widget_with_text.dart';
+import 'package:aumigos_da_vizinhanca/src/widgets/gradient_text.dart';
+import 'package:aumigos_da_vizinhanca/src/widgets/icon_button.dart';
+import 'package:aumigos_da_vizinhanca/src/widgets/text_form.dart';
+import 'package:aumigos_da_vizinhanca/src/widgets/text_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import '../../enums/images_enum.dart';
-import '../../exports/enums.dart';
-import '../../widgets/text_styles.dart';
 
 class AddAnimalPage extends StatefulWidget {
   final String title = 'Adicionar Animais';
@@ -76,15 +84,40 @@ class _AddAnimalPageState extends State<AddAnimalPage> with ValidatorMixin {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: const Text("Deseja sair sem salvar?"),
-          content: const Wrap(
+          actionsAlignment: MainAxisAlignment.start,
+          title: Wrap(
             children: [
               Text(
-                  "Alguns campos do formulário não foram totalmente preenchidos, prejudicando o cadastro. Deseja sair sem salvar os dados?"),
+                "Deseja sair sem salvar?",
+                style: TextStyles.textStyle(
+                  fontColor: Colors.red,
+                  fontSize: 25,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+              const Icon(
+                Icons.save_alt_rounded,
+                color: Colors.red,
+                size: 40,
+              )
+            ],
+          ),
+          content: Wrap(
+            children: [
+              Text(
+                "Alguns campos do formulário não foram totalmente preenchidos, prejudicando o cadastro. Deseja sair sem salvar os dados?",
+                style: TextStyles.textStyle(
+                  fontColor: ComponentColors.mainGray,
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
             ],
           ),
           actions: [
-            IconButton(
+            IconButtonWidget(
+              color: Colors.red,
+              enableBorderSide: false,
               onPressed: () => Navigator.of(context).pushNamed('/navigation'),
               icon: const Icon(Icons.navigate_before_rounded),
             ),
@@ -117,6 +150,11 @@ class _AddAnimalPageState extends State<AddAnimalPage> with ValidatorMixin {
       color: Colors.black45,
     );
 
+    final hasConnection = context.hasConnection;
+    final isLocationEnabled = context.isLocationEnabled;
+    if (!hasConnection) return const NetworkErrorPage();
+    if (!isLocationEnabled) return const LocationErrorPage();
+
     Future<void> registerAnimal() async {
       final db = Supabase.instance.client;
       final animalRepository = AnimalRepository();
@@ -130,6 +168,7 @@ class _AddAnimalPageState extends State<AddAnimalPage> with ValidatorMixin {
         'postal_code': locationInfo[3],
         'country': locationInfo[4],
       };
+      bool imageExists = false;
 
       assert(nameController.text.isNotEmpty, "Escreva um nome");
       assert(nameController.text.length <= 20, "Nome muito grande");
@@ -151,9 +190,19 @@ class _AddAnimalPageState extends State<AddAnimalPage> with ValidatorMixin {
           street: infoData['street']!,
           latitude: positionInfo!.latitude,
           longitude: positionInfo.longitude,
+          feederId: user.id,
         );
 
-        if (image!.name.isEmpty) {
+        final imageExistsList = await db.storage.from('animals.images').list();
+
+        for (FileObject file in imageExistsList) {
+          if (file.name == image!.name) {
+            imageExists = true;
+            break;
+          }
+        }
+
+        if (!imageExists) {
           await db.storage.from('animals.images').upload(
                 image!.name,
                 File(
@@ -172,14 +221,14 @@ class _AddAnimalPageState extends State<AddAnimalPage> with ValidatorMixin {
           context.showSucessSnackbar(
             "Animal cadastrado com sucesso",
           );
-
-          Future.delayed(const Duration(seconds: 3));
-          Navigator.pushNamed(context, '/navigation');
         }
       } on StorageException catch (error) {
         context.showErrorSnackbar(error.message.toString());
       } on AssertionError catch (error) {
         context.showErrorSnackbar(error.message.toString());
+      } finally {
+        Future.delayed(const Duration(seconds: 2));
+        Navigator.pushNamed(context, '/navigation');
       }
     }
 
@@ -271,20 +320,50 @@ class _AddAnimalPageState extends State<AddAnimalPage> with ValidatorMixin {
                   ),
                   CustomWidgetWithText(
                     topText: "Idade do animal (em anos)",
-                    customWidget: Slider(
-                      activeColor: ComponentColors.sweetBrown,
-                      thumbColor: ComponentColors.mainBrown,
-                      label: animalAge.round().toString(),
-                      value: animalAge,
-                      divisions: 30,
-                      onChanged: (value) {
-                        setState(
-                          () {
-                            animalAge = value;
-                          },
-                        );
-                      },
-                      max: 30.0,
+                    customWidget: Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 40.0,
+                        vertical: 10.0,
+                      ),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          animalAgeButton(
+                            onTap: animalAge > 0.0
+                                ? () => setState(
+                                      () {
+                                        animalAge--;
+                                      },
+                                    )
+                                : null,
+                            data: "-",
+                          ),
+                          const SizedBox(
+                            width: 30,
+                          ),
+                          Text(
+                            "${animalAge.round().toString()}  anos",
+                            style: TextStyles.textStyle(
+                              fontColor: ComponentColors.mainBlack,
+                              fontSize: 18,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                          const SizedBox(
+                            width: 30,
+                          ),
+                          animalAgeButton(
+                            onTap: animalAge < 30.0
+                                ? () => setState(
+                                      () {
+                                        animalAge++;
+                                      },
+                                    )
+                                : null,
+                            data: "+",
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                   TextForm(
@@ -569,4 +648,28 @@ class _AddAnimalPageState extends State<AddAnimalPage> with ValidatorMixin {
       ),
     );
   }
+}
+
+Widget animalAgeButton({
+  required void Function()? onTap,
+  required String data,
+}) {
+  return GestureDetector(
+    onTap: onTap,
+    child: Container(
+      alignment: AlignmentDirectional.center,
+      width: 45,
+      height: 45,
+      decoration: BoxDecoration(
+        color: ComponentColors.sweetBrown,
+        borderRadius: BorderRadius.circular(
+          10,
+        ),
+      ),
+      child: Text(
+        data,
+        style: const TextStyle(fontSize: 30, color: Colors.white),
+      ),
+    ),
+  );
 }

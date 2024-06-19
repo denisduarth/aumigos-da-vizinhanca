@@ -1,7 +1,16 @@
 // ignore_for_file: prefer_const_constructors, file_names, use_build_context_synchronously
 
 import 'dart:io';
-import '/src/exports/all.dart';
+import 'package:aumigos_da_vizinhanca/src/enums/text_align_enums.dart';
+import 'package:aumigos_da_vizinhanca/src/extensions/build_context_extension.dart';
+import 'package:aumigos_da_vizinhanca/src/views/location_error_page.dart';
+import 'package:aumigos_da_vizinhanca/src/views/network_error_page.dart';
+import 'package:aumigos_da_vizinhanca/src/widgets/appbar.dart';
+import 'package:aumigos_da_vizinhanca/src/widgets/button.dart';
+import 'package:aumigos_da_vizinhanca/src/widgets/colors.dart';
+import 'package:aumigos_da_vizinhanca/src/widgets/gradient_text.dart';
+import 'package:aumigos_da_vizinhanca/src/widgets/icon_button.dart';
+import 'package:aumigos_da_vizinhanca/src/widgets/text_form.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -75,8 +84,9 @@ class _UpdateProfilePageState extends State<UpdateProfilePage>
   @override
   Widget build(BuildContext context) {
     final hasConnection = context.hasConnection;
-
+    final isLocationEnabled = context.isLocationEnabled;
     if (!hasConnection) return const NetworkErrorPage();
+    if (!isLocationEnabled) return const LocationErrorPage();
 
     return Scaffold(
       appBar: AppBarWidget.showAppBar(context, widget.title),

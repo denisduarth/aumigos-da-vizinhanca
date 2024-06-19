@@ -1,7 +1,8 @@
 // ignore_for_file: file_names
 
+import 'package:aumigos_da_vizinhanca/src/enums/text_align_enums.dart';
+
 import '../widgets/colors.dart';
-import '../exports/enums.dart';
 import 'package:flutter/material.dart';
 
 const gradient = LinearGradient(

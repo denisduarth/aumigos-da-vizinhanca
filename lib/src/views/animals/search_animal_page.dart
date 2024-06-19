@@ -1,10 +1,16 @@
-import '../../exports/extensions.dart';
-import '../../exports/enums.dart';
-import '../../exports/widgets.dart';
-import '../../exports/views.dart';
-import '../../mixins/validator_mixin.dart';
+import 'package:aumigos_da_vizinhanca/src/enums/images_enum.dart';
+import 'package:aumigos_da_vizinhanca/src/extensions/build_context_extension.dart';
+import 'package:aumigos_da_vizinhanca/src/extensions/images_enum_extension.dart';
+import 'package:aumigos_da_vizinhanca/src/views/animals/animal_details_page.dart';
+import 'package:aumigos_da_vizinhanca/src/views/location_error_page.dart';
+import 'package:aumigos_da_vizinhanca/src/views/network_error_page.dart';
+import 'package:aumigos_da_vizinhanca/src/widgets/colors.dart';
+import 'package:aumigos_da_vizinhanca/src/widgets/text_form.dart';
+import 'package:aumigos_da_vizinhanca/src/widgets/text_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+
+import '../../mixins/validator_mixin.dart';
 
 class SearchAnimalPage extends StatefulWidget {
   final String title = 'Procurar Animais';
@@ -22,8 +28,17 @@ class _SearchAnimalPageState extends State<SearchAnimalPage>
   final _formKey = GlobalKey<FormState>();
 
   @override
-  Widget build(BuildContext context) {
+  void initState() {
+    super.initState();
     stream = db.from('animals').select().order('name').asStream();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final hasConnection = context.hasConnection;
+    final isLocationEnabled = context.isLocationEnabled;
+    if (!hasConnection) return const NetworkErrorPage();
+    if (!isLocationEnabled) return const LocationErrorPage();
 
     return PopScope(
       canPop: true,
@@ -44,28 +59,6 @@ class _SearchAnimalPageState extends State<SearchAnimalPage>
                   child: Center(
                     child: Column(
                       children: [
-                        Padding(
-                          padding: const EdgeInsets.symmetric(
-                            vertical: 20.0,
-                          ),
-                          child: TextForm(
-                            labelText: "Pesquisar animal",
-                            controller: searchController,
-                            icon: const Icon(Icons.search_rounded),
-                            obscureText: false,
-                            keyboardType: TextInputType.text,
-                            validator: isEmpty,
-                            onFieldSubmitted: (value) => setState(
-                              () {
-                                stream = db
-                                    .from('animals')
-                                    .select()
-                                    .textSearch('name', value)
-                                    .asStream();
-                              },
-                            ),
-                          ),
-                        ),
                         StreamBuilder(
                           stream: stream,
                           builder: (context, snapshot) {
@@ -80,6 +73,30 @@ class _SearchAnimalPageState extends State<SearchAnimalPage>
                             return SizedBox(
                               child: Column(
                                 children: [
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                      vertical: 20.0,
+                                    ),
+                                    child: TextForm(
+                                      labelText: "Pesquisar animal",
+                                      controller: searchController,
+                                      icon: const Icon(Icons.search_rounded),
+                                      obscureText: false,
+                                      keyboardType: TextInputType.text,
+                                      validator: isEmpty,
+                                      onChanged: (value) {
+                                        setState(
+                                          () {
+                                            stream = db
+                                                .from('animals')
+                                                .select()
+                                                .textSearch('name', value)
+                                                .asStream();
+                                          },
+                                        );
+                                      },
+                                    ),
+                                  ),
                                   Padding(
                                     padding: const EdgeInsets.symmetric(
                                       vertical: 10.0,

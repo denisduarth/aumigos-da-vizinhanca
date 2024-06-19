@@ -1,6 +1,6 @@
 // ignore_for_file: must_be_immutable
 
-import '../exports/widgets.dart';
+import 'package:aumigos_da_vizinhanca/src/widgets/colors.dart';
 import 'package:flutter/material.dart';
 
 const textFieldStyle = TextStyle(
@@ -46,20 +46,19 @@ class TextForm extends StatefulWidget {
   TextInputType keyboardType;
   String? Function(String?)? validator;
   String? topText;
-  void Function(String)? onFieldSubmitted;
+  void Function(String)? onChanged;
 
-  TextForm({
-    super.key,
-    required this.labelText,
-    required this.controller,
-    required this.icon,
-    required this.obscureText,
-    required this.keyboardType,
-    required this.validator,
-    this.topText,
-    this.suffixIcon,
-    this.onFieldSubmitted,
-  });
+  TextForm(
+      {super.key,
+      required this.labelText,
+      required this.controller,
+      required this.icon,
+      required this.obscureText,
+      required this.keyboardType,
+      required this.validator,
+      this.topText,
+      this.suffixIcon,
+      this.onChanged});
 
   @override
   State<TextForm> createState() => _TextFormState();
@@ -89,7 +88,7 @@ class _TextFormState extends State<TextForm> {
                   height: 10,
                 ),
                 TextFormField(
-                  onFieldSubmitted: widget.onFieldSubmitted,
+                  onChanged: widget.onChanged,
                   keyboardType: widget.keyboardType,
                   decoration: InputDecoration(
                       labelText: widget.labelText,
@@ -143,7 +142,7 @@ class _TextFormState extends State<TextForm> {
         : SizedBox(
             width: MediaQuery.of(context).size.width - 50,
             child: TextFormField(
-              onFieldSubmitted: widget.onFieldSubmitted,
+              onChanged: widget.onChanged,
               keyboardType: widget.keyboardType,
               decoration: InputDecoration(
                   labelText: widget.labelText,

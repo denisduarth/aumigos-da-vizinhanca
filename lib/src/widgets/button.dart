@@ -1,5 +1,5 @@
+import 'package:aumigos_da_vizinhanca/src/widgets/colors.dart';
 import 'package:flutter/material.dart';
-import '../exports/all.dart';
 
 const double paddingValue = 10;
 

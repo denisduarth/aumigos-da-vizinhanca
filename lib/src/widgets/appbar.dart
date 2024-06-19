@@ -1,9 +1,11 @@
-import '/src/exports/all.dart';
+import 'package:aumigos_da_vizinhanca/src/extensions/build_context_extension.dart';
+import 'package:aumigos_da_vizinhanca/src/widgets/colors.dart';
 import 'package:flutter/material.dart';
 
 class AppBarWidget {
   static PreferredSizeWidget showAppBar(BuildContext context, String title) {
     final hasConnection = context.hasConnection;
+    final isLocationEnabled = context.isLocationEnabled;
 
     return AppBar(
       automaticallyImplyLeading: false,
@@ -19,22 +21,26 @@ class AppBarWidget {
       iconTheme: const IconThemeData(color: Colors.white),
       actionsIconTheme: const IconThemeData(color: Colors.white),
       elevation: 4.0,
-      backgroundColor: !hasConnection ? Colors.red : ComponentColors.sweetBrown,
+      backgroundColor: !hasConnection || !isLocationEnabled
+          ? Colors.red
+          : ComponentColors.sweetBrown,
       centerTitle: true,
-      title: !hasConnection
-          ? const Row(
+      title: !hasConnection || !isLocationEnabled
+          ? Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 Text(
-                  "Tentando reconectar",
-                  style: TextStyle(
+                  !hasConnection
+                      ? "Tentando conectar"
+                      : "Localização desligada",
+                  style: const TextStyle(
                     fontFamily: "Poppins",
                     fontSize: 14,
                     color: Colors.white,
                     fontWeight: FontWeight.w700,
                   ),
                 ),
-                SizedBox(
+                const SizedBox(
                   width: 20,
                   height: 20,
                   child: CircularProgressIndicator(

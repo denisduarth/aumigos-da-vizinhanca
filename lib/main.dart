@@ -1,24 +1,26 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:async';
+
+import 'package:aumigos_da_vizinhanca/src/notifiers/location_notifier.dart';
+import 'package:aumigos_da_vizinhanca/src/views/animals/add_animal_page.dart';
+import 'package:aumigos_da_vizinhanca/src/views/animals/not_fed_animals.dart';
+import 'package:aumigos_da_vizinhanca/src/views/animals/search_animal_page.dart';
+import 'package:aumigos_da_vizinhanca/src/views/home_page.dart';
+import 'package:aumigos_da_vizinhanca/src/views/login_page.dart';
+import 'package:aumigos_da_vizinhanca/src/views/more_info_page.dart';
+import 'package:aumigos_da_vizinhanca/src/views/navigation_page.dart';
+import 'package:aumigos_da_vizinhanca/src/views/profile_page.dart';
+import 'package:aumigos_da_vizinhanca/src/views/register_page.dart';
+import 'package:aumigos_da_vizinhanca/src/views/update_profile_page.dart';
+import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:flutter/material.dart';
-import '../../src/exports/all.dart';
+
+import 'src/notifiers/connection_notifier.dart';
 
 const Locale brazilianPortuguese = Locale('pt', 'BR');
-
-class ConnectionNotifier extends InheritedNotifier<ValueNotifier<bool>> {
-  const ConnectionNotifier({
-    super.key,
-    required super.notifier,
-    required super.child,
-  });
-
-  static ValueNotifier<bool> of(BuildContext context) {
-    return context
-        .dependOnInheritedWidgetOfExactType<ConnectionNotifier>()!
-        .notifier!;
-  }
-}
 
 final internetConnectionChecker = InternetConnectionChecker.createInstance(
   checkInterval: const Duration(seconds: 1),
@@ -37,13 +39,15 @@ Future<void> main() async {
   );
 
   final hasConnection = await internetConnectionChecker.hasConnection;
+  final locationEnabled = await Geolocator.isLocationServiceEnabled();
 
   runApp(
     ConnectionNotifier(
-      notifier: ValueNotifier(
-        hasConnection,
+      notifier: ValueNotifier(hasConnection),
+      child: LocationNotifier(
+        notifier: ValueNotifier(locationEnabled),
+        child: const AumigosDaVizinhanca(),
       ),
-      child: const AumigosDaVizinhanca(),
     ),
   );
 }
@@ -57,6 +61,7 @@ class AumigosDaVizinhanca extends StatefulWidget {
 
 class _AumigosDaVizinhancaState extends State<AumigosDaVizinhanca> {
   late final StreamSubscription<InternetConnectionStatus> listener;
+  late final Timer locationCheckTimer;
 
   @override
   void initState() {
@@ -67,12 +72,20 @@ class _AumigosDaVizinhancaState extends State<AumigosDaVizinhanca> {
       notifier.value =
           status == InternetConnectionStatus.connected ? true : false;
     });
+
+    locationCheckTimer =
+        Timer.periodic(const Duration(seconds: 1), (timer) async {
+      final isLocationEnabled = await Geolocator.isLocationServiceEnabled();
+      final locationNotifier = LocationNotifier.of(context);
+      locationNotifier.value = isLocationEnabled;
+    });
   }
 
   @override
   void dispose() {
     super.dispose();
     listener.cancel();
+    locationCheckTimer.cancel();
   }
 
   @override
@@ -87,8 +100,9 @@ class _AumigosDaVizinhancaState extends State<AumigosDaVizinhanca> {
         '/update-profile': (context) => const UpdateProfilePage(),
         '/more-info': (context) => const MoreInfoPage(),
         '/navigation': (context) => const NavigationPage(),
-        '/add-animal':(context) => const AddAnimalPage(),
-        '/search-animal':(context) => const SearchAnimalPage(),
+        '/add-animal': (context) => const AddAnimalPage(),
+        '/search-animal': (context) => const SearchAnimalPage(),
+        '/not-fed-animals': (context) => const NotFedAnimalsPage(),
       },
       initialRoute: '/login',
       debugShowCheckedModeBanner: false,

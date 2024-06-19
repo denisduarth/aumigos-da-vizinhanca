@@ -22,6 +22,13 @@ class AnimalRepository implements IAnimalsRepository {
     return db.from('animals').select().asStream();
   }
 
+  // Future<List<Animal>> getAnimalsII() async {
+  //   var stream = await db.from('animals').select();
+  //   var animalList = stream.map((animalJson) => Animal.fromMap(animalJson)).toList();
+
+  //   return animalList != List.empty() ? animalList : [];
+  // }
+
   @override
   Stream<List<Map<String, dynamic>>> getAnimalsByName(String name) {
     final animalData =
@@ -29,7 +36,7 @@ class AnimalRepository implements IAnimalsRepository {
 
     return animalData;
   }
-  
+
   @override
   Stream<List<Map<String, dynamic>>> getAnimalsByUserId(String userId) {
     final animalDataByUserId =

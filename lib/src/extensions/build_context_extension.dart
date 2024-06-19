@@ -1,6 +1,7 @@
-import 'package:aumigos_da_vizinhanca/main.dart';
+import 'package:aumigos_da_vizinhanca/src/notifiers/location_notifier.dart';
+import 'package:aumigos_da_vizinhanca/src/widgets/snackbar_helper.dart';
 import 'package:flutter/material.dart';
-import '../exports/widgets.dart';
+import '../notifiers/connection_notifier.dart';
 
 
 extension BuildContextExtension on BuildContext {
@@ -14,6 +15,10 @@ extension BuildContextExtension on BuildContext {
 
   bool get hasConnection {
     return ConnectionNotifier.of(this).value;
+  }
+  
+  bool get isLocationEnabled {
+    return LocationNotifier.of(this).value;
   }
 
   Object? get getPreviousRouteArguments {

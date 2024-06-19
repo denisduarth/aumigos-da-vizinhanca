@@ -1,6 +1,12 @@
 // ignore_for_file: prefer_const_constructors, unused_element, file_names, unused_field, constant_pattern_never_matches_value_type, use_build_context_synchronously, avoid_unnecessary_containers
 
-import 'package:aumigos_da_vizinhanca/src/exports/all.dart';
+import 'package:aumigos_da_vizinhanca/src/extensions/build_context_extension.dart';
+import 'package:aumigos_da_vizinhanca/src/views/location_error_page.dart';
+import 'package:aumigos_da_vizinhanca/src/views/network_error_page.dart';
+import 'package:aumigos_da_vizinhanca/src/widgets/button.dart';
+import 'package:aumigos_da_vizinhanca/src/widgets/colors.dart';
+import 'package:aumigos_da_vizinhanca/src/widgets/text_form.dart';
+import 'package:aumigos_da_vizinhanca/src/widgets/text_styles.dart';
 import 'package:flutter/material.dart';
 import '../mixins/validator_mixin.dart';
 
@@ -62,7 +68,6 @@ class _RegisterPageState extends State<RegisterPage> with ValidatorMixin {
       }
     }
 
-    final hasConnection = context.hasConnection;
     final styles = {
       'localization_alert_text_style': TextStyle(
         fontFamily: "Poppins",
@@ -84,7 +89,10 @@ class _RegisterPageState extends State<RegisterPage> with ValidatorMixin {
       ),
     };
 
+    final hasConnection = context.hasConnection;
+    final isLocationEnabled = context.isLocationEnabled;
     if (!hasConnection) return const NetworkErrorPage();
+    if (!isLocationEnabled) return const LocationErrorPage();
 
     return Scaffold(
       backgroundColor: Colors.white,

@@ -10,14 +10,14 @@ const mainTextStyle = TextStyle(
   fontWeight: FontWeight.w900,
 );
 
-class NetworkErrorPage extends StatefulWidget {
-  const NetworkErrorPage({super.key});
+class LocationErrorPage extends StatefulWidget {
+  const LocationErrorPage({super.key});
 
   @override
-  State<NetworkErrorPage> createState() => _NetworkErrorPageState();
+  State<LocationErrorPage> createState() => _LocationErrorPageState();
 }
 
-class _NetworkErrorPageState extends State<NetworkErrorPage> {
+class _LocationErrorPageState extends State<LocationErrorPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -29,33 +29,26 @@ class _NetworkErrorPageState extends State<NetworkErrorPage> {
               alignment: AlignmentDirectional.center,
               width: context.screenWidth,
               height: 350,
-              child: Column(
+              child: const Column(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Image.asset(
-                    'images/aumigos_da_vizinhanca_logo_network_error.png',
-                    width: 100,
-                    height: 100,
+                  Icon(
+                    Icons.location_off_rounded,
+                    color: Colors.red,
+                    size: 100.0,
                   ),
-                  const Wrap(
+                  Wrap(
                     crossAxisAlignment: WrapCrossAlignment.center,
                     runAlignment: WrapAlignment.spaceEvenly,
                     alignment: WrapAlignment.spaceEvenly,
                     children: [
-                      Text("Erro de Conexão",
+                      Text("Erro de Localização",
                           textAlign: TextAlign.center, style: mainTextStyle),
-                      Text("com a Internet  ",
-                          textAlign: TextAlign.center, style: mainTextStyle),
-                      Icon(
-                        Icons.signal_wifi_off_rounded,
-                        color: Colors.red,
-                        size: 25,
-                      ),
                     ],
                   ),
-                  const Text(
-                    "Parece que você está sem internet no momento. Verifique sua conexão ou tente novamente mais tarde",
+                  Text(
+                    "Sua localização está desativada. Verifique se seu servico de localização está ligado",
                     style: TextStyle(
                         fontFamily: "Poppins",
                         color: ComponentColors.mainGray,
