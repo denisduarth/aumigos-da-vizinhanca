@@ -7,9 +7,7 @@ class ConnectionNotifier extends InheritedNotifier<ValueNotifier<bool>> {
     required super.child,
   });
 
-  static ValueNotifier<bool> of(BuildContext context) {
-    return context
-        .dependOnInheritedWidgetOfExactType<ConnectionNotifier>()!
-        .notifier!;
-  }
+  static ValueNotifier<bool> of(BuildContext context) => context
+      .dependOnInheritedWidgetOfExactType<ConnectionNotifier>()!
+      .notifier!;
 }

@@ -1,25 +1,17 @@
 mixin ValidatorMixin {
-  String? isEmpty(String? value, [String? message]) {
-    if (value!.isEmpty) return message ?? "O valor não deve ser nulo";
-    return null;
-  }
+  String? isEmpty(String? value, [String? message]) =>
+      value!.isEmpty ? message : "O valor não deve ser nulo";
 
-  String? hasSixChars(String? value, [String? message]) {
-    if (value!.length < 6) {
-      return message ?? "O valor deve conter 6 caracteres ou mais";
-    }
-    return null;
-  }
+  String? hasSixChars(String? value, [String? message]) =>
+      value!.length < 6 ? message : "O valor deve conter 6 caracteres ou mais";
 
-  String? emailValidator(String? value, [String? message]) {
-    if (value!.contains("@")) return message ?? "Digite um e-mail válido";
-    return null;
-  }
+  String? emailValidator(String? value, [String? message]) =>
+      value!.contains("@") ? message : "Digite um e-mail válido";
 
   String? combine(List<String? Function()> validators) {
     for (final function in validators) {
       final validation = function();
-      if (validation != null) return validation;
+       return validation ?? '';
     }
     return null;
   }

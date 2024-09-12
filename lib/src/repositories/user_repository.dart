@@ -1,18 +1,14 @@
 import 'dart:async';
 
 import 'package:aumigos_da_vizinhanca/src/interfaces/i_user_repository.dart';
+import 'package:aumigos_da_vizinhanca/src/repositories/database.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-class UserRepository implements IUserRepository {
-  late SupabaseClient db;
-
-  UserRepository() : db = Supabase.instance.client;
-
+class UserRepository extends Database implements IUserRepository {
   @override
-  Future<AuthResponse> login(String? email, String? password) async {
-    return await db.auth
-        .signInWithPassword(email: email ?? '', password: password ?? '');
-  }
+  Future<AuthResponse> login(String? email, String? password) async =>
+      await db.auth
+          .signInWithPassword(email: email ?? '', password: password ?? '');
 
   @override
   Future<void> logout() async {

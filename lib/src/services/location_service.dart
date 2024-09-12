@@ -17,14 +17,14 @@ class LocationService {
     if (!serviceEnabled) return false;
 
     permission = await Geolocator.checkPermission();
+
     if (permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();
-      if (permission == LocationPermission.denied) {
+
+      if (permission == LocationPermission.denied ||
+          permission == LocationPermission.deniedForever) {
         return false;
       }
-    }
-    if (permission == LocationPermission.deniedForever) {
-      return false;
     }
     return true;
   }
@@ -34,7 +34,7 @@ class LocationService {
 
     if (!handlePermissions) return;
 
-    currentPosition =    await Geolocator.getCurrentPosition(
+    currentPosition = await Geolocator.getCurrentPosition(
       desiredAccuracy: LocationAccuracy.bestForNavigation,
       timeLimit: const Duration(
         seconds: 10,
@@ -44,15 +44,11 @@ class LocationService {
   }
 
   Future<void> getAddressFromLatLng() async {
-    try {
-      List<Placemark> placemarks = await placemarkFromCoordinates(
-          currentPosition!.latitude, currentPosition!.longitude);
-      Placemark place = placemarks[0];
-      currentAddress =
-          "${place.street}, ${place.subLocality}, ${place.subAdministrativeArea}, ${place.postalCode}, ${place.country}";
-    } catch (e) {
-      print(e);
-    }
+    List<Placemark> placemarks = await placemarkFromCoordinates(
+        currentPosition!.latitude, currentPosition!.longitude);
+    Placemark place = placemarks.first;
+    currentAddress =
+        "${place.street}, ${place.subLocality}, ${place.subAdministrativeArea}, ${place.postalCode}, ${place.country}";
   }
 
   Position get getCurrentPosition => currentPosition!;

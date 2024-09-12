@@ -1,12 +1,9 @@
+import 'package:aumigos_da_vizinhanca/src/repositories/database.dart';
+
 import '../interfaces/i_animals_repository.dart';
 import '../models/animal.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 
-class AnimalRepository implements IAnimalsRepository {
-  late SupabaseClient db;
-
-  AnimalRepository() : db = Supabase.instance.client;
-
+class AnimalRepository extends Database implements IAnimalsRepository {
   @override
   Future<void> addAnimal(Animal animal) async {
     await db.from('animals').insert(animal.toMap());
@@ -18,40 +15,20 @@ class AnimalRepository implements IAnimalsRepository {
   }
 
   @override
-  Stream<List<Map<String, dynamic>>> getAnimals() {
-    return db.from('animals').select().asStream();
-  }
-
-  // Future<List<Animal>> getAnimalsII() async {
-  //   var stream = await db.from('animals').select();
-  //   var animalList = stream.map((animalJson) => Animal.fromMap(animalJson)).toList();
-
-  //   return animalList != List.empty() ? animalList : [];
-  // }
+  Stream<List<Map<String, dynamic>>> getAnimals() =>
+      db.from('animals').select().asStream();
 
   @override
-  Stream<List<Map<String, dynamic>>> getAnimalsByName(String name) {
-    final animalData =
-        db.from('animals').select().textSearch('name', name).asStream();
-
-    return animalData;
-  }
+  Stream<List<Map<String, dynamic>>> getAnimalsByName(String name) =>
+      db.from('animals').select().textSearch('name', name).asStream();
 
   @override
-  Stream<List<Map<String, dynamic>>> getAnimalsByUserId(String userId) {
-    final animalDataByUserId =
-        db.from('animals').select().textSearch('userId', userId).asStream();
-
-    return animalDataByUserId;
-  }
+  Stream<List<Map<String, dynamic>>> getAnimalsByUserId(String userId) =>
+      db.from('animals').select().textSearch('userId', userId).asStream();
 
   @override
-  Stream<List<Map<String, dynamic>>> getAnimalsByStreet(String street) {
-    final animalDataByUserId =
-        db.from('animals').select().textSearch('street', street).asStream();
-
-    return animalDataByUserId;
-  }
+  Stream<List<Map<String, dynamic>>> getAnimalsByStreet(String street) =>
+      db.from('animals').select().textSearch('street', street).asStream();
 
   @override
   Future<void> updateAnimal(String id, Animal animal) async {

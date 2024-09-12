@@ -1,6 +1,6 @@
 import '../models/animal.dart';
 
-abstract class IAnimalsRepository {
+abstract interface class IAnimalsRepository {
   Stream<List<Map<String, dynamic>>> getAnimals();
   Stream<List<Map<String, dynamic>>> getAnimalsByName(String name);
   Stream<List<Map<String, dynamic>>> getAnimalsByUserId(String userId);

@@ -7,9 +7,6 @@ class LocationNotifier extends InheritedNotifier<ValueNotifier<bool>> {
     required super.child,
   });
 
-  static ValueNotifier<bool> of(BuildContext context) {
-    return context
-        .dependOnInheritedWidgetOfExactType<LocationNotifier>()!
-        .notifier!;
-  }
+  static ValueNotifier<bool> of(BuildContext context) =>
+      context.dependOnInheritedWidgetOfExactType<LocationNotifier>()!.notifier!;
 }
